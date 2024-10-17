@@ -405,7 +405,7 @@ PageDescription registerPageWindRose(
     "WindRose",         // Page name
     createPage,         // Action
     0,                  // Number of bus values depends on selection in Web configuration
-    {"AWA", "AWS", "TWD", "TWS", "DBT", "STW"},    // Bus values we need in the page
+    {"AWA", "AWS", "TWD", "TWS", "COG", "SOG"},    // Bus values we need in the page
     true                // Show display header on/off
 );
 
