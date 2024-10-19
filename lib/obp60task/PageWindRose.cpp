@@ -202,7 +202,7 @@ public:
         getdisplay().setFont(&DSEG7Classic_BoldItalic20pt7b);
         getdisplay().setCursor(295, 65);
         if(valid3 == true){
-            getdisplay().print(abs(value3 * 360 / PI), 0);   // Value
+            getdisplay().print(abs(value3 * 180 / PI), 0);   // Value
         }
         else{
             getdisplay().print("---");                   // Value
@@ -405,7 +405,7 @@ PageDescription registerPageWindRose(
     "WindRose",         // Page name
     createPage,         // Action
     0,                  // Number of bus values depends on selection in Web configuration
-    {"AWA", "AWS", "TWD", "TWS", "COG", "SOG"},    // Bus values we need in the page
+    {"AWA", "AWS", "COG", "SOG", "TWD", "TWS"},    // Bus values we need in the page
     true                // Show display header on/off
 );
 
