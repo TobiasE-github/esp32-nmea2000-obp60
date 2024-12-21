@@ -34,7 +34,6 @@ class PageBME280 : public Page
         // Get config data
         String tempformat = config->getString(config->tempFormat);
         bool simulation = config->getBool(config->useSimuData);
-        String displaycolor = config->getString(config->displaycolor);
         String flashLED = config->getString(config->flashLED);
         String backlightMode = config->getString(config->backlight);
         String useenvsensor = config->getString(config->useEnvSensor);
@@ -86,7 +85,7 @@ class PageBME280 : public Page
         }
         // Display data when sensor activated
         if((String(useenvsensor) == "BME280") or (String(useenvsensor) == "BMP280")){
-            svalue3 = String(value3, 0);                // Formatted value as string including unit conversion and switching decimal places
+            svalue3 = String(value3 / 100, 1);          // Formatted value as string including unit conversion and switching decimal places
         }
         else{
             svalue3 = "---";
@@ -105,33 +104,19 @@ class PageBME280 : public Page
         // Draw page
         //***********************************************************
 
-        // Set background color and text color
-        int textcolor = GxEPD_BLACK;
-        int pixelcolor = GxEPD_BLACK;
-        int bgcolor = GxEPD_WHITE;
-        if(displaycolor == "Normal"){
-            textcolor = GxEPD_BLACK;
-            pixelcolor = GxEPD_BLACK;
-            bgcolor = GxEPD_WHITE;
-        }
-        else{
-            textcolor = GxEPD_WHITE;
-            pixelcolor = GxEPD_WHITE;
-            bgcolor = GxEPD_BLACK;
-        }
         // Set display in partial refresh mode
         getdisplay().setPartialWindow(0, 0, getdisplay().width(), getdisplay().height()); // Set partial update
+
+        getdisplay().setTextColor(commonData.fgcolor);
 
         // ############### Value 1 ################
 
         // Show name
-        getdisplay().setTextColor(textcolor);
         getdisplay().setFont(&Ubuntu_Bold20pt7b);
         getdisplay().setCursor(20, 55);
         getdisplay().print(name1);                           // Page name
 
         // Show unit
-        getdisplay().setTextColor(textcolor);
         getdisplay().setFont(&Ubuntu_Bold12pt7b);
         getdisplay().setCursor(20, 90);
         getdisplay().print(unit1);                           // Unit
@@ -146,18 +131,16 @@ class PageBME280 : public Page
         // ############### Horizontal Line ################
 
         // Horizontal line 3 pix
-        getdisplay().fillRect(0, 105, 400, 3, pixelcolor);
+        getdisplay().fillRect(0, 105, 400, 3, commonData.fgcolor);
 
         // ############### Value 2 ################
 
         // Show name
-        getdisplay().setTextColor(textcolor);
         getdisplay().setFont(&Ubuntu_Bold20pt7b);
         getdisplay().setCursor(20, 145);
         getdisplay().print(name2);                           // Page name
 
         // Show unit
-        getdisplay().setTextColor(textcolor);
         getdisplay().setFont(&Ubuntu_Bold12pt7b);
         getdisplay().setCursor(20, 180);
         getdisplay().print(unit2);                           // Unit
@@ -172,25 +155,23 @@ class PageBME280 : public Page
         // ############### Horizontal Line ################
 
         // Horizontal line 3 pix
-        getdisplay().fillRect(0, 195, 400, 3, pixelcolor);
+        getdisplay().fillRect(0, 195, 400, 3, commonData.fgcolor);
 
         // ############### Value 3 ################
 
         // Show name
-        getdisplay().setTextColor(textcolor);
         getdisplay().setFont(&Ubuntu_Bold20pt7b);
         getdisplay().setCursor(20, 235);
         getdisplay().print(name3);                           // Page name
 
         // Show unit
-        getdisplay().setTextColor(textcolor);
         getdisplay().setFont(&Ubuntu_Bold12pt7b);
         getdisplay().setCursor(20, 270);
         getdisplay().print(unit3);                           // Unit
 
         // Switch font if format for any values
         getdisplay().setFont(&DSEG7Classic_BoldItalic30pt7b);
-        getdisplay().setCursor(180, 270);
+        getdisplay().setCursor(140, 270);
 
         // Show bus data
         getdisplay().print(svalue3);                         // Real value as formated string
@@ -198,7 +179,6 @@ class PageBME280 : public Page
         // ############### Key Layout ################
 
         // Key Layout
-        getdisplay().setTextColor(textcolor);
         getdisplay().setFont(&Ubuntu_Bold8pt7b);
         if(keylock == false){
             getdisplay().setCursor(130, 290);
