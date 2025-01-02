@@ -43,7 +43,7 @@ void OBP60Init(GwApi *api){
     
 
     // Init hardware
-    hardwareInit();
+    hardwareInit(api);
 
     // Init power rail 5.0V
     String powermode = api->getConfig()->getConfigItem(api->getConfig()->powerMode,true)->asString();
@@ -181,13 +181,6 @@ class PageList{
             }
             return NULL;
         }
-};
-
-class PageStruct{
-    public:
-        Page *page=NULL;
-        PageData parameters;
-        PageDescription *description=NULL;
 };
 
 /**
@@ -353,6 +346,10 @@ void OBP60Task(GwApi *api){
     // Init pages
     int numPages=1;
     PageStruct pages[MAX_PAGE_NUMBER];
+    // Set start page
+    int pageNumber = int(api->getConfig()->getConfigItem(api->getConfig()->startPage,true)->asInt()) - 1;
+    int lastPage=pageNumber;
+
     BoatValueList boatValues; //all the boat values for the api query
     //commonData.distanceformat=config->getString(xxx);
     //add all necessary data to common data
@@ -376,6 +373,7 @@ void OBP60Task(GwApi *api){
        pages[i].description=description;
        pages[i].page=description->creator(commonData);
        pages[i].parameters.pageName=pageType;
+       pages[i].parameters.pageNumber = i + 1;
        LOG_DEBUG(GwLog::DEBUG,"found page %s for number %d",pageType.c_str(),i);
        //fill in all the user defined parameters
        for (int uid=0;uid<description->userParam;uid++){
@@ -395,6 +393,11 @@ void OBP60Task(GwApi *api){
             pages[i].parameters.values.push_back(value); 
        }
     }
+
+    api->registerRequestHandler("screenshot", [api, &pageNumber, pages](AsyncWebServerRequest *request) {
+        doImageRequest(api, &pageNumber, pages, request);
+    });
+
     //now we have prepared the page data
     //we start a separate task that will fetch our keys...
     MyData allParameters;
@@ -431,9 +434,6 @@ void OBP60Task(GwApi *api){
     GwApi::BoatValue *hdop = boatValues.findValueOrCreate("HDOP");       // Load GpsHDOP
 
     LOG_DEBUG(GwLog::LOG,"obp60task: start mainloop");
-    // Set start page
-    int pageNumber = int(api->getConfig()->getConfigItem(api->getConfig()->startPage,true)->asInt()) - 1;
-    int lastPage=pageNumber;
     
     commonData.time = boatValues.findValueOrCreate("GPST");      // Load GpsTime
     commonData.date = boatValues.findValueOrCreate("GPSD");      // Load GpsTime

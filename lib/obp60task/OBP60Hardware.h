@@ -30,6 +30,8 @@
     #define INA226_I2C_ADDR3 0x45   // Addr. 0x45 (fix A0 = 5V, A1 = 5V) for generator
     // Horter modules
     #define PCF8574_I2C_ADDR1 0x20  // First digital out module
+    // FRAM (e.g. MB85RC256V)
+    #define FRAM_I2C_ADDR 0x50
     // SPI (E-Ink display, Extern Bus)
     #define OBP_SPI_CS 39
     #define OBP_SPI_DC 40
@@ -39,11 +41,6 @@
     #define OBP_SPI_DIN 48
     #define SHOW_TIME 6000        // Show time in [ms] for logo and WiFi QR code
     #define FULL_REFRESH_TIME 600 // Refresh cycle time in [s][600...3600] for full display update (very important healcy function)
-    #define MAX_PAGE_NUMBER 10    // Max number of pages for show data
-    #define FONT1 "Ubuntu_Bold8pt7b"
-    #define FONT2 "Ubuntu_Bold24pt7b"
-    #define FONT3 "Ubuntu_Bold32pt7b"
-    #define FONT4 "DSEG7Classic_BoldItalic80pt7b"
 
     // GPS (NEO-6M, NEO-M8N, ATGM336H)
     #define OBP_GPS_RX 2

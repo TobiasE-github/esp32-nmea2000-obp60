@@ -11,6 +11,7 @@
 #include "Pagedata.h"
 #include "OBP60Hardware.h"
 #include "OBP60Extensions.h"
+#include "imglib.h"
 
 // Character sets
 #include "Ubuntu_Bold8pt7b.h"
@@ -60,6 +61,10 @@ GxEPD2_BW<GxEPD2_420_SE0420NQ04, GxEPD2_420_SE0420NQ04::HEIGHT> & getdisplay(){r
 // Horter I2C moduls
 PCF8574 pcf8574_Out(PCF8574_I2C_ADDR1); // First digital output modul PCF8574 from Horter
 
+// FRAM
+Adafruit_FRAM_I2C fram;
+bool hasFRAM = false;
+
 // Global vars
 bool blinkingLED = false;       // Enable / disable blinking flash LED
 bool statusLED = false;         // Actual status of flash LED on/off
@@ -69,7 +74,7 @@ int uvDuration = 0;             // Under voltage duration in n x 100ms
 
 LedTaskData *ledTaskData=nullptr;
 
-void hardwareInit()
+void hardwareInit(GwApi *api)
 {
     Wire.begin();
     // Init PCF8574 digital outputs
@@ -77,7 +82,27 @@ void hardwareInit()
     if(pcf8574_Out.begin()){        // Initialize PCF8574
         pcf8574_Out.write8(255);    // Clear all outputs
     }
-
+    fram = Adafruit_FRAM_I2C();
+    if (esp_reset_reason() ==  ESP_RST_POWERON) {
+        // help initialize FRAM
+        api->getLogger()->logDebug(GwLog::LOG,"Delaying I2C init for 250ms due to cold boot");
+        delay(250);
+    }
+    // FRAM (e.g. MB85RC256V)
+    if (fram.begin(FRAM_I2C_ADDR)) {
+        hasFRAM = true;
+        uint16_t manufacturerID;
+        uint16_t productID;
+        fram.getDeviceID(&manufacturerID, &productID);
+        // Boot counter
+        uint8_t framcounter = fram.read(0x0000);
+        fram.write(0x0000, framcounter+1);
+        api->getLogger()->logDebug(GwLog::LOG,"FRAM detected: 0x%04x/0x%04x (counter=%d)", manufacturerID, productID, framcounter);
+    }
+    else {
+        hasFRAM = false;
+        api->getLogger()->logDebug(GwLog::LOG,"NO FRAM detected");
+    }
 }
 
 void startLedTask(GwApi *api){
@@ -177,6 +202,48 @@ String xdrDelete(String input){
         input = input.substring(3, input.length());
     }
     return input;
+}
+
+Point rotatePoint(const Point& origin, const Point& p, double angle) {
+    // rotate poind around origin by degrees
+    Point rotated;
+    double phi = angle * M_PI / 180.0;
+    double dx = p.x - origin.x;
+    double dy = p.y - origin.y;
+    rotated.x = origin.x + cos(phi) * dx - sin(phi) * dy;
+    rotated.y = origin.y + sin(phi) * dx + cos(phi) * dy;
+    return rotated;
+}
+
+std::vector<Point> rotatePoints(const Point& origin, const std::vector<Point>& pts, double angle) {
+    std::vector<Point> rotatedPoints;
+    for (const auto& p : pts) {
+         rotatedPoints.push_back(rotatePoint(origin, p, angle));
+    }
+     return rotatedPoints;
+}
+
+void fillPoly4(const std::vector<Point>& p4, uint16_t color) {
+    getdisplay().fillTriangle(p4[0].x, p4[0].y, p4[1].x, p4[1].y, p4[2].x, p4[2].y, color);
+    getdisplay().fillTriangle(p4[0].x, p4[0].y, p4[2].x, p4[2].y, p4[3].x, p4[3].y, color);
+}
+
+// Draw centered text
+void drawTextCenter(int16_t cx, int16_t cy, String text) {
+    int16_t x1, y1;
+    uint16_t w, h;
+    getdisplay().getTextBounds(text, 0, 150, &x1, &y1, &w, &h);
+    getdisplay().setCursor(cx - w / 2, cy + h / 2);
+    getdisplay().print(text);
+}
+
+// Draw right aligned text
+void drawTextRalign(int16_t x, int16_t y, String text) {
+    int16_t x1, y1;
+    uint16_t w, h;
+    getdisplay().getTextBounds(text, 0, 150, &x1, &y1, &w, &h);
+    getdisplay().setCursor(x - w, y);
+    getdisplay().print(text);
 }
 
 // Show a triangle for trend direction high (x, y is the left edge)
@@ -402,6 +469,46 @@ void generatorGraphic(uint x, uint y, int pcolor, int bcolor){
         getdisplay().setFont(&Ubuntu_Bold32pt7b);
         getdisplay().setCursor(xb-22, yb+20);
         getdisplay().print("G");
+}
+
+// Function to handle HTTP image request
+void doImageRequest(GwApi *api, int *pageno, const PageStruct pages[MAX_PAGE_NUMBER], AsyncWebServerRequest *request) {
+    GwLog *logger = api->getLogger();
+
+    String imgformat = api->getConfig()->getConfigItem(api->getConfig()->imageFormat,true)->asString();
+    imgformat.toLowerCase();
+    String filename = "Page" + String(*pageno) + "_" +  pages[*pageno].description->pageName + "." + imgformat;
+
+    logger->logDebug(GwLog::LOG,"handle image request [%s]: %s", imgformat, filename);
+
+    uint8_t *fb = getdisplay().getBuffer(); // EPD framebuffer
+    std::vector<uint8_t> imageBuffer;       // image in webserver transferbuffer
+    String mimetype;
+
+    if (imgformat == "gif") {
+        // GIF is commpressed with LZW, so small
+        mimetype = "image/gif";
+        if (!createGIF(fb, &imageBuffer, GxEPD_WIDTH, GxEPD_HEIGHT)) {
+             logger->logDebug(GwLog::LOG,"GIF creation failed: Hashtable init error!");
+             return;
+        }
+    }
+    else if (imgformat == "bmp") {
+        // Microsoft BMP bitmap
+        mimetype = "image/bmp";
+        createBMP(fb, &imageBuffer, GxEPD_WIDTH, GxEPD_HEIGHT);
+    }
+    else {
+        // PBM simple portable bitmap
+        mimetype = "image/x-portable-bitmap";
+        createPBM(fb, &imageBuffer, GxEPD_WIDTH, GxEPD_HEIGHT);
+    }
+
+    AsyncWebServerResponse *response = request->beginResponse_P(200, mimetype, (const uint8_t*)imageBuffer.data(), imageBuffer.size());
+    response->addHeader("Content-Disposition", "inline; filename=" + filename);
+    request->send(response);
+
+    imageBuffer.clear();
 }
 
 #endif
