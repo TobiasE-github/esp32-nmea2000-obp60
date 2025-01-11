@@ -5,7 +5,7 @@ import json
 
 # List of all pages and the number of parameters they expect.
 no_of_fields_per_page = {
-    "ApparentWind": 0,
+    "Wind": 0,
     "XTETrack": 0,
     "Battery2": 0,
     "Battery": 0,
