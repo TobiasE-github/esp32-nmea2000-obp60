@@ -234,8 +234,8 @@ public:
         if(key == 1){               // Mode switch
             if(mode == 'N'){
                 mode = 'L';
-            } else if (mode == 'L') {
-                mode = 'X';
+            //} else if (mode == 'L') {
+           //     mode = 'X';
             } else {
                 mode = 'N';
             }
@@ -643,7 +643,7 @@ PageDescription registerPageWind(
     "Wind",             // Page name
     createPage,         // Action
     0,                  // Number of bus values depends on selection in Web configuration
-    {"AWS","AWA", "TWS", "TWA"}, // Bus values we need in the page
+    {"AWS", "AWA", "TWS", "TWA"}, // Bus values we need in the page
     true                // Show display header on/off
 );
 
