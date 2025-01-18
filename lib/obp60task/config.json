@@ -914,8 +914,6 @@
             "obp60":"true"
         }
     },
-    
-
     {
         "name": "page1type",
         "label": "Type",
@@ -944,6 +942,7 @@
             "White",
             "Wind",
             "WindRose",
+            "WindRose4",
             "WindRoseFlex",
             "XTETrack"
         ],
@@ -1020,6 +1019,9 @@
                 "page1type": "TwoValues"
             },
             {
+                "page1type": "WindRose4"
+            },
+            {
                 "page1type": "WindRoseFlex"
             }
         ]
@@ -1054,6 +1056,9 @@
                 "page1type": "TwoValues"
             },
             {
+                "page1type": "WindRose4"
+            },
+            {
                 "page1type": "WindRoseFlex"
             }
         ]
@@ -1082,6 +1087,9 @@
                 "page1type": "ThreeValues"
             },
             {
+                "page1type": "WindRose4"
+            },
+            {
                 "page1type": "WindRoseFlex"
             }
         ]
@@ -1105,6 +1113,9 @@
             },
             {
                 "page1type": "SixValues"
+            },
+            {
+                "page1type": "WindRose4"
             },
             {
                 "page1type": "WindRoseFlex"
@@ -1223,6 +1234,7 @@
             "White",
             "Wind",
             "WindRose",
+            "WindRose4",
             "WindRoseFlex",
             "XTETrack"
         ],
@@ -1296,6 +1308,9 @@
                 "page2type": "TwoValues"
             },
             {
+                "page2type": "WindRose4"
+            },
+            {
                 "page2type": "WindRoseFlex"
             }
         ]
@@ -1330,6 +1345,9 @@
                 "page2type": "TwoValues"
             },
             {
+                "page2type": "WindRose4"
+            },
+            {
                 "page2type": "WindRoseFlex"
             }
         ]
@@ -1358,6 +1376,9 @@
                 "page2type": "ThreeValues"
             },
             {
+                "page2type": "WindRose4"
+            },
+            {
                 "page2type": "WindRoseFlex"
             }
         ]
@@ -1381,6 +1402,9 @@
             },
             {
                 "page2type": "SixValues"
+            },
+            {
+                "page2type": "WindRose4"
             },
             {
                 "page2type": "WindRoseFlex"
@@ -1499,6 +1523,7 @@
             "White",
             "Wind",
             "WindRose",
+            "WindRose4",
             "WindRoseFlex",
             "XTETrack"
         ],
@@ -1569,6 +1594,9 @@
                 "page3type": "TwoValues"
             },
             {
+                "page3type": "WindRose4"
+            },
+            {
                 "page3type": "WindRoseFlex"
             }
         ]
@@ -1603,6 +1631,9 @@
                 "page3type": "TwoValues"
             },
             {
+                "page3type": "WindRose4"
+            },
+            {
                 "page3type": "WindRoseFlex"
             }
         ]
@@ -1631,6 +1662,9 @@
                 "page3type": "ThreeValues"
             },
             {
+                "page3type": "WindRose4"
+            },
+            {
                 "page3type": "WindRoseFlex"
             }
         ]
@@ -1654,6 +1688,9 @@
             },
             {
                 "page3type": "SixValues"
+            },
+            {
+                "page3type": "WindRose4"
             },
             {
                 "page3type": "WindRoseFlex"
@@ -1772,6 +1809,7 @@
             "White",
             "Wind",
             "WindRose",
+            "WindRose4",
             "WindRoseFlex",
             "XTETrack"
         ],
@@ -1839,6 +1877,9 @@
                 "page4type": "TwoValues"
             },
             {
+                "page4type": "WindRose4"
+            },
+            {
                 "page4type": "WindRoseFlex"
             }
         ]
@@ -1873,6 +1914,9 @@
                 "page4type": "TwoValues"
             },
             {
+                "page4type": "WindRose4"
+            },
+            {
                 "page4type": "WindRoseFlex"
             }
         ]
@@ -1901,6 +1945,9 @@
                 "page4type": "ThreeValues"
             },
             {
+                "page4type": "WindRose4"
+            },
+            {
                 "page4type": "WindRoseFlex"
             }
         ]
@@ -1924,6 +1971,9 @@
             },
             {
                 "page4type": "SixValues"
+            },
+            {
+                "page4type": "WindRose4"
             },
             {
                 "page4type": "WindRoseFlex"
@@ -2042,6 +2092,7 @@
             "White",
             "Wind",
             "WindRose",
+            "WindRose4",
             "WindRoseFlex",
             "XTETrack"
         ],
@@ -2106,6 +2157,9 @@
                 "page5type": "TwoValues"
             },
             {
+                "page5type": "WindRose4"
+            },
+            {
                 "page5type": "WindRoseFlex"
             }
         ]
@@ -2140,6 +2194,9 @@
                 "page5type": "TwoValues"
             },
             {
+                "page5type": "WindRose4"
+            },
+            {
                 "page5type": "WindRoseFlex"
             }
         ]
@@ -2168,6 +2225,9 @@
                 "page5type": "ThreeValues"
             },
             {
+                "page5type": "WindRose4"
+            },
+            {
                 "page5type": "WindRoseFlex"
             }
         ]
@@ -2191,6 +2251,9 @@
             },
             {
                 "page5type": "SixValues"
+            },
+            {
+                "page5type": "WindRose4"
             },
             {
                 "page5type": "WindRoseFlex"
@@ -2309,6 +2372,7 @@
             "White",
             "Wind",
             "WindRose",
+            "WindRose4",
             "WindRoseFlex",
             "XTETrack"
         ],
@@ -2370,6 +2434,9 @@
                 "page6type": "TwoValues"
             },
             {
+                "page6type": "WindRose4"
+            },
+            {
                 "page6type": "WindRoseFlex"
             }
         ]
@@ -2404,6 +2471,9 @@
                 "page6type": "TwoValues"
             },
             {
+                "page6type": "WindRose4"
+            },
+            {
                 "page6type": "WindRoseFlex"
             }
         ]
@@ -2432,6 +2502,9 @@
                 "page6type": "ThreeValues"
             },
             {
+                "page6type": "WindRose4"
+            },
+            {
                 "page6type": "WindRoseFlex"
             }
         ]
@@ -2455,6 +2528,9 @@
             },
             {
                 "page6type": "SixValues"
+            },
+            {
+                "page6type": "WindRose4"
             },
             {
                 "page6type": "WindRoseFlex"
@@ -2573,6 +2649,7 @@
             "White",
             "Wind",
             "WindRose",
+            "WindRose4",
             "WindRoseFlex",
             "XTETrack"
         ],
@@ -2631,6 +2708,9 @@
                 "page7type": "TwoValues"
             },
             {
+                "page7type": "WindRose4"
+            },
+            {
                 "page7type": "WindRoseFlex"
             }
         ]
@@ -2665,6 +2745,9 @@
                 "page7type": "TwoValues"
             },
             {
+                "page7type": "WindRose4"
+            },
+            {
                 "page7type": "WindRoseFlex"
             }
         ]
@@ -2693,6 +2776,9 @@
                 "page7type": "ThreeValues"
             },
             {
+                "page7type": "WindRose4"
+            },
+            {
                 "page7type": "WindRoseFlex"
             }
         ]
@@ -2716,6 +2802,9 @@
             },
             {
                 "page7type": "SixValues"
+            },
+            {
+                "page7type": "WindRose4"
             },
             {
                 "page7type": "WindRoseFlex"
@@ -2834,6 +2923,7 @@
             "White",
             "Wind",
             "WindRose",
+            "WindRose4",
             "WindRoseFlex",
             "XTETrack"
         ],
@@ -2889,6 +2979,9 @@
                 "page8type": "TwoValues"
             },
             {
+                "page8type": "WindRose4"
+            },
+            {
                 "page8type": "WindRoseFlex"
             }
         ]
@@ -2923,6 +3016,9 @@
                 "page8type": "TwoValues"
             },
             {
+                "page8type": "WindRose4"
+            },
+            {
                 "page8type": "WindRoseFlex"
             }
         ]
@@ -2951,6 +3047,9 @@
                 "page8type": "ThreeValues"
             },
             {
+                "page8type": "WindRose4"
+            },
+            {
                 "page8type": "WindRoseFlex"
             }
         ]
@@ -2974,6 +3073,9 @@
             },
             {
                 "page8type": "SixValues"
+            },
+            {
+                "page8type": "WindRose4"
             },
             {
                 "page8type": "WindRoseFlex"
@@ -3092,6 +3194,7 @@
             "White",
             "Wind",
             "WindRose",
+            "WindRose4",
             "WindRoseFlex",
             "XTETrack"
         ],
@@ -3144,6 +3247,9 @@
                 "page9type": "TwoValues"
             },
             {
+                "page9type": "WindRose4"
+            },
+            {
                 "page9type": "WindRoseFlex"
             }
         ]
@@ -3178,6 +3284,9 @@
                 "page9type": "TwoValues"
             },
             {
+                "page9type": "WindRose4"
+            },
+            {
                 "page9type": "WindRoseFlex"
             }
         ]
@@ -3206,6 +3315,9 @@
                 "page9type": "ThreeValues"
             },
             {
+                "page9type": "WindRose4"
+            },
+            {
                 "page9type": "WindRoseFlex"
             }
         ]
@@ -3229,6 +3341,9 @@
             },
             {
                 "page9type": "SixValues"
+            },
+            {
+                "page9type": "WindRose4"
             },
             {
                 "page9type": "WindRoseFlex"
@@ -3347,6 +3462,7 @@
             "White",
             "Wind",
             "WindRose",
+            "WindRose4",
             "WindRoseFlex",
             "XTETrack"
         ],
@@ -3396,6 +3512,9 @@
                 "page10type": "TwoValues"
             },
             {
+                "page10type": "WindRose4"
+            },
+            {
                 "page10type": "WindRoseFlex"
             }
         ]
@@ -3430,6 +3549,9 @@
                 "page10type": "TwoValues"
             },
             {
+                "page10type": "WindRose4"
+            },
+            {
                 "page10type": "WindRoseFlex"
             }
         ]
@@ -3458,6 +3580,9 @@
                 "page10type": "ThreeValues"
             },
             {
+                "page10type": "WindRose4"
+            },
+            {
                 "page10type": "WindRoseFlex"
             }
         ]
@@ -3481,6 +3606,9 @@
             },
             {
                 "page10type": "SixValues"
+            },
+            {
+                "page10type": "WindRose4"
             },
             {
                 "page10type": "WindRoseFlex"
