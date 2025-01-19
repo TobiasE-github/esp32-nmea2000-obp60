@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # A tool to generate that part of config.json  that deals with pages and fields.
+#
 #Usage: 1. modify this script (e.g.add a page, change number of fields, etc.)
 #       2. Delete all lines from config.json from the curly backet before "name": "page1type"  to o the end of the file (as of today, delete from line 917 to the end of the File)
 #       3. run ./gen_set.py >> config.json
@@ -31,7 +32,7 @@ no_of_fields_per_page = {
     "WindRose": 0,
     "WindRoseFlex": 6,
     "WindRose4": 4,
-    "SixValues" : 6,
+   # "SixValues" : 6,
 }
 
 # No changes needed beyond this point
