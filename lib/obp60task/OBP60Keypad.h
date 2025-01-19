@@ -219,6 +219,29 @@ void initKeys(CommonData &commonData) {
   #endif
 
   #ifdef HARDWARE_LIGHT
+  int readSensorpads(){
+      // Read key code 
+      if(digitalRead(UP) == LOW){
+        keycode = 10; // Left swipe
+      }
+      else if(digitalRead(DOWN) == LOW){
+        keycode = 9;  // Right swipe
+      }
+      else if(digitalRead(CONF) == LOW){
+        keycode = 3;  // Key 3
+      }
+      else if(digitalRead(MENUE) == LOW){
+        keycode = 1;  // Key 1
+      }
+      else if(digitalRead(EXIT) == LOW){
+        keycode = 2;  // Key 2
+      }
+      else{
+        keycode = 0;  // No key activ
+      }
+      return keycode;
+    }
+
   // Keypad functions for OBP60 clone (thSensitivity is inactiv)
   int readKeypad(uint thSensitivity) {
     pinMode(UP, INPUT);
@@ -227,25 +250,8 @@ void initKeys(CommonData &commonData) {
     pinMode(MENUE, INPUT);
     pinMode(EXIT, INPUT);
 
-    // Read key code 
-    if(digitalRead(UP) == LOW){
-      keycode = 10; // Left swipe
-    }
-    else if(digitalRead(DOWN) == LOW){
-      keycode = 9;  // Right swipe
-    }
-    else if(digitalRead(CONF) == LOW){
-      keycode = 3;  // Key 3
-    }
-    else if(digitalRead(MENUE) == LOW){
-      keycode = 1;  // Key 1
-    }
-    else if(digitalRead(EXIT) == LOW){
-      keycode = 2;  // Key 2
-    }
-    else{
-      keycode = 0;  // No key activ
-    }
+    // Raed pad values
+    readSensorpads();
 
     // Detect key
     if (keycode > 0 ){
@@ -258,6 +264,7 @@ void initKeys(CommonData &commonData) {
         keystatus = keycode;
         // Copy keycode
         keycodeold = keycode;
+        while(readSensorpads() > 0){} // Wait for pad lesease
         delay(keydelay);
       }
     }

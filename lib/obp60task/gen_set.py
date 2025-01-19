@@ -4,6 +4,10 @@
 #Usage: 1. modify this script (e.g.add a page, change number of fields, etc.)
 #       2. Delete all lines from config.json from the curly backet before "name": "page1type"  to o the end of the file (as of today, delete from line 917 to the end of the File)
 #       3. run ./gen_set.py >> config.json
+#
+#Usage: 1. modify this script (e.g.add a page, change number of fields, etc.)
+#       2. Delete all lines from config.json from the curly backet before "name": "page1type"  to o the end of the file (as of today, delete from line 917 to the end of the File)
+#       3. run ./gen_set.py >> config.json
 
 import json
 
@@ -125,5 +129,7 @@ for page_no in range(1, no_of_pages + 1):
 
 json_output = json.dumps(output, indent=4)
 # print omitting first and last line containing [ ] of JSON array
+#print(json_output[1:-1])
+# print omitting first line containing [  of JSON array
 print(json_output[1:])
 # print(",")
