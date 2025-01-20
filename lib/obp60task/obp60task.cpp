@@ -13,6 +13,12 @@
 #include "OBP60Extensions.h"            // Functions lib for extension board
 #include "OBP60Keypad.h"                // Functions for keypad
 
+#ifdef HARDWARE_LIGHT
+#include <FS.h> // SD-Card access
+#include <SD.h>
+#include <SPI.h>
+#endif
+
 // True type character sets includes
 // See OBP60ExtensionPort.cpp
 
@@ -20,10 +26,10 @@
 //#include GxEPD_BitmapExamples         // Example picture
 #include "MFD_OBP60_400x300_sw.h"       // MFD with logo
 #include "Logo_OBP_400x300_sw.h"        // OBP Logo
+#include "images/unknown.xbm"           // unknown page indicator
 #include "OBP60QRWiFi.h"                // Functions lib for WiFi QR code
 #include "OBPSensorTask.h"              // Functions lib for sensor data
 
-#include "LedSpiTask.h"
 
 // Global vars
 bool initComplete = false;      // Initialization complete
@@ -32,6 +38,9 @@ int taskRunCounter = 0;         // Task couter for loop section
 // Hardware initialization before start all services
 //####################################################################################
 void OBP60Init(GwApi *api){
+
+    GwLog *logger = api->getLogger();
+    GwConfigHandler *config = api->getConfig();
 
     // Set a new device name and hidden the original name in the main config
     String devicename = api->getConfig()->getConfigItem(api->getConfig()->deviceName,true)->asString();
@@ -44,6 +53,33 @@ void OBP60Init(GwApi *api){
 
     // Init hardware
     hardwareInit(api);
+
+#ifdef HARDWARE_LIGHT
+    String sdcard = config->getConfigItem(config->useSDCard, true)->asString();
+    if (sdcard == "on") {
+        setPortPin(OBP_POWER_SD, true); // Power on SD
+        delay(10);
+        SPIClass SD_SPI = SPIClass(HSPI);
+        SD_SPI.begin(SD_SPI_CLK, SD_SPI_MISO, SD_SPI_MOSI);
+        if (SD.begin(SD_SPI_CS, SD_SPI, 80000000)) {
+            String sdtype = "unknown";
+            uint8_t cardType = SD.cardType();
+            switch (cardType) {
+                case CARD_MMC:
+                   sdtype = "MMC";
+                   break;
+                case CARD_SD:
+                   sdtype = "SDSC";
+                   break;
+                case CARD_SDHC:
+                   sdtype = "SDHC";
+                   break;
+            }
+            uint64_t cardSize = SD.cardSize() / (1024 * 1024);
+            LOG_DEBUG(GwLog::LOG,"SD card type %s of size %d MB detected", sdtype, cardSize);
+        }
+    }
+#endif
 
     // Init power rail 5.0V
     String powermode = api->getConfig()->getConfigItem(api->getConfig()->powerMode,true)->asString();
@@ -127,7 +163,7 @@ void keyboardTask(void *param){
 
     // Loop for keyboard task
     while (true){
-        keycode = readKeypad(data->sensitivity);
+        keycode = readKeypad(data->logger, data->sensitivity);
         //send a key event
         if(keycode != 0){
             xQueueSend(data->queue, &keycode, 0);
@@ -204,8 +240,10 @@ void registerAllPages(PageList &list){
     //this way this separate source file can be compiled by it's own
     //and has no access to any of our data except the one that we
     //give as a parameter to the page function
-    extern PageDescription registerPageOneValue;
+    extern PageDescription registerPageSystem;
     //we add the variable to our list
+    list.add(&registerPageSystem);
+    extern PageDescription registerPageOneValue;
     list.add(&registerPageOneValue);
     extern PageDescription registerPageTwoValues;
     list.add(&registerPageTwoValues);
@@ -290,15 +328,19 @@ void OBP60Task(GwApi *api){
 //    return;
     GwLog *logger=api->getLogger();
     GwConfigHandler *config=api->getConfig();
+#ifdef HARDWARE_V21
     startLedTask(api);
+#endif
     PageList allPages;
     registerAllPages(allPages);
     CommonData commonData;
     commonData.logger=logger;
     commonData.config=config;
 
+#ifdef HARDWARE_V21
     // Keyboard coordinates for page footer
     initKeys(commonData);
+#endif
 
     tN2kMsg N2kMsg;
 
@@ -408,6 +450,8 @@ void OBP60Task(GwApi *api){
             pages[i].parameters.values.push_back(value); 
        }
     }
+    // add out of band system page (always available)
+    Page *syspage = allPages.pages[0]->creator(commonData);
 
     // Display screenshot handler for HTTP request
     // http://192.168.15.1/api/user/OBP60Task/screenshot
@@ -469,11 +513,11 @@ void OBP60Task(GwApi *api){
 
     // Main loop runs with 100ms
     //####################################################################################
-    
+
+    bool systemPage = false;
     while (true){
         delay(100);     // Delay 100ms (loop time)
 
-    
         // Undervoltage detection
         if(uvoltage == true){
             underVoltageDetection(api, commonData);
@@ -514,12 +558,27 @@ void OBP60Task(GwApi *api){
             int keyboardMessage=0;
             while (xQueueReceive(allParameters.queue,&keyboardMessage,0)){
                 LOG_DEBUG(GwLog::LOG,"new key from keyboard %d",keyboardMessage);
-                
-                Page *currentPage=pages[pageNumber].page;
-                if (currentPage ){
-                    keyboardMessage=currentPage->handleKey(keyboardMessage);
+
+                Page *currentPage;
+                if (keyboardMessage == 12) {
+                    LOG_DEBUG(GwLog::LOG, "Calling system page");
+                    systemPage = true; // System page is out of band
+                    syspage->setupKeys();
                 }
-                if (keyboardMessage > 0)
+                else {
+                    currentPage = pages[pageNumber].page;
+                    if (systemPage && keyboardMessage == 1) {
+                        // exit system mode with exit key number 1
+                        systemPage = false;
+                        currentPage->setupKeys();
+                    }
+                }
+                if (systemPage) {
+                    keyboardMessage = syspage->handleKey(keyboardMessage);
+                } else if (currentPage) {
+                    keyboardMessage = currentPage->handleKey(keyboardMessage);
+                }
+                if (keyboardMessage > 0) // not handled by page
                 {
                     // Decoding all key codes
                     // #6 Backlight on if key controled
@@ -575,8 +634,7 @@ void OBP60Task(GwApi *api){
                         }
                         else{
                             setBacklightLED(0, COLOR_BLUE); // Backlight LEDs off (blue without britghness)
-                        }           
-
+                        }
                     }
                 }
             }
@@ -633,36 +691,53 @@ void OBP60Task(GwApi *api){
                 api->getBoatDataValues(boatValues.numValues,boatValues.allBoatValues);
                 api->getStatus(commonData.status);
 
+                // Clear display
+                // getdisplay().fillRect(0, 0, getdisplay().width(), getdisplay().height(), commonData.bgcolor);
+                getdisplay().fillScreen(commonData.bgcolor);  // Clear display
+
                 // Show header if enabled
-                getdisplay().fillRect(0, 0, getdisplay().width(), getdisplay().height(), commonData.bgcolor);   // Clear display
-                if (pages[pageNumber].description && pages[pageNumber].description->header){
+                if (pages[pageNumber].description && pages[pageNumber].description->header or systemPage){
                     // build header using commonData
-                    getdisplay().fillScreen(commonData.bgcolor);  // Clear display
                     displayHeader(commonData, date, time, hdop);  // Show page header
                 }
 
                 // Call the particular page
-                Page *currentPage=pages[pageNumber].page;
-                if (currentPage == NULL){
-                    LOG_DEBUG(GwLog::ERROR,"page number %d not found",pageNumber);
-                    // Error handling for missing page
+                if (systemPage) {
+                    displayFooter(commonData);
+                    PageData sysparams; // empty
+                    syspage->displayPage(sysparams);
                 }
-                else{
-                    if (lastPage != pageNumber){
-                        if (hasFRAM) fram.write(FRAM_PAGE_NO, pageNumber); // remember page for device restart
-                        currentPage->setupKeys();
-                        currentPage->displayNew(pages[pageNumber].parameters);
-                        lastPage=pageNumber;
+                else {
+                    Page *currentPage = pages[pageNumber].page;
+                    if (currentPage == NULL){
+                        LOG_DEBUG(GwLog::ERROR,"page number %d not found", pageNumber);
+                        // Error handling for missing page
+                        getdisplay().setPartialWindow(0, 0, getdisplay().width(), getdisplay().height()); // Set partial update
+                        getdisplay().fillScreen(commonData.bgcolor);  // Clear display
+                        getdisplay().drawXBitmap(200 - unknown_width / 2, 150 - unknown_height / 2, unknown_bits, unknown_width, unknown_height, commonData.fgcolor);
+                        getdisplay().setCursor(140, 250);
+                        getdisplay().setFont(&Atari16px);
+                        getdisplay().print("Here be dragons!");
+                        getdisplay().nextPage(); // Partial update (fast)
                     }
-                    //call the page code
-                    LOG_DEBUG(GwLog::DEBUG,"calling page %d",pageNumber);
-                    // Show footer if enabled (together with header)
-                    if (pages[pageNumber].description && pages[pageNumber].description->header){
-                        displayFooter(commonData);
+                    else{
+                        if (lastPage != pageNumber){
+                            if (hasFRAM) fram.write(FRAM_PAGE_NO, pageNumber); // remember page for device restart
+                            currentPage->setupKeys();
+                            currentPage->displayNew(pages[pageNumber].parameters);
+                            lastPage=pageNumber;
+                        }
+                        //call the page code
+                        LOG_DEBUG(GwLog::DEBUG,"calling page %d",pageNumber);
+                        // Show footer if enabled (together with header)
+                        if (pages[pageNumber].description && pages[pageNumber].description->header){
+                            displayFooter(commonData);
+                        }
+                        currentPage->displayPage(pages[pageNumber].parameters);
                     }
-                    currentPage->displayPage(pages[pageNumber].parameters);
+
                 }
-            }
+            } // refresh display all 1s
         }
     }
     vTaskDelete(NULL);
