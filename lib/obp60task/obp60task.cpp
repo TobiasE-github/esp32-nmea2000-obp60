@@ -14,7 +14,8 @@
 #include "OBP60Keypad.h"                // Functions for keypad
 
 #ifdef BOARD_OBP40S3
-#include <FS.h> // SD-Card access
+#include "driver/rtc_io.h"              // Needs for weakup from deep sleep
+#include <FS.h>                         // SD-Card access
 #include <SD.h>
 #include <SPI.h>
 #endif
@@ -54,12 +55,32 @@ void OBP60Init(GwApi *api){
     // Init hardware
     hardwareInit(api);
 
-#ifdef BOARD_OBP40S3
+    // Init power rail 5.0V
+    String powermode = api->getConfig()->getConfigItem(api->getConfig()->powerMode,true)->asString();
+    api->getLogger()->logDebug(GwLog::DEBUG,"Power Mode is: %s", powermode.c_str());
+    if(powermode == "Max Power" || powermode == "Only 5.0V"){
+        #ifdef HARDWARE_V21
+        setPortPin(OBP_POWER_50, true); // Power on 5.0V rail
+        #endif
+        #ifdef BOARD_OBP40S3
+        setPortPin(OBP_POWER_EPD, true);// Power on ePaper display
+        setPortPin(OBP_POWER_SD, true); // Power on SD card
+        #endif
+    }
+    else{
+        #ifdef HARDWARE_V21
+        setPortPin(OBP_POWER_50, false); // Power off 5.0V rail
+        #endif
+        #ifdef BOARD_OBP40S3
+        setPortPin(OBP_POWER_EPD, false);// Power off ePaper display
+        setPortPin(OBP_POWER_SD, false); // Power off SD card
+        #endif
+    }
+
+    #ifdef BOARD_OBP40S3
     //String sdcard = config->getConfigItem(config->useSDCard, true)->asString();
     String sdcard = "on";
     if (sdcard == "on") {
-        setPortPin(OBP_POWER_SD, true); // Power on SD
-        delay(10);
         SPIClass SD_SPI = SPIClass(HSPI);
         SD_SPI.begin(SD_SPI_CLK, SD_SPI_MISO, SD_SPI_MOSI);
         if (SD.begin(SD_SPI_CS, SD_SPI, 80000000)) {
@@ -80,27 +101,12 @@ void OBP60Init(GwApi *api){
             LOG_DEBUG(GwLog::LOG,"SD card type %s of size %d MB detected", sdtype, cardSize);
         }
     }
-#endif
 
-    // Init power rail 5.0V
-    String powermode = api->getConfig()->getConfigItem(api->getConfig()->powerMode,true)->asString();
-    api->getLogger()->logDebug(GwLog::DEBUG,"Power Mode is: %s", powermode.c_str());
-    if(powermode == "Max Power" || powermode == "Only 5.0V"){
-        #ifdef HARDWARE_V21
-        setPortPin(OBP_POWER_50, true); // Power on 5.0V rail
-        #endif
-        #ifdef BOARD_OBP40S3
-        setPortPin(OBP_POWER_EPD, true);// Power on ePaper display
-        #endif
-    }
-    else{
-        #ifdef HARDWARE_V21
-        setPortPin(OBP_POWER_50, false); // Power off 5.0V rail
-        #endif
-        #ifdef BOARD_OBP40S3
-        setPortPin(OBP_POWER_EPD, false);// Power off ePaper display
-        #endif
-    }
+    // Deep sleep wakeup configuration
+    esp_sleep_enable_ext0_wakeup(OBP_WAKEWUP_PIN, 0);   // 1 = High, 0 = Low
+    rtc_gpio_pullup_en(OBP_WAKEWUP_PIN);                // Activate pullup resistor
+    rtc_gpio_pulldown_dis(OBP_WAKEWUP_PIN);             // Disable pulldown resistor
+#endif
 
     // Settings for e-paper display
     String fastrefresh = api->getConfig()->getConfigItem(api->getConfig()->fastRefresh,true)->asString();
@@ -109,6 +115,16 @@ void OBP60Init(GwApi *api){
     if(fastrefresh == "true"){
         static const bool useFastFullUpdate = true;   // Enable fast full display update only for GDEY042T81
     }
+    #endif
+
+    #ifdef BOARD_OBP60S3
+    touchSleepWakeUpEnable(TP1, 45);
+    touchSleepWakeUpEnable(TP2, 45);
+    touchSleepWakeUpEnable(TP3, 45);
+    touchSleepWakeUpEnable(TP4, 45);
+    touchSleepWakeUpEnable(TP5, 45);
+    touchSleepWakeUpEnable(TP6, 45);
+    esp_sleep_enable_touchpad_wakeup();
     #endif
 
     // Get CPU speed
@@ -322,6 +338,38 @@ void underVoltageDetection(GwApi *api, CommonData &common){
     }
 }
 
+#ifdef BOARD_OBP40S3
+// Deep sleep funktion 
+void deepSleep(CommonData &common){
+    // Switch off all power lines
+    setPortPin(OBP_BACKLIGHT_LED, false);   // Backlight Off
+    setFlashLED(false);                     // Flash LED Off            
+    buzzer(TONE4, 20);                      // Buzzer tone 4kHz 20ms
+    // Shutdown EInk display
+    getdisplay().setFullWindow();               // Set full Refresh
+    //getdisplay().setPartialWindow(0, 0, getdisplay().width(), getdisplay().height()); // Set partial update
+    getdisplay().fillScreen(common.bgcolor);    // Clear screen
+    getdisplay().setTextColor(common.fgcolor);
+    getdisplay().setFont(&Ubuntu_Bold20pt7b);
+    getdisplay().setCursor(85, 150);
+    getdisplay().print("Sleep Mode");
+    getdisplay().setFont(&Ubuntu_Bold8pt7b);
+    getdisplay().setCursor(65, 175);
+    getdisplay().print("For wakeup press wheel and wait 5s");
+    getdisplay().nextPage();                // Partial update
+    getdisplay().powerOff();                // Display power off
+    setPortPin(OBP_POWER_EPD, false);       // Power off ePaper display
+    setPortPin(OBP_POWER_SD, false);        // Power off SD card
+    // Stop system
+    while(true){
+        esp_deep_sleep_start();             // Deep Sleep with weakup via GPIO pin
+    }
+
+}
+#endif
+
+
+
 // OBP60 Task
 //####################################################################################
 void OBP60Task(GwApi *api){
@@ -406,6 +454,18 @@ void OBP60Task(GwApi *api){
     PageStruct pages[MAX_PAGE_NUMBER];
     // Set start page
     int pageNumber = int(api->getConfig()->getConfigItem(api->getConfig()->startPage,true)->asInt()) - 1;
+
+#ifdef BOARD_OBP60S3
+    LOG_DEBUG(GwLog::LOG,"Checking wakeup...");
+    if (esp_sleep_get_wakeup_cause() == ESP_SLEEP_WAKEUP_TOUCHPAD) {
+        LOG_DEBUG(GwLog::LOG,"Wake up by touch pad %d",esp_sleep_get_touchpad_wakeup_status());
+        pageNumber = getLastPage();
+    } else {
+        LOG_DEBUG(GwLog::LOG,"Other wakeup reason");
+    }
+    LOG_DEBUG(GwLog::LOG,"...done");
+#endif
+
     int lastPage=pageNumber;
 
     BoatValueList boatValues; //all the boat values for the api query
@@ -522,7 +582,7 @@ void OBP60Task(GwApi *api){
         // Undervoltage detection
         if(uvoltage == true){
             underVoltageDetection(api, commonData);
-        }  
+        }
 
         // Set CPU speed after boot after 1min 
         if(millis() > firststart + (1 * 60 * 1000) && cpuspeedsetted == false){
@@ -590,6 +650,12 @@ void OBP60Task(GwApi *api){
                             toggleBacklightLED(commonData.backlight.brightness, commonData.backlight.color);
                         }
                     }
+                    #ifdef BOARD_OBP40S3
+                    // #3 Deep sleep mode for OBP40
+                    if (keyboardMessage == 3){
+                        deepSleep(commonData);
+                    }
+                    #endif
                     // #9 Swipe right or #4 key right
                     if ((keyboardMessage == 9) or (keyboardMessage == 4))
                     {
