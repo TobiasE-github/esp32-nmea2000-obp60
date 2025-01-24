@@ -276,7 +276,9 @@ void registerAllPages(PageList &list){
     extern PageDescription registerPageWindRose;
     list.add(&registerPageWindRose);
     extern PageDescription registerPageWindRoseFlex;
-    list.add(&registerPageWindRoseFlex); // 
+    list.add(&registerPageWindRoseFlex); 
+    extern PageDescription registerPageWindRose4;
+    list.add(&registerPageWindRose4); //
     extern PageDescription registerPageVoltage;
     list.add(&registerPageVoltage);
     extern PageDescription registerPageDST810;
@@ -604,7 +606,9 @@ void OBP60Task(GwApi *api){
                 LOG_DEBUG(GwLog::LOG,"new key from keyboard %d",keyboardMessage);
                 keypressed = true;
 
+
                 if (keyboardMessage == 12 and !systemPage) {
+
                     LOG_DEBUG(GwLog::LOG, "Calling system page");
                     systemPage = true; // System page is out of band
                     syspage->setupKeys();
