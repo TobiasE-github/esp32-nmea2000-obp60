@@ -141,12 +141,15 @@ void deepSleep(CommonData &common){
     getdisplay().print("Sleep Mode");
     getdisplay().setFont(&Ubuntu_Bold8pt7b);
     getdisplay().setCursor(65, 175);
-    getdisplay().print("For wakeup press key and wait 5s");
+    getdisplay().print("To wake up press key and wait 5s");
     getdisplay().nextPage();                // Update display contents
     getdisplay().powerOff();                // Display power off
     setPortPin(OBP_POWER_50, false);        // Power off ePaper display
     // Stop system
-    esp_deep_sleep_start();             // Deep Sleep with weakup via touch pin
+<<
+    esp_deep_sleep_start();                 // Deep Sleep with weakup via touch pin
+
+
 }
 #endif
 #ifdef BOARD_OBP40S3
@@ -166,7 +169,11 @@ void deepSleep(CommonData &common){
     getdisplay().print("Sleep Mode");
     getdisplay().setFont(&Ubuntu_Bold8pt7b);
     getdisplay().setCursor(65, 175);
-    getdisplay().print("For wakeup press wheel and wait 5s");
+
+    getdisplay().print("To wake up press wheel and wait 5s");
+
+
+
     getdisplay().nextPage();                // Partial update
     getdisplay().powerOff();                // Display power off
     setPortPin(OBP_POWER_EPD, false);       // Power off ePaper display
