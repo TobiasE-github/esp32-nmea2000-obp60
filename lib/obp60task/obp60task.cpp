@@ -276,7 +276,9 @@ void registerAllPages(PageList &list){
     extern PageDescription registerPageWindRose;
     list.add(&registerPageWindRose);
     extern PageDescription registerPageWindRoseFlex;
-    list.add(&registerPageWindRoseFlex); // 
+    list.add(&registerPageWindRoseFlex); 
+    extern PageDescription registerPageWindRose4;
+    list.add(&registerPageWindRose4); //
     extern PageDescription registerPageVoltage;
     list.add(&registerPageVoltage);
     extern PageDescription registerPageDST810;
@@ -415,8 +417,10 @@ void OBP60Task(GwApi *api){
     String fastrefresh = api->getConfig()->getConfigItem(api->getConfig()->fastRefresh,true)->asString();
     uint fullrefreshtime = uint(api->getConfig()->getConfigItem(api->getConfig()->fullRefreshTime,true)->asInt());
     #ifdef BOARD_OBP40S3
+
 //    bool syspage_enabled = config->getBool(config->systemPage);
-    bool syspage_enabled = true;
+    bool syspage_enabled = tr
+
     #endif
 
     #ifdef DISPLAY_GDEY042T81
@@ -638,7 +642,10 @@ void OBP60Task(GwApi *api){
                 LOG_DEBUG(GwLog::LOG,"new key from keyboard %d",keyboardMessage);
                 keypressed = true;
 
+
                 if (keyboardMessage == 12 and !systemPage) {
+
+
                     LOG_DEBUG(GwLog::LOG, "Calling system page");
                     systemPage = true; // System page is out of band
                     syspage->setupKeys();
