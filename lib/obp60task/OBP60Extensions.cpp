@@ -146,7 +146,6 @@ void deepSleep(CommonData &common){
     getdisplay().powerOff();                // Display power off
     setPortPin(OBP_POWER_50, false);        // Power off ePaper display
     // Stop system
-<<
     esp_deep_sleep_start();                 // Deep Sleep with weakup via touch pin
 
 
