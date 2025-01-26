@@ -14,3 +14,4 @@ git push origin master --force
 #get a version from another branch
 
 git checkout otherbranch myfile.txt
+
