@@ -934,7 +934,6 @@
             "OneValue",
             "RollPitch",
             "RudderPosition",
-            "SixValues",
             "Solar",
             "ThreeValues",
             "TwoValues",
@@ -943,6 +942,7 @@
             "Wind",
             "WindRose",
             "WindRose4",
+            "WindRose5",
             "WindRoseFlex",
             "XTETrack"
         ],
@@ -1010,9 +1010,6 @@
                 "page1type": "RollPitch"
             },
             {
-                "page1type": "SixValues"
-            },
-            {
                 "page1type": "ThreeValues"
             },
             {
@@ -1020,6 +1017,9 @@
             },
             {
                 "page1type": "WindRose4"
+            },
+            {
+                "page1type": "WindRose5"
             },
             {
                 "page1type": "WindRoseFlex"
@@ -1047,9 +1047,6 @@
                 "page1type": "RollPitch"
             },
             {
-                "page1type": "SixValues"
-            },
-            {
                 "page1type": "ThreeValues"
             },
             {
@@ -1057,6 +1054,9 @@
             },
             {
                 "page1type": "WindRose4"
+            },
+            {
+                "page1type": "WindRose5"
             },
             {
                 "page1type": "WindRoseFlex"
@@ -1081,13 +1081,13 @@
                 "page1type": "FourValues2"
             },
             {
-                "page1type": "SixValues"
-            },
-            {
                 "page1type": "ThreeValues"
             },
             {
                 "page1type": "WindRose4"
+            },
+            {
+                "page1type": "WindRose5"
             },
             {
                 "page1type": "WindRoseFlex"
@@ -1112,10 +1112,10 @@
                 "page1type": "FourValues2"
             },
             {
-                "page1type": "SixValues"
+                "page1type": "WindRose4"
             },
             {
-                "page1type": "WindRose4"
+                "page1type": "WindRose5"
             },
             {
                 "page1type": "WindRoseFlex"
@@ -1134,7 +1134,7 @@
         },
         "condition": [
             {
-                "page1type": "SixValues"
+                "page1type": "WindRose5"
             },
             {
                 "page1type": "WindRoseFlex"
@@ -1152,9 +1152,6 @@
             "obp60": "true"
         },
         "condition": [
-            {
-                "page1type": "SixValues"
-            },
             {
                 "page1type": "WindRoseFlex"
             }
@@ -1226,7 +1223,6 @@
             "OneValue",
             "RollPitch",
             "RudderPosition",
-            "SixValues",
             "Solar",
             "ThreeValues",
             "TwoValues",
@@ -1235,6 +1231,7 @@
             "Wind",
             "WindRose",
             "WindRose4",
+            "WindRose5",
             "WindRoseFlex",
             "XTETrack"
         ],
@@ -1299,9 +1296,6 @@
                 "page2type": "RollPitch"
             },
             {
-                "page2type": "SixValues"
-            },
-            {
                 "page2type": "ThreeValues"
             },
             {
@@ -1309,6 +1303,9 @@
             },
             {
                 "page2type": "WindRose4"
+            },
+            {
+                "page2type": "WindRose5"
             },
             {
                 "page2type": "WindRoseFlex"
@@ -1336,9 +1333,6 @@
                 "page2type": "RollPitch"
             },
             {
-                "page2type": "SixValues"
-            },
-            {
                 "page2type": "ThreeValues"
             },
             {
@@ -1346,6 +1340,9 @@
             },
             {
                 "page2type": "WindRose4"
+            },
+            {
+                "page2type": "WindRose5"
             },
             {
                 "page2type": "WindRoseFlex"
@@ -1370,13 +1367,13 @@
                 "page2type": "FourValues2"
             },
             {
-                "page2type": "SixValues"
-            },
-            {
                 "page2type": "ThreeValues"
             },
             {
                 "page2type": "WindRose4"
+            },
+            {
+                "page2type": "WindRose5"
             },
             {
                 "page2type": "WindRoseFlex"
@@ -1401,10 +1398,10 @@
                 "page2type": "FourValues2"
             },
             {
-                "page2type": "SixValues"
+                "page2type": "WindRose4"
             },
             {
-                "page2type": "WindRose4"
+                "page2type": "WindRose5"
             },
             {
                 "page2type": "WindRoseFlex"
@@ -1423,7 +1420,7 @@
         },
         "condition": [
             {
-                "page2type": "SixValues"
+                "page2type": "WindRose5"
             },
             {
                 "page2type": "WindRoseFlex"
@@ -1441,9 +1438,6 @@
             "obp60": "true"
         },
         "condition": [
-            {
-                "page2type": "SixValues"
-            },
             {
                 "page2type": "WindRoseFlex"
             }
@@ -1515,7 +1509,6 @@
             "OneValue",
             "RollPitch",
             "RudderPosition",
-            "SixValues",
             "Solar",
             "ThreeValues",
             "TwoValues",
@@ -1524,6 +1517,7 @@
             "Wind",
             "WindRose",
             "WindRose4",
+            "WindRose5",
             "WindRoseFlex",
             "XTETrack"
         ],
@@ -1585,9 +1579,6 @@
                 "page3type": "RollPitch"
             },
             {
-                "page3type": "SixValues"
-            },
-            {
                 "page3type": "ThreeValues"
             },
             {
@@ -1595,6 +1586,9 @@
             },
             {
                 "page3type": "WindRose4"
+            },
+            {
+                "page3type": "WindRose5"
             },
             {
                 "page3type": "WindRoseFlex"
@@ -1622,9 +1616,6 @@
                 "page3type": "RollPitch"
             },
             {
-                "page3type": "SixValues"
-            },
-            {
                 "page3type": "ThreeValues"
             },
             {
@@ -1632,6 +1623,9 @@
             },
             {
                 "page3type": "WindRose4"
+            },
+            {
+                "page3type": "WindRose5"
             },
             {
                 "page3type": "WindRoseFlex"
@@ -1656,13 +1650,13 @@
                 "page3type": "FourValues2"
             },
             {
-                "page3type": "SixValues"
-            },
-            {
                 "page3type": "ThreeValues"
             },
             {
                 "page3type": "WindRose4"
+            },
+            {
+                "page3type": "WindRose5"
             },
             {
                 "page3type": "WindRoseFlex"
@@ -1687,10 +1681,10 @@
                 "page3type": "FourValues2"
             },
             {
-                "page3type": "SixValues"
+                "page3type": "WindRose4"
             },
             {
-                "page3type": "WindRose4"
+                "page3type": "WindRose5"
             },
             {
                 "page3type": "WindRoseFlex"
@@ -1709,7 +1703,7 @@
         },
         "condition": [
             {
-                "page3type": "SixValues"
+                "page3type": "WindRose5"
             },
             {
                 "page3type": "WindRoseFlex"
@@ -1727,9 +1721,6 @@
             "obp60": "true"
         },
         "condition": [
-            {
-                "page3type": "SixValues"
-            },
             {
                 "page3type": "WindRoseFlex"
             }
@@ -1801,7 +1792,6 @@
             "OneValue",
             "RollPitch",
             "RudderPosition",
-            "SixValues",
             "Solar",
             "ThreeValues",
             "TwoValues",
@@ -1810,6 +1800,7 @@
             "Wind",
             "WindRose",
             "WindRose4",
+            "WindRose5",
             "WindRoseFlex",
             "XTETrack"
         ],
@@ -1868,9 +1859,6 @@
                 "page4type": "RollPitch"
             },
             {
-                "page4type": "SixValues"
-            },
-            {
                 "page4type": "ThreeValues"
             },
             {
@@ -1878,6 +1866,9 @@
             },
             {
                 "page4type": "WindRose4"
+            },
+            {
+                "page4type": "WindRose5"
             },
             {
                 "page4type": "WindRoseFlex"
@@ -1905,9 +1896,6 @@
                 "page4type": "RollPitch"
             },
             {
-                "page4type": "SixValues"
-            },
-            {
                 "page4type": "ThreeValues"
             },
             {
@@ -1915,6 +1903,9 @@
             },
             {
                 "page4type": "WindRose4"
+            },
+            {
+                "page4type": "WindRose5"
             },
             {
                 "page4type": "WindRoseFlex"
@@ -1939,13 +1930,13 @@
                 "page4type": "FourValues2"
             },
             {
-                "page4type": "SixValues"
-            },
-            {
                 "page4type": "ThreeValues"
             },
             {
                 "page4type": "WindRose4"
+            },
+            {
+                "page4type": "WindRose5"
             },
             {
                 "page4type": "WindRoseFlex"
@@ -1970,10 +1961,10 @@
                 "page4type": "FourValues2"
             },
             {
-                "page4type": "SixValues"
+                "page4type": "WindRose4"
             },
             {
-                "page4type": "WindRose4"
+                "page4type": "WindRose5"
             },
             {
                 "page4type": "WindRoseFlex"
@@ -1992,7 +1983,7 @@
         },
         "condition": [
             {
-                "page4type": "SixValues"
+                "page4type": "WindRose5"
             },
             {
                 "page4type": "WindRoseFlex"
@@ -2010,9 +2001,6 @@
             "obp60": "true"
         },
         "condition": [
-            {
-                "page4type": "SixValues"
-            },
             {
                 "page4type": "WindRoseFlex"
             }
@@ -2084,7 +2072,6 @@
             "OneValue",
             "RollPitch",
             "RudderPosition",
-            "SixValues",
             "Solar",
             "ThreeValues",
             "TwoValues",
@@ -2093,6 +2080,7 @@
             "Wind",
             "WindRose",
             "WindRose4",
+            "WindRose5",
             "WindRoseFlex",
             "XTETrack"
         ],
@@ -2148,9 +2136,6 @@
                 "page5type": "RollPitch"
             },
             {
-                "page5type": "SixValues"
-            },
-            {
                 "page5type": "ThreeValues"
             },
             {
@@ -2158,6 +2143,9 @@
             },
             {
                 "page5type": "WindRose4"
+            },
+            {
+                "page5type": "WindRose5"
             },
             {
                 "page5type": "WindRoseFlex"
@@ -2185,9 +2173,6 @@
                 "page5type": "RollPitch"
             },
             {
-                "page5type": "SixValues"
-            },
-            {
                 "page5type": "ThreeValues"
             },
             {
@@ -2195,6 +2180,9 @@
             },
             {
                 "page5type": "WindRose4"
+            },
+            {
+                "page5type": "WindRose5"
             },
             {
                 "page5type": "WindRoseFlex"
@@ -2219,13 +2207,13 @@
                 "page5type": "FourValues2"
             },
             {
-                "page5type": "SixValues"
-            },
-            {
                 "page5type": "ThreeValues"
             },
             {
                 "page5type": "WindRose4"
+            },
+            {
+                "page5type": "WindRose5"
             },
             {
                 "page5type": "WindRoseFlex"
@@ -2250,10 +2238,10 @@
                 "page5type": "FourValues2"
             },
             {
-                "page5type": "SixValues"
+                "page5type": "WindRose4"
             },
             {
-                "page5type": "WindRose4"
+                "page5type": "WindRose5"
             },
             {
                 "page5type": "WindRoseFlex"
@@ -2272,7 +2260,7 @@
         },
         "condition": [
             {
-                "page5type": "SixValues"
+                "page5type": "WindRose5"
             },
             {
                 "page5type": "WindRoseFlex"
@@ -2290,9 +2278,6 @@
             "obp60": "true"
         },
         "condition": [
-            {
-                "page5type": "SixValues"
-            },
             {
                 "page5type": "WindRoseFlex"
             }
@@ -2364,7 +2349,6 @@
             "OneValue",
             "RollPitch",
             "RudderPosition",
-            "SixValues",
             "Solar",
             "ThreeValues",
             "TwoValues",
@@ -2373,6 +2357,7 @@
             "Wind",
             "WindRose",
             "WindRose4",
+            "WindRose5",
             "WindRoseFlex",
             "XTETrack"
         ],
@@ -2425,9 +2410,6 @@
                 "page6type": "RollPitch"
             },
             {
-                "page6type": "SixValues"
-            },
-            {
                 "page6type": "ThreeValues"
             },
             {
@@ -2435,6 +2417,9 @@
             },
             {
                 "page6type": "WindRose4"
+            },
+            {
+                "page6type": "WindRose5"
             },
             {
                 "page6type": "WindRoseFlex"
@@ -2462,9 +2447,6 @@
                 "page6type": "RollPitch"
             },
             {
-                "page6type": "SixValues"
-            },
-            {
                 "page6type": "ThreeValues"
             },
             {
@@ -2472,6 +2454,9 @@
             },
             {
                 "page6type": "WindRose4"
+            },
+            {
+                "page6type": "WindRose5"
             },
             {
                 "page6type": "WindRoseFlex"
@@ -2496,13 +2481,13 @@
                 "page6type": "FourValues2"
             },
             {
-                "page6type": "SixValues"
-            },
-            {
                 "page6type": "ThreeValues"
             },
             {
                 "page6type": "WindRose4"
+            },
+            {
+                "page6type": "WindRose5"
             },
             {
                 "page6type": "WindRoseFlex"
@@ -2527,10 +2512,10 @@
                 "page6type": "FourValues2"
             },
             {
-                "page6type": "SixValues"
+                "page6type": "WindRose4"
             },
             {
-                "page6type": "WindRose4"
+                "page6type": "WindRose5"
             },
             {
                 "page6type": "WindRoseFlex"
@@ -2549,7 +2534,7 @@
         },
         "condition": [
             {
-                "page6type": "SixValues"
+                "page6type": "WindRose5"
             },
             {
                 "page6type": "WindRoseFlex"
@@ -2567,9 +2552,6 @@
             "obp60": "true"
         },
         "condition": [
-            {
-                "page6type": "SixValues"
-            },
             {
                 "page6type": "WindRoseFlex"
             }
@@ -2641,7 +2623,6 @@
             "OneValue",
             "RollPitch",
             "RudderPosition",
-            "SixValues",
             "Solar",
             "ThreeValues",
             "TwoValues",
@@ -2650,6 +2631,7 @@
             "Wind",
             "WindRose",
             "WindRose4",
+            "WindRose5",
             "WindRoseFlex",
             "XTETrack"
         ],
@@ -2699,9 +2681,6 @@
                 "page7type": "RollPitch"
             },
             {
-                "page7type": "SixValues"
-            },
-            {
                 "page7type": "ThreeValues"
             },
             {
@@ -2709,6 +2688,9 @@
             },
             {
                 "page7type": "WindRose4"
+            },
+            {
+                "page7type": "WindRose5"
             },
             {
                 "page7type": "WindRoseFlex"
@@ -2736,9 +2718,6 @@
                 "page7type": "RollPitch"
             },
             {
-                "page7type": "SixValues"
-            },
-            {
                 "page7type": "ThreeValues"
             },
             {
@@ -2746,6 +2725,9 @@
             },
             {
                 "page7type": "WindRose4"
+            },
+            {
+                "page7type": "WindRose5"
             },
             {
                 "page7type": "WindRoseFlex"
@@ -2770,13 +2752,13 @@
                 "page7type": "FourValues2"
             },
             {
-                "page7type": "SixValues"
-            },
-            {
                 "page7type": "ThreeValues"
             },
             {
                 "page7type": "WindRose4"
+            },
+            {
+                "page7type": "WindRose5"
             },
             {
                 "page7type": "WindRoseFlex"
@@ -2801,10 +2783,10 @@
                 "page7type": "FourValues2"
             },
             {
-                "page7type": "SixValues"
+                "page7type": "WindRose4"
             },
             {
-                "page7type": "WindRose4"
+                "page7type": "WindRose5"
             },
             {
                 "page7type": "WindRoseFlex"
@@ -2823,7 +2805,7 @@
         },
         "condition": [
             {
-                "page7type": "SixValues"
+                "page7type": "WindRose5"
             },
             {
                 "page7type": "WindRoseFlex"
@@ -2841,9 +2823,6 @@
             "obp60": "true"
         },
         "condition": [
-            {
-                "page7type": "SixValues"
-            },
             {
                 "page7type": "WindRoseFlex"
             }
@@ -2915,7 +2894,6 @@
             "OneValue",
             "RollPitch",
             "RudderPosition",
-            "SixValues",
             "Solar",
             "ThreeValues",
             "TwoValues",
@@ -2924,6 +2902,7 @@
             "Wind",
             "WindRose",
             "WindRose4",
+            "WindRose5",
             "WindRoseFlex",
             "XTETrack"
         ],
@@ -2970,9 +2949,6 @@
                 "page8type": "RollPitch"
             },
             {
-                "page8type": "SixValues"
-            },
-            {
                 "page8type": "ThreeValues"
             },
             {
@@ -2980,6 +2956,9 @@
             },
             {
                 "page8type": "WindRose4"
+            },
+            {
+                "page8type": "WindRose5"
             },
             {
                 "page8type": "WindRoseFlex"
@@ -3007,9 +2986,6 @@
                 "page8type": "RollPitch"
             },
             {
-                "page8type": "SixValues"
-            },
-            {
                 "page8type": "ThreeValues"
             },
             {
@@ -3017,6 +2993,9 @@
             },
             {
                 "page8type": "WindRose4"
+            },
+            {
+                "page8type": "WindRose5"
             },
             {
                 "page8type": "WindRoseFlex"
@@ -3041,13 +3020,13 @@
                 "page8type": "FourValues2"
             },
             {
-                "page8type": "SixValues"
-            },
-            {
                 "page8type": "ThreeValues"
             },
             {
                 "page8type": "WindRose4"
+            },
+            {
+                "page8type": "WindRose5"
             },
             {
                 "page8type": "WindRoseFlex"
@@ -3072,10 +3051,10 @@
                 "page8type": "FourValues2"
             },
             {
-                "page8type": "SixValues"
+                "page8type": "WindRose4"
             },
             {
-                "page8type": "WindRose4"
+                "page8type": "WindRose5"
             },
             {
                 "page8type": "WindRoseFlex"
@@ -3094,7 +3073,7 @@
         },
         "condition": [
             {
-                "page8type": "SixValues"
+                "page8type": "WindRose5"
             },
             {
                 "page8type": "WindRoseFlex"
@@ -3112,9 +3091,6 @@
             "obp60": "true"
         },
         "condition": [
-            {
-                "page8type": "SixValues"
-            },
             {
                 "page8type": "WindRoseFlex"
             }
@@ -3186,7 +3162,6 @@
             "OneValue",
             "RollPitch",
             "RudderPosition",
-            "SixValues",
             "Solar",
             "ThreeValues",
             "TwoValues",
@@ -3195,6 +3170,7 @@
             "Wind",
             "WindRose",
             "WindRose4",
+            "WindRose5",
             "WindRoseFlex",
             "XTETrack"
         ],
@@ -3238,9 +3214,6 @@
                 "page9type": "RollPitch"
             },
             {
-                "page9type": "SixValues"
-            },
-            {
                 "page9type": "ThreeValues"
             },
             {
@@ -3248,6 +3221,9 @@
             },
             {
                 "page9type": "WindRose4"
+            },
+            {
+                "page9type": "WindRose5"
             },
             {
                 "page9type": "WindRoseFlex"
@@ -3275,9 +3251,6 @@
                 "page9type": "RollPitch"
             },
             {
-                "page9type": "SixValues"
-            },
-            {
                 "page9type": "ThreeValues"
             },
             {
@@ -3285,6 +3258,9 @@
             },
             {
                 "page9type": "WindRose4"
+            },
+            {
+                "page9type": "WindRose5"
             },
             {
                 "page9type": "WindRoseFlex"
@@ -3309,13 +3285,13 @@
                 "page9type": "FourValues2"
             },
             {
-                "page9type": "SixValues"
-            },
-            {
                 "page9type": "ThreeValues"
             },
             {
                 "page9type": "WindRose4"
+            },
+            {
+                "page9type": "WindRose5"
             },
             {
                 "page9type": "WindRoseFlex"
@@ -3340,10 +3316,10 @@
                 "page9type": "FourValues2"
             },
             {
-                "page9type": "SixValues"
+                "page9type": "WindRose4"
             },
             {
-                "page9type": "WindRose4"
+                "page9type": "WindRose5"
             },
             {
                 "page9type": "WindRoseFlex"
@@ -3362,7 +3338,7 @@
         },
         "condition": [
             {
-                "page9type": "SixValues"
+                "page9type": "WindRose5"
             },
             {
                 "page9type": "WindRoseFlex"
@@ -3380,9 +3356,6 @@
             "obp60": "true"
         },
         "condition": [
-            {
-                "page9type": "SixValues"
-            },
             {
                 "page9type": "WindRoseFlex"
             }
@@ -3454,7 +3427,6 @@
             "OneValue",
             "RollPitch",
             "RudderPosition",
-            "SixValues",
             "Solar",
             "ThreeValues",
             "TwoValues",
@@ -3463,6 +3435,7 @@
             "Wind",
             "WindRose",
             "WindRose4",
+            "WindRose5",
             "WindRoseFlex",
             "XTETrack"
         ],
@@ -3503,9 +3476,6 @@
                 "page10type": "RollPitch"
             },
             {
-                "page10type": "SixValues"
-            },
-            {
                 "page10type": "ThreeValues"
             },
             {
@@ -3513,6 +3483,9 @@
             },
             {
                 "page10type": "WindRose4"
+            },
+            {
+                "page10type": "WindRose5"
             },
             {
                 "page10type": "WindRoseFlex"
@@ -3540,9 +3513,6 @@
                 "page10type": "RollPitch"
             },
             {
-                "page10type": "SixValues"
-            },
-            {
                 "page10type": "ThreeValues"
             },
             {
@@ -3550,6 +3520,9 @@
             },
             {
                 "page10type": "WindRose4"
+            },
+            {
+                "page10type": "WindRose5"
             },
             {
                 "page10type": "WindRoseFlex"
@@ -3574,13 +3547,13 @@
                 "page10type": "FourValues2"
             },
             {
-                "page10type": "SixValues"
-            },
-            {
                 "page10type": "ThreeValues"
             },
             {
                 "page10type": "WindRose4"
+            },
+            {
+                "page10type": "WindRose5"
             },
             {
                 "page10type": "WindRoseFlex"
@@ -3605,10 +3578,10 @@
                 "page10type": "FourValues2"
             },
             {
-                "page10type": "SixValues"
+                "page10type": "WindRose4"
             },
             {
-                "page10type": "WindRose4"
+                "page10type": "WindRose5"
             },
             {
                 "page10type": "WindRoseFlex"
@@ -3627,7 +3600,7 @@
         },
         "condition": [
             {
-                "page10type": "SixValues"
+                "page10type": "WindRose5"
             },
             {
                 "page10type": "WindRoseFlex"
@@ -3645,9 +3618,6 @@
             "obp60": "true"
         },
         "condition": [
-            {
-                "page10type": "SixValues"
-            },
             {
                 "page10type": "WindRoseFlex"
             }
