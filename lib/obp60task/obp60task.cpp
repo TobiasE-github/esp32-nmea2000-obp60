@@ -555,10 +555,13 @@ void OBP60Task(GwApi *api){
     String gpsFix = api->getConfig()->getConfigItem(api->getConfig()->flashLED,true)->asString();
     String gpsOn=api->getConfig()->getConfigItem(api->getConfig()->useGPS,true)->asString();
     String tz = api->getConfig()->getConfigItem(api->getConfig()->timeZone,true)->asString();
+    //String Powermode = api->getConfig()->getConfigItem(api->getConfig()->powerMode,true)->asString();
+
 
     commonData.backlight.mode = backlightMapping(config->getConfigItem(config->backlight,true)->asString());
     commonData.backlight.color = colorMapping(config->getConfigItem(config->blColor,true)->asString());
     commonData.backlight.brightness = 2.55 * uint(config->getConfigItem(config->blBrightness,true)->asInt());
+    commonData.powermode = api->getConfig()->getConfigItem(api->getConfig()->powerMode,true)->asString();
 
     bool uvoltage = api->getConfig()->getConfigItem(api->getConfig()->underVoltage,true)->asBoolean();
     String cpuspeed = api->getConfig()->getConfigItem(api->getConfig()->cpuSpeed,true)->asString();
@@ -640,10 +643,7 @@ void OBP60Task(GwApi *api){
                 LOG_DEBUG(GwLog::LOG,"new key from keyboard %d",keyboardMessage);
                 keypressed = true;
 
-
                 if (keyboardMessage == 12 and !systemPage) {
-
-
                     LOG_DEBUG(GwLog::LOG, "Calling system page");
                     systemPage = true; // System page is out of band
                     syspage->setupKeys();
