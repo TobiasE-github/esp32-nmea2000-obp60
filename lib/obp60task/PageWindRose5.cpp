@@ -351,6 +351,36 @@ public:
         else{  
             getdisplay().print(unit6old);                // Unit
         }*/
+        // Show value6, 
+        if ( cosx >=0){ 
+        /*getdisplay().setFont(&DSEG7Classic_BoldItalic16pt7b);
+        getdisplay().setCursor(160, 200);
+        getdisplay().print(svalue6);                     // Value
+        getdisplay().setFont(&Ubuntu_Bold8pt7b);
+        getdisplay().setCursor(190, 215);
+        getdisplay().print(" ");
+        if(holdvalues == false){
+            getdisplay().print(unit6);                   // Unit
+        }
+        else{  
+            getdisplay().print(unit6old);                // Unit
+        } */
+        }
+        else{ 
+        // Show values STW
+        /* getdisplay().setFont(&DSEG7Classic_BoldItalic16pt7b);
+        getdisplay().setCursor(160, 130);
+        getdisplay().print(svalue6);                     // Value
+        getdisplay().setFont(&Ubuntu_Bold8pt7b);
+        getdisplay().setCursor(190, 90);
+        getdisplay().print(" ");
+        if(holdvalues == false){
+            getdisplay().print(unit6);                   // Unit
+        }
+        else{  
+            getdisplay().print(unit6old);                // Unit
+        }*/
+        }
 
         // Update display
         getdisplay().nextPage();    // Partial update (fast)
