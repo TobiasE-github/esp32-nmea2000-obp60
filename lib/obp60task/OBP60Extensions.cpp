@@ -166,6 +166,7 @@ void deepSleep(CommonData &common){
     getdisplay().print("Sleep Mode");
     getdisplay().setFont(&Ubuntu_Bold8pt7b);
     getdisplay().setCursor(65, 175);
+
     getdisplay().print("To wake up press wheel and wait 5s");
     getdisplay().nextPage();                // Partial update
     getdisplay().powerOff();                // Display power off

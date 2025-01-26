@@ -114,7 +114,7 @@ class Page{
         commonData->keydata[3].label = "#RIGHT";
         commonData->keydata[4].label = "";
         if ((commonData->backlight.mode == KEY) && !(commonData->powermode == "Min Power")) {
-            commonData->keydata[5].label = "ILUM";
+            commonData->keydata[5].label = "ILUM";   
         } else {
             commonData->keydata[5].label = "";
         }

@@ -276,7 +276,9 @@ void registerAllPages(PageList &list){
     extern PageDescription registerPageWindRose;
     list.add(&registerPageWindRose);
     extern PageDescription registerPageWindRoseFlex;
-    list.add(&registerPageWindRoseFlex); // 
+    list.add(&registerPageWindRoseFlex); 
+    extern PageDescription registerPageWindRose4;
+    list.add(&registerPageWindRose4); //
     extern PageDescription registerPageVoltage;
     list.add(&registerPageVoltage);
     extern PageDescription registerPageDST810;
@@ -413,8 +415,10 @@ void OBP60Task(GwApi *api){
     String fastrefresh = api->getConfig()->getConfigItem(api->getConfig()->fastRefresh,true)->asString();
     uint fullrefreshtime = uint(api->getConfig()->getConfigItem(api->getConfig()->fullRefreshTime,true)->asInt());
     #ifdef BOARD_OBP40S3
+
 //    bool syspage_enabled = config->getBool(config->systemPage);
-    bool syspage_enabled = true;
+    bool syspage_enabled = tr
+
     #endif
 
     #ifdef DISPLAY_GDEY042T81
@@ -551,6 +555,8 @@ void OBP60Task(GwApi *api){
     String gpsFix = api->getConfig()->getConfigItem(api->getConfig()->flashLED,true)->asString();
     String gpsOn=api->getConfig()->getConfigItem(api->getConfig()->useGPS,true)->asString();
     String tz = api->getConfig()->getConfigItem(api->getConfig()->timeZone,true)->asString();
+    //String Powermode = api->getConfig()->getConfigItem(api->getConfig()->powerMode,true)->asString();
+
 
     commonData.backlight.mode = backlightMapping(config->getConfigItem(config->backlight,true)->asString());
     commonData.backlight.color = colorMapping(config->getConfigItem(config->blColor,true)->asString());
