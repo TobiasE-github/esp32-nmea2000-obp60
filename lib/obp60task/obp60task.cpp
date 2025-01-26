@@ -416,7 +416,7 @@ void OBP60Task(GwApi *api){
     uint fullrefreshtime = uint(api->getConfig()->getConfigItem(api->getConfig()->fullRefreshTime,true)->asInt());
     #ifdef BOARD_OBP40S3
 //    bool syspage_enabled = config->getBool(config->systemPage);
-    bool syspage_enabled = true
+    bool syspage_enabled = true;
     #endif
 
     #ifdef DISPLAY_GDEY042T81
