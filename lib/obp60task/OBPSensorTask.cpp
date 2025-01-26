@@ -473,9 +473,15 @@ void sensorTask(void *param){
             float rawVoltage = (float(analogRead(OBP_ANALOG0)) * 3.3 / 4096 + 0.17) * 20;   // Vin = 1/20 for OBP60    
             #endif
             sensors.batteryVoltage = rawVoltage * vslope + voffset; // Calibration
-            #ifdef LIPO_ACCU_1200
+            // Save new data in average array
+            batV.reading(int(sensors.batteryVoltage * 100));
+            // Calculate the average values for different time lines from integer values
+            sensors.batteryVoltage10 = batV.getAvg(10) / 100.0;
+            sensors.batteryVoltage60 = batV.getAvg(60) / 100.0;
+            sensors.batteryVoltage300 = batV.getAvg(300) / 100.0;
+            #if defined LIPO_ACCU_1200 && defined VOLTAGE_SENSOR
             // Polynomfit for LiPo capacity calculation for 3,7V LiPo accus, 0...100%
-            sensors.batteryLevelLiPo = sensors.batteryVoltage * sensors.batteryVoltage * 174.9513 + sensors.batteryVoltage * 1147.7686 + 1868.5120;
+            sensors.batteryLevelLiPo = sensors.batteryVoltage60 * 203.8312 -738.1635;
             // Limiter
             if(sensors.batteryLevelLiPo > 100){
                 sensors.batteryLevelLiPo = 100;
@@ -483,22 +489,26 @@ void sensorTask(void *param){
             if(sensors.batteryLevelLiPo < 0){
                 sensors.batteryLevelLiPo = 0;
             }
-            #endif
-            // Save new data in average array
-            batV.reading(int(sensors.batteryVoltage * 100));
-            // Calculate the average values for different time lines from integer values
-            sensors.batteryVoltage10 = batV.getAvg(10) / 100.0;
-            sensors.batteryVoltage60 = batV.getAvg(60) / 100.0;
-            sensors.batteryVoltage300 = batV.getAvg(300) / 100.0;
             // Charging detection
             float deltaV = sensors.batteryVoltage - sensors.batteryVoltage10;
-            if(deltaV > 0.03){
-                sensors.BatteryChargeStatus = 1;    // Charging active
+            // Higher limits for lower voltages
+            if(sensors.batteryVoltage10 < 4.0){
+                if(deltaV > 0.045 && deltaV < 4,15){
+                    sensors.BatteryChargeStatus = 1;    // Charging active
+                }
+                if(deltaV < -0.04 || deltaV >= 4,15){   // Charging stops by grater than 4,15V
+                    sensors.BatteryChargeStatus = 0;    // Discharging
+                }
             }
-            if(deltaV < -0.03){
-                sensors.BatteryChargeStatus = 0;    // Discharging
+            // Lower limits for higher voltages
+            else{
+                if(deltaV > 0.03 && deltaV < 4,15){
+                    sensors.BatteryChargeStatus = 1;    // Charging active
+                }
+                if(deltaV < -0.03 || deltaV >= 4,15){   // Charging stops by grater than 4,15V
+                    sensors.BatteryChargeStatus = 0;    // Discharging
+                }
             }
-            #ifdef BOARD_OBP40S3
             // Send to NMEA200 bus as instance 10
             if(!isnan(sensors.batteryVoltage)){
                 SetN2kDCBatStatus(N2kMsg, 10, sensors.batteryVoltage, N2kDoubleNA, N2kDoubleNA, 0);
