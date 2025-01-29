@@ -3,12 +3,12 @@
 #include "Pagedata.h"
 #include "OBP60Extensions.h"
 
-class PageWindRose5 : public Page
+class PageWindRose7 : public Page
 {
 int16_t lp = 80;                    // Pointer length
 
 public:
-    PageWindRose5(CommonData &common){
+    PageWindRose7(CommonData &common){
         commonData = &common;
         common.logger->logDebug(GwLog::LOG,"Instantiate PageWindRose5");
     }
@@ -37,8 +37,10 @@ public:
         static String unit4old = "";
         static String svalue5old = "";
         static String unit5old = "";
-        /*static String svalue6old = "";
-        static String unit6old = "";*/
+        static String svalue6old = "";
+        static String unit6old = "";
+        static String svalue7old = "";
+        static String unit7old = "";
 
         // Get config data
         String lengthformat = config->getString(config->lengthFormat);
@@ -113,10 +115,10 @@ public:
             unit5old = unit5;                           // Save old unit
         }
 
-        // Get boat values STW
-        /*GwApi::BoatValue *bvalue6 = pageData.values[5]; // Second element in list (only one value by PageOneValue)
+        // Get boat values 6
+        GwApi::BoatValue *bvalue6 = pageData.values[5]; // Second element in list (only one value by PageOneValue)
         String name6 = xdrDelete(bvalue6->getName());      // Value name
-        name6 = name6.substring(0, 6);                  // String length limit for value name
+        name6 = nam e6.substring(0, 6);                  // String length limit for value name
         double value6 = bvalue6->value;                 // Value as double in SI unit
         bool valid6 = bvalue6->valid;                   // Valid information 
         String svalue6 = formatValue(bvalue6, *commonData).svalue;    // Formatted value as string including unit conversion and switching decimal places
@@ -124,7 +126,19 @@ public:
         if(valid6 == true){
             svalue6old = svalue6;   	                // Save old value
             unit6old = unit6;                           // Save old unit
-        }*/
+        }
+        // Get boat values 7
+        GwApi::BoatValue *bvalue7 = pageData.values[6]; // Second element in list (only one value by PageOneValue)
+        String name7 = xdrDelete(bvalue6->getName());      // Value name
+        name7 = nam e6.substring(0, 6);                  // String length limit for value name
+        double value7 = bvalue6->value;                 // Value as double in SI unit
+        bool valid7 = bvalue6->valid;                   // Valid information 
+        String svalue7 = formatValue(bvalue6, *commonData).svalue;    // Formatted value as string including unit conversion and switching decimal places
+        String unit7 = formatValue(bvalue6, *commonData).unit;        // Unit of value
+        if(valid8 == true){
+            svalue7old = svalue7;   	                // Save old value
+            unit7old = unit6;                           // Save old unit
+        }
 
         // Optical warning by limit violation (unused)
         if(String(flashLED) == "Limit Violation"){
@@ -325,21 +339,21 @@ public:
 //*******************************************************************************************
  // no values on the inner circle
         // Show values DBT
-        /*getdisplay().setFont(&DSEG7Classic_BoldItalic16pt7b);
+        getdisplay().setFont(&DSEG7Classic_BoldItalic16pt7b);
         getdisplay().setCursor(160, 200);
-        getdisplay().print(svalue5);                     // Value
+        getdisplay().print(svalue6);                     // Value
         getdisplay().setFont(&Ubuntu_Bold8pt7b);
         getdisplay().setCursor(190, 215);
         getdisplay().print(" ");
         if(holdvalues == false){
-            getdisplay().print(unit5);                   // Unit
+            getdisplay().print(unit6);                   // Unit
         }
         else{  
-            getdisplay().print(unit5old);                // Unit
-        } */
+            getdisplay().print(unit6old);                // Unit
+        } 
 
         // Show values STW
-        /* getdisplay().setFont(&DSEG7Classic_BoldItalic16pt7b);
+        getdisplay().setFont(&DSEG7Classic_BoldItalic16pt7b);
         getdisplay().setCursor(160, 130);
         getdisplay().print(svalue6);                     // Value
         getdisplay().setFont(&Ubuntu_Bold8pt7b);
@@ -350,20 +364,20 @@ public:
         }
         else{  
             getdisplay().print(unit6old);                // Unit
-        }*/
+        }
         // Show value6, 
-        /*getdisplay().setFont(&DSEG7Classic_BoldItalic16pt7b);
+        getdisplay().setFont(&DSEG7Classic_BoldItalic16pt7b);
         getdisplay().setCursor(160, 200);
-        getdisplay().print(svalue6);                     // Value
+        getdisplay().print(svalue7);                     // Value
         getdisplay().setFont(&Ubuntu_Bold8pt7b);
         getdisplay().setCursor(190, 215);
         getdisplay().print(" ");
         if(holdvalues == false){
-            getdisplay().print(unit6);                   // Unit
+            getdisplay().print(unit7);                   // Unit
         }
         else{  
-            getdisplay().print(unit6old);                // Unit
-        } */
+            getdisplay().print(unit7old);                // Unit
+        } 
         // Show values STW
         /* getdisplay().setFont(&DSEG7Classic_BoldItalic16pt7b);
         getdisplay().setCursor(160, 130);
@@ -393,10 +407,10 @@ static Page *createPage(CommonData &common){
  * and we provide the number of user parameters we expect (0 here)
  * and will will provide the names of the fixed values we need
  */
-PageDescription registerPageWindRose5(
-    "WindRose5",         // Page name
+PageDescription registerPageWindRose7(
+    "WindRose7",         // Page name
     createPage,         // Action
-    5,                  // Number of bus values depends on selection in Web configuration; was zero
+    7,                  // Number of bus values depends on selection in Web configuration; was zero
     //{"AWA", "AWS", "COG", "SOG", "TWD", "TWS"},    // Bus values we need in the page, modified for WindRose2
     true                // Show display header on/off
 );
