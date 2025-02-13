@@ -137,7 +137,7 @@ public:
         String unit7 = formatValue(bvalue6, *commonData).unit;        // Unit of value
         if(valid8 == true){
             svalue7old = svalue7;   	                // Save old value
-            unit7old = unit6;                           // Save old unit
+            unit7old = unit7;                           // Save old unit
         }
 
         // Optical warning by limit violation (unused)

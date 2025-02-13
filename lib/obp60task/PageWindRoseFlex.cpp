@@ -60,6 +60,11 @@ public:
             svalue1old = svalue1;   	                // Save old value
             unit1old = unit1;                           // Save old unit
         }
+	else if(simulation == true){
+                value1 = (20 + float(random(0, 50)) / 10.0)/360*2*PI;
+        }
+
+
 
         // Get boat values for AWS
         GwApi::BoatValue *bvalue2 = pageData.values[1]; // First element in list (only one value by PageOneValue)
@@ -72,6 +77,9 @@ public:
         if(valid2 == true){
             svalue2old = svalue2;   	                // Save old value
             unit2old = unit2;                           // Save old unit
+        }
+	else if(simulation == true){
+                value1 = (20 + float(random(0, 50)) / 10.0);
         }
 
         // Get boat values TWD
@@ -86,6 +94,9 @@ public:
             svalue3old = svalue3;   	                // Save old value
             unit3old = unit3;                           // Save old unit
         }
+	else if(simulation == true){
+                value1 = (15 + float(random(0, 50)) / 10.0)/360*2*PI;
+        }
 
         // Get boat values TWS
         GwApi::BoatValue *bvalue4 = pageData.values[3]; // Second element in list (only one value by PageOneValue)
@@ -98,6 +109,9 @@ public:
         if(valid4 == true){
             svalue4old = svalue4;   	                // Save old value
             unit4old = unit4;                           // Save old unit
+        }
+	else if(simulation == true){
+                value1 = (20 + float(random(0, 50)) / 10.0);
         }
 
         // Get boat values DBT
@@ -112,6 +126,9 @@ public:
             svalue5old = svalue5;   	                // Save old value
             unit5old = unit5;                           // Save old unit
         }
+	else if(simulation == true){
+                value1 = (20 + float(random(0, 50)) / 10.0);
+        }
 
         // Get boat values STW
         GwApi::BoatValue *bvalue6 = pageData.values[5]; // Second element in list (only one value by PageOneValue)
@@ -124,6 +141,9 @@ public:
         if(valid6 == true){
             svalue6old = svalue6;   	                // Save old value
             unit6old = unit6;                           // Save old unit
+        }
+	else if(simulation == true){
+                value1 = (20 + float(random(0, 50)) / 10.0);
         }
 
         // Optical warning by limit violation (unused)
