@@ -10,7 +10,7 @@ int16_t lp = 80;                    // Pointer length
 public:
     PageWindRose7(CommonData &common){
         commonData = &common;
-        common.logger->logDebug(GwLog::LOG,"Instantiate PageWindRose5");
+        common.logger->logDebug(GwLog::LOG,"Instantiate PageWindRose7");
     }
 
     // Key functions
@@ -118,7 +118,7 @@ public:
         // Get boat values 6
         GwApi::BoatValue *bvalue6 = pageData.values[5]; // Second element in list (only one value by PageOneValue)
         String name6 = xdrDelete(bvalue6->getName());      // Value name
-        name6 = nam e6.substring(0, 6);                  // String length limit for value name
+        name6 = name6.substring(0, 6);                  // String length limit for value name
         double value6 = bvalue6->value;                 // Value as double in SI unit
         bool valid6 = bvalue6->valid;                   // Valid information 
         String svalue6 = formatValue(bvalue6, *commonData).svalue;    // Formatted value as string including unit conversion and switching decimal places
@@ -130,12 +130,12 @@ public:
         // Get boat values 7
         GwApi::BoatValue *bvalue7 = pageData.values[6]; // Second element in list (only one value by PageOneValue)
         String name7 = xdrDelete(bvalue6->getName());      // Value name
-        name7 = nam e6.substring(0, 6);                  // String length limit for value name
+        name7 = name7.substring(0, 6);                  // String length limit for value name
         double value7 = bvalue6->value;                 // Value as double in SI unit
         bool valid7 = bvalue6->valid;                   // Valid information 
         String svalue7 = formatValue(bvalue6, *commonData).svalue;    // Formatted value as string including unit conversion and switching decimal places
         String unit7 = formatValue(bvalue6, *commonData).unit;        // Unit of value
-        if(valid8 == true){
+        if(valid7 == true){
             svalue7old = svalue7;   	                // Save old value
             unit7old = unit7;                           // Save old unit
         }
@@ -148,8 +148,8 @@ public:
 
         // Logging boat values
         if (bvalue1 == NULL) return;
-        //LOG_DEBUG(GwLog::LOG,"Drawing at PageWindRose5, %s:%f,  %s:%f,  %s:%f,  %s:%f,  %s:%f,  %s:%f", name1.c_str(), value1, name2.c_str(), value2, name3.c_str(), value3, name4.c_str(), value4, name5.c_str(), value5, name6.c_str(), value6);
-        LOG_DEBUG(GwLog::LOG,"Drawing at PageWindRose5, %s:%f,  %s:%f,  %s:%f,  %s:%f,  %s:%f,  %s:%f", name1.c_str(), value1, name2.c_str(), value2, name3.c_str(), value3, name4.c_str(), value4, name5.c_str(), value5);
+        //LOG_DEBUG(GwLog::LOG,"Drawing at PageWindRose7, %s:%f,  %s:%f,  %s:%f,  %s:%f,  %s:%f,  %s:%f", name1.c_str(), value1, name2.c_str(), value2, name3.c_str(), value3, name4.c_str(), value4, name5.c_str(), value5, name6.c_str(), value6);
+        LOG_DEBUG(GwLog::LOG,"Drawing at PageWindRose7, %s:%f,  %s:%f,  %s:%f,  %s:%f,  %s:%f,  %s:%f", name1.c_str(), value1, name2.c_str(), value2, name3.c_str(), value3, name4.c_str(), value4, name5.c_str(), value5);
 
         // Draw page
         //***********************************************************
@@ -398,7 +398,7 @@ public:
 };
 
 static Page *createPage(CommonData &common){
-    return new PageWindRose5(common);
+    return new PageWindRose7(common);
 }
 /**
  * with the code below we make this page known to the PageTask

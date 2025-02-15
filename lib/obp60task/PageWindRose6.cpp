@@ -352,7 +352,7 @@ public:
             getdisplay().print(unit6old);                // Unit
         }*/
         // Show value6, 
-        if ( cosx > 0){ 
+        if ( cos(value1) > 0){ 
         getdisplay().setFont(&DSEG7Classic_BoldItalic16pt7b);
         getdisplay().setCursor(160, 200);
         getdisplay().print(svalue6);                     // Value
@@ -397,7 +397,7 @@ static Page *createPage(CommonData &common){
  * and we provide the number of user parameters we expect (0 here)
  * and will will provide the names of the fixed values we need
  */
-PageDescription registerPageWindRose5(
+PageDescription registerPageWindRose6(
     "WindRose6",         // Page name
     createPage,         // Action
     6,                  // Number of bus values depends on selection in Web configuration; was zero
