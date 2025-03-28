@@ -251,11 +251,11 @@ public:
             case 120 : ii="120"; break;
             case 150 : ii="150"; break;
             case 180 : ii="180"; break;
-            case 210 : ii="210"; break;
-            case 240 : ii="240"; break;
-            case 270 : ii="270"; break;
-            case 300 : ii="300"; break;
-            case 330 : ii="330"; break;
+            case 210 : ii="150"; break;
+            case 240 : ii="120"; break;
+            case 270 : ii="90"; break;
+            case 300 : ii="60"; break;
+            case 330 : ii="30"; break;
             default: break;
             }
 
