@@ -3,14 +3,14 @@
 #include "Pagedata.h"
 #include "OBP60Extensions.h"
 
-class PageWindRoseFlex : public Page
+class PageWindRose5 : public Page
 {
 int16_t lp = 80;                    // Pointer length
 
 public:
-    PageWindRoseFlex(CommonData &common){
+    PageWindRose5(CommonData &common){
         commonData = &common;
-        common.logger->logDebug(GwLog::LOG,"Instantiate PageWindRoseFlex");
+        common.logger->logDebug(GwLog::LOG,"Instantiate PageWindRose5");
     }
 
     // Key functions
@@ -37,8 +37,8 @@ public:
         static String unit4old = "";
         static String svalue5old = "";
         static String unit5old = "";
-        static String svalue6old = "";
-        static String unit6old = "";
+        /*static String svalue6old = "";
+        static String unit6old = "";*/
 
         // Get config data
         String lengthformat = config->getString(config->lengthFormat);
@@ -47,7 +47,7 @@ public:
         String flashLED = config->getString(config->flashLED);
         String backlightMode = config->getString(config->backlight);
 
-        // Get boat values for AWA
+        // Get boat values for AWA (only displayed by pointer, should be AWA or TWA)
         GwApi::BoatValue *bvalue1 = pageData.values[0]; // First element in list (only one value by PageOneValue)
         String name1 = xdrDelete(bvalue1->getName());   // Value name
         name1 = name1.substring(0, 6);                  // String length limit for value name
@@ -60,13 +60,8 @@ public:
             svalue1old = svalue1;   	                // Save old value
             unit1old = unit1;                           // Save old unit
         }
-	else if(simulation == true){
-                value1 = (20 + float(random(0, 50)) / 10.0)/360*2*PI;
-        }
 
-
-
-        // Get boat values for AWS
+        // Get boat values 2
         GwApi::BoatValue *bvalue2 = pageData.values[1]; // First element in list (only one value by PageOneValue)
         String name2 = xdrDelete(bvalue2->getName());   // Value name
         name2 = name2.substring(0, 6);                  // String length limit for value name
@@ -78,11 +73,8 @@ public:
             svalue2old = svalue2;   	                // Save old value
             unit2old = unit2;                           // Save old unit
         }
-	else if(simulation == true){
-                value1 = (20 + float(random(0, 50)) / 10.0);
-        }
 
-        // Get boat values TWD
+        // Get boat values 3
         GwApi::BoatValue *bvalue3 = pageData.values[2]; // Second element in list (only one value by PageOneValue)
         String name3 = xdrDelete(bvalue3->getName());   // Value name
         name3 = name3.substring(0, 6);                  // String length limit for value name
@@ -94,11 +86,8 @@ public:
             svalue3old = svalue3;   	                // Save old value
             unit3old = unit3;                           // Save old unit
         }
-	else if(simulation == true){
-                value1 = (15 + float(random(0, 50)) / 10.0)/360*2*PI;
-        }
 
-        // Get boat values TWS
+        // Get boat values 4
         GwApi::BoatValue *bvalue4 = pageData.values[3]; // Second element in list (only one value by PageOneValue)
         String name4 = xdrDelete(bvalue4->getName());      // Value name
         name4 = name4.substring(0, 6);                  // String length limit for value name
@@ -110,11 +99,8 @@ public:
             svalue4old = svalue4;   	                // Save old value
             unit4old = unit4;                           // Save old unit
         }
-	else if(simulation == true){
-                value1 = (20 + float(random(0, 50)) / 10.0);
-        }
 
-        // Get boat values DBT
+        // Get boat values 5
         GwApi::BoatValue *bvalue5 = pageData.values[4]; // Second element in list (only one value by PageOneValue)
         String name5 = xdrDelete(bvalue5->getName());      // Value name
         name5 = name5.substring(0, 6);                  // String length limit for value name
@@ -126,12 +112,9 @@ public:
             svalue5old = svalue5;   	                // Save old value
             unit5old = unit5;                           // Save old unit
         }
-	else if(simulation == true){
-                value1 = (20 + float(random(0, 50)) / 10.0);
-        }
 
         // Get boat values STW
-        GwApi::BoatValue *bvalue6 = pageData.values[5]; // Second element in list (only one value by PageOneValue)
+        /*GwApi::BoatValue *bvalue6 = pageData.values[5]; // Second element in list (only one value by PageOneValue)
         String name6 = xdrDelete(bvalue6->getName());      // Value name
         name6 = name6.substring(0, 6);                  // String length limit for value name
         double value6 = bvalue6->value;                 // Value as double in SI unit
@@ -141,10 +124,7 @@ public:
         if(valid6 == true){
             svalue6old = svalue6;   	                // Save old value
             unit6old = unit6;                           // Save old unit
-        }
-	else if(simulation == true){
-                value1 = (20 + float(random(0, 50)) / 10.0);
-        }
+        }*/
 
         // Optical warning by limit violation (unused)
         if(String(flashLED) == "Limit Violation"){
@@ -154,7 +134,8 @@ public:
 
         // Logging boat values
         if (bvalue1 == NULL) return;
-        LOG_DEBUG(GwLog::LOG,"Drawing at PageWindRoseFlex, %s:%f,  %s:%f,  %s:%f,  %s:%f,  %s:%f,  %s:%f", name1.c_str(), value1, name2.c_str(), value2, name3.c_str(), value3, name4.c_str(), value4, name5.c_str(), value5, name6.c_str(), value6);
+        //LOG_DEBUG(GwLog::LOG,"Drawing at PageWindRose5, %s:%f,  %s:%f,  %s:%f,  %s:%f,  %s:%f,  %s:%f", name1.c_str(), value1, name2.c_str(), value2, name3.c_str(), value3, name4.c_str(), value4, name5.c_str(), value5, name6.c_str(), value6);
+        LOG_DEBUG(GwLog::LOG,"Drawing at PageWindRose5, %s:%f,  %s:%f,  %s:%f,  %s:%f,  %s:%f,  %s:%f", name1.c_str(), value1, name2.c_str(), value2, name3.c_str(), value3, name4.c_str(), value4, name5.c_str(), value5);
 
         // Draw page
         //***********************************************************
@@ -164,35 +145,15 @@ public:
 
         getdisplay().setTextColor(commonData->fgcolor);
 
-        // Show values AWA
+        // Show value 2 at position of value 1 (top left)
         getdisplay().setFont(&DSEG7Classic_BoldItalic20pt7b);
         getdisplay().setCursor(10, 65);
-        getdisplay().print(svalue1);                     // Value
-        getdisplay().setFont(&Ubuntu_Bold12pt7b);
-        getdisplay().setCursor(10, 95);
-        getdisplay().print(name1);                       // Name
-        getdisplay().setFont(&Ubuntu_Bold8pt7b);
-        getdisplay().setCursor(10, 115);
-        getdisplay().print(" ");
-        if(holdvalues == false){
-            getdisplay().print(unit1);                   // Unit
-        }
-        else{
-            getdisplay().print(unit1old);                // Unit
-        }
-
-        // Horizintal separator left
-        getdisplay().fillRect(0, 149, 60, 3, commonData->fgcolor);
-
-        // Show values AWS
-        getdisplay().setFont(&DSEG7Classic_BoldItalic20pt7b);
-        getdisplay().setCursor(10, 270);
         getdisplay().print(svalue2);                     // Value
         getdisplay().setFont(&Ubuntu_Bold12pt7b);
-        getdisplay().setCursor(10, 220);
+        getdisplay().setCursor(10, 95);
         getdisplay().print(name2);                       // Name
         getdisplay().setFont(&Ubuntu_Bold8pt7b);
-        getdisplay().setCursor(10, 190);
+        getdisplay().setCursor(10, 115);
         getdisplay().print(" ");
         if(holdvalues == false){
             getdisplay().print(unit2);                   // Unit
@@ -201,21 +162,18 @@ public:
             getdisplay().print(unit2old);                // Unit
         }
 
-        // Show values TWD
+        // Horizintal separator left
+        getdisplay().fillRect(0, 149, 60, 3, commonData->fgcolor);
+
+        // Show value 3 at bottom left
         getdisplay().setFont(&DSEG7Classic_BoldItalic20pt7b);
-        getdisplay().setCursor(295, 65);
-        if(valid3 == true){
-           // getdisplay().print(abs(value3 * 180 / PI), 0);   // Value          
-            getdisplay().print(svalue3);     // Value
-        }
-        else{
-            getdisplay().print("---");                   // Value
-        }
+        getdisplay().setCursor(10, 270);
+        getdisplay().print(svalue3);                     // Value
         getdisplay().setFont(&Ubuntu_Bold12pt7b);
-        getdisplay().setCursor(335, 95);
+        getdisplay().setCursor(10, 220);
         getdisplay().print(name3);                       // Name
         getdisplay().setFont(&Ubuntu_Bold8pt7b);
-        getdisplay().setCursor(335, 115);
+        getdisplay().setCursor(10, 190);
         getdisplay().print(" ");
         if(holdvalues == false){
             getdisplay().print(unit3);                   // Unit
@@ -224,24 +182,47 @@ public:
             getdisplay().print(unit3old);                // Unit
         }
 
-        // Horizintal separator right
-        getdisplay().fillRect(340, 149, 80, 3, commonData->fgcolor);
-
-        // Show values TWS
+        // Show value 4 at top right
         getdisplay().setFont(&DSEG7Classic_BoldItalic20pt7b);
-        getdisplay().setCursor(295, 270);
-        getdisplay().print(svalue4);                     // Value
+        getdisplay().setCursor(295, 65);
+        if(valid3 == true){
+           // getdisplay().print(abs(value3 * 180 / PI), 0);   // Value          
+            getdisplay().print(svalue4);     // Value
+        }
+        else{
+            getdisplay().print("---");                   // Value
+        }
         getdisplay().setFont(&Ubuntu_Bold12pt7b);
-        getdisplay().setCursor(335, 220);
+        getdisplay().setCursor(335, 95);
         getdisplay().print(name4);                       // Name
         getdisplay().setFont(&Ubuntu_Bold8pt7b);
-        getdisplay().setCursor(335, 190);
+        getdisplay().setCursor(335, 115);
         getdisplay().print(" ");
         if(holdvalues == false){
             getdisplay().print(unit4);                   // Unit
         }
-        else{  
+        else{
             getdisplay().print(unit4old);                // Unit
+        }
+
+        // Horizintal separator right
+        getdisplay().fillRect(340, 149, 80, 3, commonData->fgcolor);
+
+        // Show value 5 at bottom right
+        getdisplay().setFont(&DSEG7Classic_BoldItalic20pt7b);
+        getdisplay().setCursor(295, 270);
+        getdisplay().print(svalue5);                     // Value
+        getdisplay().setFont(&Ubuntu_Bold12pt7b);
+        getdisplay().setCursor(335, 220);
+        getdisplay().print(name5);                       // Name
+        getdisplay().setFont(&Ubuntu_Bold8pt7b);
+        getdisplay().setCursor(335, 190);
+        getdisplay().print(" ");
+        if(holdvalues == false){
+            getdisplay().print(unit5);                   // Unit
+        }
+        else{  
+            getdisplay().print(unit5old);                // Unit
         }
 
 //*******************************************************************************************
@@ -342,9 +323,9 @@ public:
         getdisplay().fillCircle(200, 150, startwidth + 4, commonData->fgcolor);
 
 //*******************************************************************************************
-
+ // no values on the inner circle
         // Show values DBT
-        getdisplay().setFont(&DSEG7Classic_BoldItalic16pt7b);
+        /*getdisplay().setFont(&DSEG7Classic_BoldItalic16pt7b);
         getdisplay().setCursor(160, 200);
         getdisplay().print(svalue5);                     // Value
         getdisplay().setFont(&Ubuntu_Bold8pt7b);
@@ -355,10 +336,10 @@ public:
         }
         else{  
             getdisplay().print(unit5old);                // Unit
-        }
+        } */
 
         // Show values STW
-        getdisplay().setFont(&DSEG7Classic_BoldItalic16pt7b);
+        /* getdisplay().setFont(&DSEG7Classic_BoldItalic16pt7b);
         getdisplay().setCursor(160, 130);
         getdisplay().print(svalue6);                     // Value
         getdisplay().setFont(&Ubuntu_Bold8pt7b);
@@ -369,7 +350,33 @@ public:
         }
         else{  
             getdisplay().print(unit6old);                // Unit
+        }*/
+        // Show value6, 
+        /*getdisplay().setFont(&DSEG7Classic_BoldItalic16pt7b);
+        getdisplay().setCursor(160, 200);
+        getdisplay().print(svalue6);                     // Value
+        getdisplay().setFont(&Ubuntu_Bold8pt7b);
+        getdisplay().setCursor(190, 215);
+        getdisplay().print(" ");
+        if(holdvalues == false){
+            getdisplay().print(unit6);                   // Unit
         }
+        else{  
+            getdisplay().print(unit6old);                // Unit
+        } */
+        // Show values STW
+        /* getdisplay().setFont(&DSEG7Classic_BoldItalic16pt7b);
+        getdisplay().setCursor(160, 130);
+        getdisplay().print(svalue6);                     // Value
+        getdisplay().setFont(&Ubuntu_Bold8pt7b);
+        getdisplay().setCursor(190, 90);
+        getdisplay().print(" ");
+        if(holdvalues == false){
+            getdisplay().print(unit6);                   // Unit
+        }
+        else{  
+            getdisplay().print(unit6old);                // Unit
+        }*/
 
         // Update display
         getdisplay().nextPage();    // Partial update (fast)
@@ -377,7 +384,7 @@ public:
 };
 
 static Page *createPage(CommonData &common){
-    return new PageWindRoseFlex(common);
+    return new PageWindRose5(common);
 }
 /**
  * with the code below we make this page known to the PageTask
@@ -386,10 +393,10 @@ static Page *createPage(CommonData &common){
  * and we provide the number of user parameters we expect (0 here)
  * and will will provide the names of the fixed values we need
  */
-PageDescription registerPageWindRoseFlex(
-    "WindRoseFlex",         // Page name
+PageDescription registerPageWindRose5(
+    "WindRose5",         // Page name
     createPage,         // Action
-    6,                  // Number of bus values depends on selection in Web configuration; was zero
+    5,                  // Number of bus values depends on selection in Web configuration; was zero
     //{"AWA", "AWS", "COG", "SOG", "TWD", "TWS"},    // Bus values we need in the page, modified for WindRose2
     true                // Show display header on/off
 );

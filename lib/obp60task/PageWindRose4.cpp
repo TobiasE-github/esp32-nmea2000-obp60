@@ -1,16 +1,16 @@
-#if defined BOARD_OBP60S3 || defined BOARD_OBP40S3
+#ifdef BOARD_OBP60S3
 
 #include "Pagedata.h"
 #include "OBP60Extensions.h"
 
-class PageWindRoseFlex : public Page
+class PageWindRose4 : public Page
 {
 int16_t lp = 80;                    // Pointer length
 
 public:
-    PageWindRoseFlex(CommonData &common){
+    PageWindRose4(CommonData &common){
         commonData = &common;
-        common.logger->logDebug(GwLog::LOG,"Instantiate PageWindRoseFlex");
+        common.logger->logDebug(GwLog::LOG,"Instantiate PageWindRose4");
     }
 
     // Key functions
@@ -35,10 +35,7 @@ public:
         static String unit3old = "";
         static String svalue4old = "";
         static String unit4old = "";
-        static String svalue5old = "";
-        static String unit5old = "";
-        static String svalue6old = "";
-        static String unit6old = "";
+        
 
         // Get config data
         String lengthformat = config->getString(config->lengthFormat);
@@ -60,11 +57,6 @@ public:
             svalue1old = svalue1;   	                // Save old value
             unit1old = unit1;                           // Save old unit
         }
-	else if(simulation == true){
-                value1 = (20 + float(random(0, 50)) / 10.0)/360*2*PI;
-        }
-
-
 
         // Get boat values for AWS
         GwApi::BoatValue *bvalue2 = pageData.values[1]; // First element in list (only one value by PageOneValue)
@@ -77,9 +69,6 @@ public:
         if(valid2 == true){
             svalue2old = svalue2;   	                // Save old value
             unit2old = unit2;                           // Save old unit
-        }
-	else if(simulation == true){
-                value1 = (20 + float(random(0, 50)) / 10.0);
         }
 
         // Get boat values TWD
@@ -94,9 +83,6 @@ public:
             svalue3old = svalue3;   	                // Save old value
             unit3old = unit3;                           // Save old unit
         }
-	else if(simulation == true){
-                value1 = (15 + float(random(0, 50)) / 10.0)/360*2*PI;
-        }
 
         // Get boat values TWS
         GwApi::BoatValue *bvalue4 = pageData.values[3]; // Second element in list (only one value by PageOneValue)
@@ -110,42 +96,8 @@ public:
             svalue4old = svalue4;   	                // Save old value
             unit4old = unit4;                           // Save old unit
         }
-	else if(simulation == true){
-                value1 = (20 + float(random(0, 50)) / 10.0);
-        }
 
-        // Get boat values DBT
-        GwApi::BoatValue *bvalue5 = pageData.values[4]; // Second element in list (only one value by PageOneValue)
-        String name5 = xdrDelete(bvalue5->getName());      // Value name
-        name5 = name5.substring(0, 6);                  // String length limit for value name
-        double value5 = bvalue5->value;                 // Value as double in SI unit
-        bool valid5 = bvalue5->valid;                   // Valid information 
-        String svalue5 = formatValue(bvalue5, *commonData).svalue;    // Formatted value as string including unit conversion and switching decimal places
-        String unit5 = formatValue(bvalue5, *commonData).unit;        // Unit of value
-        if(valid5 == true){
-            svalue5old = svalue5;   	                // Save old value
-            unit5old = unit5;                           // Save old unit
-        }
-	else if(simulation == true){
-                value1 = (20 + float(random(0, 50)) / 10.0);
-        }
-
-        // Get boat values STW
-        GwApi::BoatValue *bvalue6 = pageData.values[5]; // Second element in list (only one value by PageOneValue)
-        String name6 = xdrDelete(bvalue6->getName());      // Value name
-        name6 = name6.substring(0, 6);                  // String length limit for value name
-        double value6 = bvalue6->value;                 // Value as double in SI unit
-        bool valid6 = bvalue6->valid;                   // Valid information 
-        String svalue6 = formatValue(bvalue6, *commonData).svalue;    // Formatted value as string including unit conversion and switching decimal places
-        String unit6 = formatValue(bvalue6, *commonData).unit;        // Unit of value
-        if(valid6 == true){
-            svalue6old = svalue6;   	                // Save old value
-            unit6old = unit6;                           // Save old unit
-        }
-	else if(simulation == true){
-                value1 = (20 + float(random(0, 50)) / 10.0);
-        }
-
+        
         // Optical warning by limit violation (unused)
         if(String(flashLED) == "Limit Violation"){
             setBlinkingLED(false);
@@ -154,7 +106,7 @@ public:
 
         // Logging boat values
         if (bvalue1 == NULL) return;
-        LOG_DEBUG(GwLog::LOG,"Drawing at PageWindRoseFlex, %s:%f,  %s:%f,  %s:%f,  %s:%f,  %s:%f,  %s:%f", name1.c_str(), value1, name2.c_str(), value2, name3.c_str(), value3, name4.c_str(), value4, name5.c_str(), value5, name6.c_str(), value6);
+        LOG_DEBUG(GwLog::LOG,"Drawing at PageWindRose4, %s:%f,  %s:%f,  %s:%f,  %s:%f,  %s:%f,  %s:%f", name1.c_str(), value1, name2.c_str(), value2, name3.c_str(), value3, name4.c_str(), value4);
 
         // Draw page
         //***********************************************************
@@ -270,11 +222,11 @@ public:
             case 120 : ii="120"; break;
             case 150 : ii="150"; break;
             case 180 : ii="180"; break;
-            case 210 : ii="210"; break;
-            case 240 : ii="240"; break;
-            case 270 : ii="270"; break;
-            case 300 : ii="300"; break;
-            case 330 : ii="330"; break;
+            case 210 : ii="150"; break;
+            case 240 : ii="120"; break;
+            case 270 : ii="90"; break;
+            case 300 : ii="60"; break;
+            case 330 : ii="30"; break;
             default: break;
             }
 
@@ -343,33 +295,9 @@ public:
 
 //*******************************************************************************************
 
-        // Show values DBT
-        getdisplay().setFont(&DSEG7Classic_BoldItalic16pt7b);
-        getdisplay().setCursor(160, 200);
-        getdisplay().print(svalue5);                     // Value
-        getdisplay().setFont(&Ubuntu_Bold8pt7b);
-        getdisplay().setCursor(190, 215);
-        getdisplay().print(" ");
-        if(holdvalues == false){
-            getdisplay().print(unit5);                   // Unit
-        }
-        else{  
-            getdisplay().print(unit5old);                // Unit
-        }
+        
 
-        // Show values STW
-        getdisplay().setFont(&DSEG7Classic_BoldItalic16pt7b);
-        getdisplay().setCursor(160, 130);
-        getdisplay().print(svalue6);                     // Value
-        getdisplay().setFont(&Ubuntu_Bold8pt7b);
-        getdisplay().setCursor(190, 90);
-        getdisplay().print(" ");
-        if(holdvalues == false){
-            getdisplay().print(unit6);                   // Unit
-        }
-        else{  
-            getdisplay().print(unit6old);                // Unit
-        }
+    
 
         // Update display
         getdisplay().nextPage();    // Partial update (fast)
@@ -377,7 +305,7 @@ public:
 };
 
 static Page *createPage(CommonData &common){
-    return new PageWindRoseFlex(common);
+    return new PageWindRose4(common);
 }
 /**
  * with the code below we make this page known to the PageTask
@@ -386,10 +314,10 @@ static Page *createPage(CommonData &common){
  * and we provide the number of user parameters we expect (0 here)
  * and will will provide the names of the fixed values we need
  */
-PageDescription registerPageWindRoseFlex(
-    "WindRoseFlex",         // Page name
+PageDescription registerPageWindRose4(
+    "WindRose4",         // Page name
     createPage,         // Action
-    6,                  // Number of bus values depends on selection in Web configuration; was zero
+    4,                  // Number of bus values depends on selection in Web configuration; was zero
     //{"AWA", "AWS", "COG", "SOG", "TWD", "TWS"},    // Bus values we need in the page, modified for WindRose2
     true                // Show display header on/off
 );

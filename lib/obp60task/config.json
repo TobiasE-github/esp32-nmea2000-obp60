@@ -968,7 +968,6 @@
             "obp60":"true"
         }
     },
- 
     {
         "name": "page1type",
         "label": "Type",
@@ -997,6 +996,10 @@
             "WhitePage",
             "Wind",
             "WindRose",
+            "WindRose4",
+            "WindRose5",
+            "WindRose6",
+            "WindRose7",
             "WindRoseFlex",
             "XTETrack"
         ],
@@ -1073,6 +1076,20 @@
                 "page1type": "TwoValues"
             },
             {
+
+                "page1type": "WindRose4"
+            },
+            {
+                "page1type": "WindRose5"
+            },
+            {
+                "page1type": "WindRose6"
+            },
+            {
+                "page1type": "WindRose7"
+            },
+            {
+
                 "page1type": "WindRoseFlex"
             }
         ]
@@ -1107,6 +1124,18 @@
                 "page1type": "TwoValues"
             },
             {
+                "page1type": "WindRose4"
+            },
+            {
+                "page1type": "WindRose5"
+            },
+            {
+                "page1type": "WindRose6"
+            },
+            {
+                "page1type": "WindRose7"
+            },
+            {
                 "page1type": "WindRoseFlex"
             }
         ]
@@ -1135,6 +1164,18 @@
                 "page1type": "ThreeValues"
             },
             {
+                "page1type": "WindRose4"
+            },
+            {
+                "page1type": "WindRose5"
+            },
+            {
+                "page1type": "WindRose6"
+            },
+            {
+                "page1type": "WindRose7"
+            },
+            {
                 "page1type": "WindRoseFlex"
             }
         ]
@@ -1157,7 +1198,19 @@
                 "page1type": "FourValues2"
             },
             {
+
                 "page1type": "SixValues"
+
+                "page1type": "WindRose4"
+            },
+            {
+                "page1type": "WindRose5"
+            },
+            {
+                "page1type": "WindRose6"
+            },
+            {
+                "page1type": "WindRose7"
             },
             {
                 "page1type": "WindRoseFlex"
@@ -1177,6 +1230,14 @@
         "condition": [
             {
                 "page1type": "SixValues"
+
+                "page1type": "WindRose5"
+            },
+            {
+                "page1type": "WindRose6"
+            },
+            {
+                "page1type": "WindRose7"
             },
             {
                 "page1type": "WindRoseFlex"
@@ -1196,9 +1257,29 @@
         "condition": [
             {
                 "page1type": "SixValues"
+                "page1type": "WindRose6"
+            },
+            {
+                "page1type": "WindRose7"
             },
             {
                 "page1type": "WindRoseFlex"
+            }
+        ]
+    },
+    {
+        "name": "page1value7",
+        "label": "Field 7",
+        "type": "boatData",
+        "default": "",
+        "description": "The display for field seven",
+        "category": "OBP60 Page 1",
+        "capabilities": {
+            "obp60": "true"
+        },
+        "condition": [
+            {
+                "page1type": "WindRose7"
             }
         ]
     },
@@ -1276,6 +1357,10 @@
             "WhitePage",
             "Wind",
             "WindRose",
+            "WindRose4",
+            "WindRose5",
+            "WindRose6",
+            "WindRose7",
             "WindRoseFlex",
             "XTETrack"
         ],
@@ -1349,6 +1434,18 @@
                 "page2type": "TwoValues"
             },
             {
+                "page2type": "WindRose4"
+            },
+            {
+                "page2type": "WindRose5"
+            },
+            {
+                "page2type": "WindRose6"
+            },
+            {
+                "page2type": "WindRose7"
+            },
+            {
                 "page2type": "WindRoseFlex"
             }
         ]
@@ -1383,6 +1480,18 @@
                 "page2type": "TwoValues"
             },
             {
+                "page2type": "WindRose4"
+            },
+            {
+                "page2type": "WindRose5"
+            },
+            {
+                "page2type": "WindRose6"
+            },
+            {
+                "page2type": "WindRose7"
+            },
+            {
                 "page2type": "WindRoseFlex"
             }
         ]
@@ -1411,6 +1520,18 @@
                 "page2type": "ThreeValues"
             },
             {
+                "page2type": "WindRose4"
+            },
+            {
+                "page2type": "WindRose5"
+            },
+            {
+                "page2type": "WindRose6"
+            },
+            {
+                "page2type": "WindRose7"
+            },
+            {
                 "page2type": "WindRoseFlex"
             }
         ]
@@ -1433,7 +1554,18 @@
                 "page2type": "FourValues2"
             },
             {
+
                 "page2type": "SixValues"
+                "page2type": "WindRose4"
+            },
+            {
+                "page2type": "WindRose5"
+            },
+            {
+                "page2type": "WindRose6"
+            },
+            {
+                "page2type": "WindRose7"
             },
             {
                 "page2type": "WindRoseFlex"
@@ -1453,6 +1585,13 @@
         "condition": [
             {
                 "page2type": "SixValues"
+                "page2type": "WindRose5"
+            },
+            {
+                "page2type": "WindRose6"
+            },
+            {
+                "page2type": "WindRose7"
             },
             {
                 "page2type": "WindRoseFlex"
@@ -1472,9 +1611,29 @@
         "condition": [
             {
                 "page2type": "SixValues"
+                "page2type": "WindRose6"
+            },
+            {
+                "page2type": "WindRose7"
             },
             {
                 "page2type": "WindRoseFlex"
+            }
+        ]
+    },
+    {
+        "name": "page2value7",
+        "label": "Field 7",
+        "type": "boatData",
+        "default": "",
+        "description": "The display for field seven",
+        "category": "OBP60 Page 2",
+        "capabilities": {
+            "obp60": "true"
+        },
+        "condition": [
+            {
+                "page2type": "WindRose7"
             }
         ]
     },
@@ -1552,6 +1711,10 @@
             "WhitePage",
             "Wind",
             "WindRose",
+            "WindRose4",
+            "WindRose5",
+            "WindRose6",
+            "WindRose7",
             "WindRoseFlex",
             "XTETrack"
         ],
@@ -1622,6 +1785,18 @@
                 "page3type": "TwoValues"
             },
             {
+                "page3type": "WindRose4"
+            },
+            {
+                "page3type": "WindRose5"
+            },
+            {
+                "page3type": "WindRose6"
+            },
+            {
+                "page3type": "WindRose7"
+            },
+            {
                 "page3type": "WindRoseFlex"
             }
         ]
@@ -1656,6 +1831,18 @@
                 "page3type": "TwoValues"
             },
             {
+                "page3type": "WindRose4"
+            },
+            {
+                "page3type": "WindRose5"
+            },
+            {
+                "page3type": "WindRose6"
+            },
+            {
+                "page3type": "WindRose7"
+            },
+            {
                 "page3type": "WindRoseFlex"
             }
         ]
@@ -1684,6 +1871,18 @@
                 "page3type": "ThreeValues"
             },
             {
+                "page3type": "WindRose4"
+            },
+            {
+                "page3type": "WindRose5"
+            },
+            {
+                "page3type": "WindRose6"
+            },
+            {
+                "page3type": "WindRose7"
+            },
+            {
                 "page3type": "WindRoseFlex"
             }
         ]
@@ -1707,6 +1906,16 @@
             },
             {
                 "page3type": "SixValues"
+                "page3type": "WindRose4"
+            },
+            {
+                "page3type": "WindRose5"
+            },
+            {
+                "page3type": "WindRose6"
+            },
+            {
+                "page3type": "WindRose7"
             },
             {
                 "page3type": "WindRoseFlex"
@@ -1726,6 +1935,13 @@
         "condition": [
             {
                 "page3type": "SixValues"
+                "page3type": "WindRose5"
+            },
+            {
+                "page3type": "WindRose6"
+            },
+            {
+                "page3type": "WindRose7"
             },
             {
                 "page3type": "WindRoseFlex"
@@ -1745,9 +1961,30 @@
         "condition": [
             {
                 "page3type": "SixValues"
+
+                "page3type": "WindRose6"
+            },
+            {
+                "page3type": "WindRose7"
             },
             {
                 "page3type": "WindRoseFlex"
+            }
+        ]
+    },
+    {
+        "name": "page3value7",
+        "label": "Field 7",
+        "type": "boatData",
+        "default": "",
+        "description": "The display for field seven",
+        "category": "OBP60 Page 3",
+        "capabilities": {
+            "obp60": "true"
+        },
+        "condition": [
+            {
+                "page3type": "WindRose7"
             }
         ]
     },
@@ -1825,6 +2062,10 @@
             "WhitePage",
             "Wind",
             "WindRose",
+            "WindRose4",
+            "WindRose5",
+            "WindRose6",
+            "WindRose7",
             "WindRoseFlex",
             "XTETrack"
         ],
@@ -1892,6 +2133,18 @@
                 "page4type": "TwoValues"
             },
             {
+                "page4type": "WindRose4"
+            },
+            {
+                "page4type": "WindRose5"
+            },
+            {
+                "page4type": "WindRose6"
+            },
+            {
+                "page4type": "WindRose7"
+            },
+            {
                 "page4type": "WindRoseFlex"
             }
         ]
@@ -1926,6 +2179,18 @@
                 "page4type": "TwoValues"
             },
             {
+                "page4type": "WindRose4"
+            },
+            {
+                "page4type": "WindRose5"
+            },
+            {
+                "page4type": "WindRose6"
+            },
+            {
+                "page4type": "WindRose7"
+            },
+            {
                 "page4type": "WindRoseFlex"
             }
         ]
@@ -1954,6 +2219,18 @@
                 "page4type": "ThreeValues"
             },
             {
+                "page4type": "WindRose4"
+            },
+            {
+                "page4type": "WindRose5"
+            },
+            {
+                "page4type": "WindRose6"
+            },
+            {
+                "page4type": "WindRose7"
+            },
+            {
                 "page4type": "WindRoseFlex"
             }
         ]
@@ -1977,6 +2254,16 @@
             },
             {
                 "page4type": "SixValues"
+                "page4type": "WindRose4"
+            },
+            {
+                "page4type": "WindRose5"
+            },
+            {
+                "page4type": "WindRose6"
+            },
+            {
+                "page4type": "WindRose7"
             },
             {
                 "page4type": "WindRoseFlex"
@@ -1996,6 +2283,14 @@
         "condition": [
             {
                 "page4type": "SixValues"
+
+                "page4type": "WindRose5"
+            },
+            {
+                "page4type": "WindRose6"
+            },
+            {
+                "page4type": "WindRose7"
             },
             {
                 "page4type": "WindRoseFlex"
@@ -2015,9 +2310,29 @@
         "condition": [
             {
                 "page4type": "SixValues"
+                "page4type": "WindRose6"
+            },
+            {
+                "page4type": "WindRose7"
             },
             {
                 "page4type": "WindRoseFlex"
+            }
+        ]
+    },
+    {
+        "name": "page4value7",
+        "label": "Field 7",
+        "type": "boatData",
+        "default": "",
+        "description": "The display for field seven",
+        "category": "OBP60 Page 4",
+        "capabilities": {
+            "obp60": "true"
+        },
+        "condition": [
+            {
+                "page4type": "WindRose7"
             }
         ]
     },
@@ -2095,6 +2410,10 @@
             "WhitePage",
             "Wind",
             "WindRose",
+            "WindRose4",
+            "WindRose5",
+            "WindRose6",
+            "WindRose7",
             "WindRoseFlex",
             "XTETrack"
         ],
@@ -2159,6 +2478,19 @@
                 "page5type": "TwoValues"
             },
             {
+
+                "page5type": "WindRose4"
+            },
+            {
+                "page5type": "WindRose5"
+            },
+            {
+                "page5type": "WindRose6"
+            },
+            {
+                "page5type": "WindRose7"
+            },
+            {
                 "page5type": "WindRoseFlex"
             }
         ]
@@ -2193,6 +2525,18 @@
                 "page5type": "TwoValues"
             },
             {
+                "page5type": "WindRose4"
+            },
+            {
+                "page5type": "WindRose5"
+            },
+            {
+                "page5type": "WindRose6"
+            },
+            {
+                "page5type": "WindRose7"
+            },
+            {
                 "page5type": "WindRoseFlex"
             }
         ]
@@ -2221,6 +2565,18 @@
                 "page5type": "ThreeValues"
             },
             {
+                "page5type": "WindRose4"
+            },
+            {
+                "page5type": "WindRose5"
+            },
+            {
+                "page5type": "WindRose6"
+            },
+            {
+                "page5type": "WindRose7"
+            },
+            {
                 "page5type": "WindRoseFlex"
             }
         ]
@@ -2244,6 +2600,16 @@
             },
             {
                 "page5type": "SixValues"
+                "page5type": "WindRose4"
+            },
+            {
+                "page5type": "WindRose5"
+            },
+            {
+                "page5type": "WindRose6"
+            },
+            {
+                "page5type": "WindRose7"
             },
             {
                 "page5type": "WindRoseFlex"
@@ -2263,6 +2629,13 @@
         "condition": [
             {
                 "page5type": "SixValues"
+                "page5type": "WindRose5"
+            },
+            {
+                "page5type": "WindRose6"
+            },
+            {
+                "page5type": "WindRose7"
             },
             {
                 "page5type": "WindRoseFlex"
@@ -2282,9 +2655,29 @@
         "condition": [
             {
                 "page5type": "SixValues"
+                "page5type": "WindRose6"
+            },
+            {
+                "page5type": "WindRose7"
             },
             {
                 "page5type": "WindRoseFlex"
+            }
+        ]
+    },
+    {
+        "name": "page5value7",
+        "label": "Field 7",
+        "type": "boatData",
+        "default": "",
+        "description": "The display for field seven",
+        "category": "OBP60 Page 5",
+        "capabilities": {
+            "obp60": "true"
+        },
+        "condition": [
+            {
+                "page5type": "WindRose7"
             }
         ]
     },
@@ -2362,6 +2755,10 @@
             "WhitePage",
             "Wind",
             "WindRose",
+            "WindRose4",
+            "WindRose5",
+            "WindRose6",
+            "WindRose7",
             "WindRoseFlex",
             "XTETrack"
         ],
@@ -2423,6 +2820,18 @@
                 "page6type": "TwoValues"
             },
             {
+                "page6type": "WindRose4"
+            },
+            {
+                "page6type": "WindRose5"
+            },
+            {
+                "page6type": "WindRose6"
+            },
+            {
+                "page6type": "WindRose7"
+            },
+            {
                 "page6type": "WindRoseFlex"
             }
         ]
@@ -2457,6 +2866,18 @@
                 "page6type": "TwoValues"
             },
             {
+                "page6type": "WindRose4"
+            },
+            {
+                "page6type": "WindRose5"
+            },
+            {
+                "page6type": "WindRose6"
+            },
+            {
+                "page6type": "WindRose7"
+            },
+            {
                 "page6type": "WindRoseFlex"
             }
         ]
@@ -2485,6 +2906,18 @@
                 "page6type": "ThreeValues"
             },
             {
+                "page6type": "WindRose4"
+            },
+            {
+                "page6type": "WindRose5"
+            },
+            {
+                "page6type": "WindRose6"
+            },
+            {
+                "page6type": "WindRose7"
+            },
+            {
                 "page6type": "WindRoseFlex"
             }
         ]
@@ -2508,6 +2941,16 @@
             },
             {
                 "page6type": "SixValues"
+                "page6type": "WindRose4"
+            },
+            {
+                "page6type": "WindRose5"
+            },
+            {
+                "page6type": "WindRose6"
+            },
+            {
+                "page6type": "WindRose7"
             },
             {
                 "page6type": "WindRoseFlex"
@@ -2527,6 +2970,13 @@
         "condition": [
             {
                 "page6type": "SixValues"
+                "page6type": "WindRose5"
+            },
+            {
+                "page6type": "WindRose6"
+            },
+            {
+                "page6type": "WindRose7"
             },
             {
                 "page6type": "WindRoseFlex"
@@ -2546,9 +2996,29 @@
         "condition": [
             {
                 "page6type": "SixValues"
+                "page6type": "WindRose6"
+            },
+            {
+                "page6type": "WindRose7"
             },
             {
                 "page6type": "WindRoseFlex"
+            }
+        ]
+    },
+    {
+        "name": "page6value7",
+        "label": "Field 7",
+        "type": "boatData",
+        "default": "",
+        "description": "The display for field seven",
+        "category": "OBP60 Page 6",
+        "capabilities": {
+            "obp60": "true"
+        },
+        "condition": [
+            {
+                "page6type": "WindRose7"
             }
         ]
     },
@@ -2626,6 +3096,10 @@
             "WhitePage",
             "Wind",
             "WindRose",
+            "WindRose4",
+            "WindRose5",
+            "WindRose6",
+            "WindRose7",
             "WindRoseFlex",
             "XTETrack"
         ],
@@ -2684,6 +3158,18 @@
                 "page7type": "TwoValues"
             },
             {
+                "page7type": "WindRose4"
+            },
+            {
+                "page7type": "WindRose5"
+            },
+            {
+                "page7type": "WindRose6"
+            },
+            {
+                "page7type": "WindRose7"
+            },
+            {
                 "page7type": "WindRoseFlex"
             }
         ]
@@ -2718,6 +3204,18 @@
                 "page7type": "TwoValues"
             },
             {
+                "page7type": "WindRose4"
+            },
+            {
+                "page7type": "WindRose5"
+            },
+            {
+                "page7type": "WindRose6"
+            },
+            {
+                "page7type": "WindRose7"
+            },
+            {
                 "page7type": "WindRoseFlex"
             }
         ]
@@ -2746,6 +3244,18 @@
                 "page7type": "ThreeValues"
             },
             {
+                "page7type": "WindRose4"
+            },
+            {
+                "page7type": "WindRose5"
+            },
+            {
+                "page7type": "WindRose6"
+            },
+            {
+                "page7type": "WindRose7"
+            },
+            {
                 "page7type": "WindRoseFlex"
             }
         ]
@@ -2769,6 +3279,16 @@
             },
             {
                 "page7type": "SixValues"
+                "page7type": "WindRose4"
+            },
+            {
+                "page7type": "WindRose5"
+            },
+            {
+                "page7type": "WindRose6"
+            },
+            {
+                "page7type": "WindRose7"
             },
             {
                 "page7type": "WindRoseFlex"
@@ -2788,6 +3308,13 @@
         "condition": [
             {
                 "page7type": "SixValues"
+                "page7type": "WindRose5"
+            },
+            {
+                "page7type": "WindRose6"
+            },
+            {
+                "page7type": "WindRose7"
             },
             {
                 "page7type": "WindRoseFlex"
@@ -2807,9 +3334,30 @@
         "condition": [
             {
                 "page7type": "SixValues"
+
+                "page7type": "WindRose6"
+            },
+            {
+                "page7type": "WindRose7"
             },
             {
                 "page7type": "WindRoseFlex"
+            }
+        ]
+    },
+    {
+        "name": "page7value7",
+        "label": "Field 7",
+        "type": "boatData",
+        "default": "",
+        "description": "The display for field seven",
+        "category": "OBP60 Page 7",
+        "capabilities": {
+            "obp60": "true"
+        },
+        "condition": [
+            {
+                "page7type": "WindRose7"
             }
         ]
     },
@@ -2887,6 +3435,10 @@
             "WhitePage",
             "Wind",
             "WindRose",
+            "WindRose4",
+            "WindRose5",
+            "WindRose6",
+            "WindRose7",
             "WindRoseFlex",
             "XTETrack"
         ],
@@ -2942,6 +3494,18 @@
                 "page8type": "TwoValues"
             },
             {
+                "page8type": "WindRose4"
+            },
+            {
+                "page8type": "WindRose5"
+            },
+            {
+                "page8type": "WindRose6"
+            },
+            {
+                "page8type": "WindRose7"
+            },
+            {
                 "page8type": "WindRoseFlex"
             }
         ]
@@ -2976,6 +3540,18 @@
                 "page8type": "TwoValues"
             },
             {
+                "page8type": "WindRose4"
+            },
+            {
+                "page8type": "WindRose5"
+            },
+            {
+                "page8type": "WindRose6"
+            },
+            {
+                "page8type": "WindRose7"
+            },
+            {
                 "page8type": "WindRoseFlex"
             }
         ]
@@ -3004,6 +3580,18 @@
                 "page8type": "ThreeValues"
             },
             {
+                "page8type": "WindRose4"
+            },
+            {
+                "page8type": "WindRose5"
+            },
+            {
+                "page8type": "WindRose6"
+            },
+            {
+                "page8type": "WindRose7"
+            },
+            {
                 "page8type": "WindRoseFlex"
             }
         ]
@@ -3027,6 +3615,16 @@
             },
             {
                 "page8type": "SixValues"
+                "page8type": "WindRose4"
+            },
+            {
+                "page8type": "WindRose5"
+            },
+            {
+                "page8type": "WindRose6"
+            },
+            {
+                "page8type": "WindRose7"
             },
             {
                 "page8type": "WindRoseFlex"
@@ -3046,6 +3644,14 @@
         "condition": [
             {
                 "page8type": "SixValues"
+
+                "page8type": "WindRose5"
+            },
+            {
+                "page8type": "WindRose6"
+            },
+            {
+                "page8type": "WindRose7"
             },
             {
                 "page8type": "WindRoseFlex"
@@ -3065,9 +3671,29 @@
         "condition": [
             {
                 "page8type": "SixValues"
+                "page8type": "WindRose6"
+            },
+            {
+                "page8type": "WindRose7"
             },
             {
                 "page8type": "WindRoseFlex"
+            }
+        ]
+    },
+    {
+        "name": "page8value7",
+        "label": "Field 7",
+        "type": "boatData",
+        "default": "",
+        "description": "The display for field seven",
+        "category": "OBP60 Page 8",
+        "capabilities": {
+            "obp60": "true"
+        },
+        "condition": [
+            {
+                "page8type": "WindRose7"
             }
         ]
     },
@@ -3145,6 +3771,10 @@
             "WhitePage",
             "Wind",
             "WindRose",
+            "WindRose4",
+            "WindRose5",
+            "WindRose6",
+            "WindRose7",
             "WindRoseFlex",
             "XTETrack"
         ],
@@ -3197,6 +3827,18 @@
                 "page9type": "TwoValues"
             },
             {
+                "page9type": "WindRose4"
+            },
+            {
+                "page9type": "WindRose5"
+            },
+            {
+                "page9type": "WindRose6"
+            },
+            {
+                "page9type": "WindRose7"
+            },
+            {
                 "page9type": "WindRoseFlex"
             }
         ]
@@ -3231,6 +3873,18 @@
                 "page9type": "TwoValues"
             },
             {
+                "page9type": "WindRose4"
+            },
+            {
+                "page9type": "WindRose5"
+            },
+            {
+                "page9type": "WindRose6"
+            },
+            {
+                "page9type": "WindRose7"
+            },
+            {
                 "page9type": "WindRoseFlex"
             }
         ]
@@ -3259,6 +3913,18 @@
                 "page9type": "ThreeValues"
             },
             {
+                "page9type": "WindRose4"
+            },
+            {
+                "page9type": "WindRose5"
+            },
+            {
+                "page9type": "WindRose6"
+            },
+            {
+                "page9type": "WindRose7"
+            },
+            {
                 "page9type": "WindRoseFlex"
             }
         ]
@@ -3282,6 +3948,16 @@
             },
             {
                 "page9type": "SixValues"
+                "page9type": "WindRose4"
+            },
+            {
+                "page9type": "WindRose5"
+            },
+            {
+                "page9type": "WindRose6"
+            },
+            {
+                "page9type": "WindRose7"
             },
             {
                 "page9type": "WindRoseFlex"
@@ -3301,6 +3977,13 @@
         "condition": [
             {
                 "page9type": "SixValues"
+                "page9type": "WindRose5"
+            },
+            {
+                "page9type": "WindRose6"
+            },
+            {
+                "page9type": "WindRose7"
             },
             {
                 "page9type": "WindRoseFlex"
@@ -3320,9 +4003,29 @@
         "condition": [
             {
                 "page9type": "SixValues"
+                "page9type": "WindRose6"
+            },
+            {
+                "page9type": "WindRose7"
             },
             {
                 "page9type": "WindRoseFlex"
+            }
+        ]
+    },
+    {
+        "name": "page9value7",
+        "label": "Field 7",
+        "type": "boatData",
+        "default": "",
+        "description": "The display for field seven",
+        "category": "OBP60 Page 9",
+        "capabilities": {
+            "obp60": "true"
+        },
+        "condition": [
+            {
+                "page9type": "WindRose7"
             }
         ]
     },
@@ -3400,6 +4103,10 @@
             "WhitePage",
             "Wind",
             "WindRose",
+            "WindRose4",
+            "WindRose5",
+            "WindRose6",
+            "WindRose7",
             "WindRoseFlex",
             "XTETrack"
         ],
@@ -3449,6 +4156,18 @@
                 "page10type": "TwoValues"
             },
             {
+                "page10type": "WindRose4"
+            },
+            {
+                "page10type": "WindRose5"
+            },
+            {
+                "page10type": "WindRose6"
+            },
+            {
+                "page10type": "WindRose7"
+            },
+            {
                 "page10type": "WindRoseFlex"
             }
         ]
@@ -3483,6 +4202,18 @@
                 "page10type": "TwoValues"
             },
             {
+                "page10type": "WindRose4"
+            },
+            {
+                "page10type": "WindRose5"
+            },
+            {
+                "page10type": "WindRose6"
+            },
+            {
+                "page10type": "WindRose7"
+            },
+            {
                 "page10type": "WindRoseFlex"
             }
         ]
@@ -3511,6 +4242,18 @@
                 "page10type": "ThreeValues"
             },
             {
+                "page10type": "WindRose4"
+            },
+            {
+                "page10type": "WindRose5"
+            },
+            {
+                "page10type": "WindRose6"
+            },
+            {
+                "page10type": "WindRose7"
+            },
+            {
                 "page10type": "WindRoseFlex"
             }
         ]
@@ -3534,6 +4277,16 @@
             },
             {
                 "page10type": "SixValues"
+                "page10type": "WindRose4"
+            },
+            {
+                "page10type": "WindRose5"
+            },
+            {
+                "page10type": "WindRose6"
+            },
+            {
+                "page10type": "WindRose7"
             },
             {
                 "page10type": "WindRoseFlex"
@@ -3553,6 +4306,13 @@
         "condition": [
             {
                 "page10type": "SixValues"
+                "page10type": "WindRose5"
+            },
+            {
+                "page10type": "WindRose6"
+            },
+            {
+                "page10type": "WindRose7"
             },
             {
                 "page10type": "WindRoseFlex"
@@ -3572,9 +4332,29 @@
         "condition": [
             {
                 "page10type": "SixValues"
+                "page10type": "WindRose6"
+            },
+            {
+                "page10type": "WindRose7"
             },
             {
                 "page10type": "WindRoseFlex"
+            }
+        ]
+    },
+    {
+        "name": "page10value7",
+        "label": "Field 7",
+        "type": "boatData",
+        "default": "",
+        "description": "The display for field seven",
+        "category": "OBP60 Page 10",
+        "capabilities": {
+            "obp60": "true"
+        },
+        "condition": [
+            {
+                "page10type": "WindRose7"
             }
         ]
     },
