@@ -35,7 +35,7 @@ no_of_fields_per_page = {
     "WindRose5": 5,
     "WindRose6": 6,
     "WindRose7": 7,
-   # "SixValues" : 6,
+    "SixValues" : 6,
 }
 
 # No changes needed beyond this point

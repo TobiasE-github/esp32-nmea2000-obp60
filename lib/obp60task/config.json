@@ -968,7 +968,6 @@
             "obp60":"true"
         }
     },
-
     {
         "name": "page1type",
         "label": "Type",
@@ -989,6 +988,7 @@
             "OneValue",
             "RollPitch",
             "RudderPosition",
+            "SixValues",
             "Solar",
             "ThreeValues",
             "TwoValues",
@@ -1067,12 +1067,16 @@
                 "page1type": "RollPitch"
             },
             {
+                "page1type": "SixValues"
+            },
+            {
                 "page1type": "ThreeValues"
             },
             {
                 "page1type": "TwoValues"
             },
             {
+
                 "page1type": "WindRose4"
             },
             {
@@ -1085,6 +1089,7 @@
                 "page1type": "WindRose7"
             },
             {
+
                 "page1type": "WindRoseFlex"
             }
         ]
@@ -1108,6 +1113,9 @@
             },
             {
                 "page1type": "RollPitch"
+            },
+            {
+                "page1type": "SixValues"
             },
             {
                 "page1type": "ThreeValues"
@@ -1150,6 +1158,9 @@
                 "page1type": "FourValues2"
             },
             {
+                "page1type": "SixValues"
+            },
+            {
                 "page1type": "ThreeValues"
             },
             {
@@ -1187,6 +1198,9 @@
                 "page1type": "FourValues2"
             },
             {
+
+                "page1type": "SixValues"
+
                 "page1type": "WindRose4"
             },
             {
@@ -1215,6 +1229,8 @@
         },
         "condition": [
             {
+                "page1type": "SixValues"
+
                 "page1type": "WindRose5"
             },
             {
@@ -1240,6 +1256,7 @@
         },
         "condition": [
             {
+                "page1type": "SixValues"
                 "page1type": "WindRose6"
             },
             {
@@ -1332,6 +1349,7 @@
             "OneValue",
             "RollPitch",
             "RudderPosition",
+            "SixValues",
             "Solar",
             "ThreeValues",
             "TwoValues",
@@ -1407,6 +1425,9 @@
                 "page2type": "RollPitch"
             },
             {
+                "page2type": "SixValues"
+            },
+            {
                 "page2type": "ThreeValues"
             },
             {
@@ -1450,6 +1471,9 @@
                 "page2type": "RollPitch"
             },
             {
+                "page2type": "SixValues"
+            },
+            {
                 "page2type": "ThreeValues"
             },
             {
@@ -1490,6 +1514,9 @@
                 "page2type": "FourValues2"
             },
             {
+                "page2type": "SixValues"
+            },
+            {
                 "page2type": "ThreeValues"
             },
             {
@@ -1527,6 +1554,8 @@
                 "page2type": "FourValues2"
             },
             {
+
+                "page2type": "SixValues"
                 "page2type": "WindRose4"
             },
             {
@@ -1555,6 +1584,7 @@
         },
         "condition": [
             {
+                "page2type": "SixValues"
                 "page2type": "WindRose5"
             },
             {
@@ -1580,6 +1610,7 @@
         },
         "condition": [
             {
+                "page2type": "SixValues"
                 "page2type": "WindRose6"
             },
             {
@@ -1672,6 +1703,7 @@
             "OneValue",
             "RollPitch",
             "RudderPosition",
+            "SixValues",
             "Solar",
             "ThreeValues",
             "TwoValues",
@@ -1744,6 +1776,9 @@
                 "page3type": "RollPitch"
             },
             {
+                "page3type": "SixValues"
+            },
+            {
                 "page3type": "ThreeValues"
             },
             {
@@ -1787,6 +1822,9 @@
                 "page3type": "RollPitch"
             },
             {
+                "page3type": "SixValues"
+            },
+            {
                 "page3type": "ThreeValues"
             },
             {
@@ -1827,6 +1865,9 @@
                 "page3type": "FourValues2"
             },
             {
+                "page3type": "SixValues"
+            },
+            {
                 "page3type": "ThreeValues"
             },
             {
@@ -1864,6 +1905,7 @@
                 "page3type": "FourValues2"
             },
             {
+                "page3type": "SixValues"
                 "page3type": "WindRose4"
             },
             {
@@ -1892,6 +1934,7 @@
         },
         "condition": [
             {
+                "page3type": "SixValues"
                 "page3type": "WindRose5"
             },
             {
@@ -1917,6 +1960,8 @@
         },
         "condition": [
             {
+                "page3type": "SixValues"
+
                 "page3type": "WindRose6"
             },
             {
@@ -2009,6 +2054,7 @@
             "OneValue",
             "RollPitch",
             "RudderPosition",
+            "SixValues",
             "Solar",
             "ThreeValues",
             "TwoValues",
@@ -2078,6 +2124,9 @@
                 "page4type": "RollPitch"
             },
             {
+                "page4type": "SixValues"
+            },
+            {
                 "page4type": "ThreeValues"
             },
             {
@@ -2121,6 +2170,9 @@
                 "page4type": "RollPitch"
             },
             {
+                "page4type": "SixValues"
+            },
+            {
                 "page4type": "ThreeValues"
             },
             {
@@ -2161,6 +2213,9 @@
                 "page4type": "FourValues2"
             },
             {
+                "page4type": "SixValues"
+            },
+            {
                 "page4type": "ThreeValues"
             },
             {
@@ -2198,6 +2253,7 @@
                 "page4type": "FourValues2"
             },
             {
+                "page4type": "SixValues"
                 "page4type": "WindRose4"
             },
             {
@@ -2226,6 +2282,8 @@
         },
         "condition": [
             {
+                "page4type": "SixValues"
+
                 "page4type": "WindRose5"
             },
             {
@@ -2251,6 +2309,7 @@
         },
         "condition": [
             {
+                "page4type": "SixValues"
                 "page4type": "WindRose6"
             },
             {
@@ -2343,6 +2402,7 @@
             "OneValue",
             "RollPitch",
             "RudderPosition",
+            "SixValues",
             "Solar",
             "ThreeValues",
             "TwoValues",
@@ -2409,12 +2469,16 @@
                 "page5type": "RollPitch"
             },
             {
+                "page5type": "SixValues"
+            },
+            {
                 "page5type": "ThreeValues"
             },
             {
                 "page5type": "TwoValues"
             },
             {
+
                 "page5type": "WindRose4"
             },
             {
@@ -2450,6 +2514,9 @@
             },
             {
                 "page5type": "RollPitch"
+            },
+            {
+                "page5type": "SixValues"
             },
             {
                 "page5type": "ThreeValues"
@@ -2492,6 +2559,9 @@
                 "page5type": "FourValues2"
             },
             {
+                "page5type": "SixValues"
+            },
+            {
                 "page5type": "ThreeValues"
             },
             {
@@ -2529,6 +2599,7 @@
                 "page5type": "FourValues2"
             },
             {
+                "page5type": "SixValues"
                 "page5type": "WindRose4"
             },
             {
@@ -2557,6 +2628,7 @@
         },
         "condition": [
             {
+                "page5type": "SixValues"
                 "page5type": "WindRose5"
             },
             {
@@ -2582,6 +2654,7 @@
         },
         "condition": [
             {
+                "page5type": "SixValues"
                 "page5type": "WindRose6"
             },
             {
@@ -2674,6 +2747,7 @@
             "OneValue",
             "RollPitch",
             "RudderPosition",
+            "SixValues",
             "Solar",
             "ThreeValues",
             "TwoValues",
@@ -2737,6 +2811,9 @@
                 "page6type": "RollPitch"
             },
             {
+                "page6type": "SixValues"
+            },
+            {
                 "page6type": "ThreeValues"
             },
             {
@@ -2780,6 +2857,9 @@
                 "page6type": "RollPitch"
             },
             {
+                "page6type": "SixValues"
+            },
+            {
                 "page6type": "ThreeValues"
             },
             {
@@ -2820,6 +2900,9 @@
                 "page6type": "FourValues2"
             },
             {
+                "page6type": "SixValues"
+            },
+            {
                 "page6type": "ThreeValues"
             },
             {
@@ -2857,6 +2940,7 @@
                 "page6type": "FourValues2"
             },
             {
+                "page6type": "SixValues"
                 "page6type": "WindRose4"
             },
             {
@@ -2885,6 +2969,7 @@
         },
         "condition": [
             {
+                "page6type": "SixValues"
                 "page6type": "WindRose5"
             },
             {
@@ -2910,6 +2995,7 @@
         },
         "condition": [
             {
+                "page6type": "SixValues"
                 "page6type": "WindRose6"
             },
             {
@@ -3002,6 +3088,7 @@
             "OneValue",
             "RollPitch",
             "RudderPosition",
+            "SixValues",
             "Solar",
             "ThreeValues",
             "TwoValues",
@@ -3062,6 +3149,9 @@
                 "page7type": "RollPitch"
             },
             {
+                "page7type": "SixValues"
+            },
+            {
                 "page7type": "ThreeValues"
             },
             {
@@ -3105,6 +3195,9 @@
                 "page7type": "RollPitch"
             },
             {
+                "page7type": "SixValues"
+            },
+            {
                 "page7type": "ThreeValues"
             },
             {
@@ -3145,6 +3238,9 @@
                 "page7type": "FourValues2"
             },
             {
+                "page7type": "SixValues"
+            },
+            {
                 "page7type": "ThreeValues"
             },
             {
@@ -3182,6 +3278,7 @@
                 "page7type": "FourValues2"
             },
             {
+                "page7type": "SixValues"
                 "page7type": "WindRose4"
             },
             {
@@ -3210,6 +3307,7 @@
         },
         "condition": [
             {
+                "page7type": "SixValues"
                 "page7type": "WindRose5"
             },
             {
@@ -3235,6 +3333,8 @@
         },
         "condition": [
             {
+                "page7type": "SixValues"
+
                 "page7type": "WindRose6"
             },
             {
@@ -3327,6 +3427,7 @@
             "OneValue",
             "RollPitch",
             "RudderPosition",
+            "SixValues",
             "Solar",
             "ThreeValues",
             "TwoValues",
@@ -3384,6 +3485,9 @@
                 "page8type": "RollPitch"
             },
             {
+                "page8type": "SixValues"
+            },
+            {
                 "page8type": "ThreeValues"
             },
             {
@@ -3427,6 +3531,9 @@
                 "page8type": "RollPitch"
             },
             {
+                "page8type": "SixValues"
+            },
+            {
                 "page8type": "ThreeValues"
             },
             {
@@ -3467,6 +3574,9 @@
                 "page8type": "FourValues2"
             },
             {
+                "page8type": "SixValues"
+            },
+            {
                 "page8type": "ThreeValues"
             },
             {
@@ -3504,6 +3614,7 @@
                 "page8type": "FourValues2"
             },
             {
+                "page8type": "SixValues"
                 "page8type": "WindRose4"
             },
             {
@@ -3532,6 +3643,8 @@
         },
         "condition": [
             {
+                "page8type": "SixValues"
+
                 "page8type": "WindRose5"
             },
             {
@@ -3557,6 +3670,7 @@
         },
         "condition": [
             {
+                "page8type": "SixValues"
                 "page8type": "WindRose6"
             },
             {
@@ -3649,6 +3763,7 @@
             "OneValue",
             "RollPitch",
             "RudderPosition",
+            "SixValues",
             "Solar",
             "ThreeValues",
             "TwoValues",
@@ -3703,6 +3818,9 @@
                 "page9type": "RollPitch"
             },
             {
+                "page9type": "SixValues"
+            },
+            {
                 "page9type": "ThreeValues"
             },
             {
@@ -3746,6 +3864,9 @@
                 "page9type": "RollPitch"
             },
             {
+                "page9type": "SixValues"
+            },
+            {
                 "page9type": "ThreeValues"
             },
             {
@@ -3786,6 +3907,9 @@
                 "page9type": "FourValues2"
             },
             {
+                "page9type": "SixValues"
+            },
+            {
                 "page9type": "ThreeValues"
             },
             {
@@ -3823,6 +3947,7 @@
                 "page9type": "FourValues2"
             },
             {
+                "page9type": "SixValues"
                 "page9type": "WindRose4"
             },
             {
@@ -3851,6 +3976,7 @@
         },
         "condition": [
             {
+                "page9type": "SixValues"
                 "page9type": "WindRose5"
             },
             {
@@ -3876,6 +4002,7 @@
         },
         "condition": [
             {
+                "page9type": "SixValues"
                 "page9type": "WindRose6"
             },
             {
@@ -3968,6 +4095,7 @@
             "OneValue",
             "RollPitch",
             "RudderPosition",
+            "SixValues",
             "Solar",
             "ThreeValues",
             "TwoValues",
@@ -4019,6 +4147,9 @@
                 "page10type": "RollPitch"
             },
             {
+                "page10type": "SixValues"
+            },
+            {
                 "page10type": "ThreeValues"
             },
             {
@@ -4062,6 +4193,9 @@
                 "page10type": "RollPitch"
             },
             {
+                "page10type": "SixValues"
+            },
+            {
                 "page10type": "ThreeValues"
             },
             {
@@ -4102,6 +4236,9 @@
                 "page10type": "FourValues2"
             },
             {
+                "page10type": "SixValues"
+            },
+            {
                 "page10type": "ThreeValues"
             },
             {
@@ -4139,6 +4276,7 @@
                 "page10type": "FourValues2"
             },
             {
+                "page10type": "SixValues"
                 "page10type": "WindRose4"
             },
             {
@@ -4167,6 +4305,7 @@
         },
         "condition": [
             {
+                "page10type": "SixValues"
                 "page10type": "WindRose5"
             },
             {
@@ -4192,6 +4331,7 @@
         },
         "condition": [
             {
+                "page10type": "SixValues"
                 "page10type": "WindRose6"
             },
             {
@@ -4265,3 +4405,4 @@
         ]
     }
 ]
+
