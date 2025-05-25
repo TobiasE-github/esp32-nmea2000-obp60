@@ -194,10 +194,10 @@ FormatedData formatValue(GwApi::BoatValue *value, CommonData &commondata){
             result.unit = "m/s";
         }
         if(speed < 10){
-            snprintf(buffer,bsize,"%3.2f",speed);
+            snprintf(buffer,bsize,"%3.1f",speed);
         }
         if(speed >= 10 && speed < 100){
-            snprintf(buffer,bsize,"%3.1f",speed);
+            snprintf(buffer,bsize,"%3.0f",speed);
         }
         if(speed >= 100){
             snprintf(buffer,bsize,"%3.0f",speed);
@@ -273,10 +273,10 @@ FormatedData formatValue(GwApi::BoatValue *value, CommonData &commondata){
         }
         else{
             if(speed < 10){
-                snprintf(buffer,bsize,"%3.2f",speed);
+                snprintf(buffer,bsize,"%3.1f",speed);
             }
             if(speed >= 10 && speed < 100){
-                snprintf(buffer,bsize,"%3.1f",speed);
+                snprintf(buffer,bsize,"%3.0f",speed);
             }
             if(speed >= 100){
                 snprintf(buffer,bsize,"%3.0f",speed);
@@ -303,7 +303,7 @@ FormatedData formatValue(GwApi::BoatValue *value, CommonData &commondata){
             rotation = 99;
         }
         if(rotation > -10 && rotation < 10){
-            snprintf(buffer,bsize,"%3.2f",rotation);
+            snprintf(buffer,bsize,"%3.1f",rotation);
         }
         if(rotation <= -10 || rotation >= 10){
             snprintf(buffer,bsize,"%3.0f",rotation);
@@ -325,10 +325,10 @@ FormatedData formatValue(GwApi::BoatValue *value, CommonData &commondata){
             dop = 99.9;
         }
         if(dop < 10){
-            snprintf(buffer,bsize,"%3.2f",dop);
+            snprintf(buffer,bsize,"%3.1f",dop);
         }
         if(dop >= 10 && dop < 100){
-            snprintf(buffer,bsize,"%3.1f",dop);
+            snprintf(buffer,bsize,"%3.0f",dop);
         }
     }
     //########################################################
@@ -398,10 +398,10 @@ FormatedData formatValue(GwApi::BoatValue *value, CommonData &commondata){
             result.unit = "m";
         }
         if(depth < 10){
-            snprintf(buffer,bsize,"%3.2f",depth);
+            snprintf(buffer,bsize,"%3.1f",depth);
         }
         if(depth >= 10 && depth < 100){
-            snprintf(buffer,bsize,"%3.1f",depth);
+            snprintf(buffer,bsize,"%3.0f",depth);
         }
         if(depth >= 100){
             snprintf(buffer,bsize,"%3.0f",depth);
@@ -420,9 +420,9 @@ FormatedData formatValue(GwApi::BoatValue *value, CommonData &commondata){
         if (xte >= 100) {
             snprintf(buffer,bsize,"%3.0f",value->value);
         } else if (xte >= 10) {
-            snprintf(buffer,bsize,"%3.1f",value->value);
+            snprintf(buffer,bsize,"%3.0f",value->value);
         } else {
-            snprintf(buffer,bsize,"%3.2f",value->value);
+            snprintf(buffer,bsize,"%3.1f",value->value);
         }
         result.unit = "nm";
     }
@@ -449,10 +449,10 @@ FormatedData formatValue(GwApi::BoatValue *value, CommonData &commondata){
             result.unit = "K";
         }
         if(temp < 10){
-            snprintf(buffer,bsize,"%3.2f",temp);
+            snprintf(buffer,bsize,"%3.1f",temp);
         }
         if(temp >= 10 && temp < 100){
-            snprintf(buffer,bsize,"%3.1f",temp);
+            snprintf(buffer,bsize,"%3.0f",temp);
         }
         if(temp >= 100){
             snprintf(buffer,bsize,"%3.0f",temp);
@@ -481,10 +481,10 @@ FormatedData formatValue(GwApi::BoatValue *value, CommonData &commondata){
             result.unit = "m";
         }
         if(distance < 10){
-            snprintf(buffer,bsize,"%3.2f",distance);
+            snprintf(buffer,bsize,"%3.1f",distance);
         }
         if(distance >= 10 && distance < 100){
-            snprintf(buffer,bsize,"%3.1f",distance);
+            snprintf(buffer,bsize,"%3.0f",distance);
         }
         if(distance >= 100){
             snprintf(buffer,bsize,"%3.0f",distance);
@@ -787,10 +787,10 @@ FormatedData formatValue(GwApi::BoatValue *value, CommonData &commondata){
     //########################################################
     else{
         if(value->value < 10){
-            snprintf(buffer,bsize,"%3.2f",value->value);
+            snprintf(buffer,bsize,"%3.1f",value->value);
         }
         if(value->value >= 10 && value->value < 100){
-            snprintf(buffer,bsize,"%3.1f",value->value);
+            snprintf(buffer,bsize,"%3.0f",value->value);
         }
         if(value->value >= 100){
             snprintf(buffer,bsize,"%3.0f",value->value);
