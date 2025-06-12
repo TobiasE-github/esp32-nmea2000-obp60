@@ -1870,6 +1870,7 @@
             "Voltage",
             "WhitePage",
             "Wind",
+            "WindPlot",
             "WindRose",
             "WindRoseFlex",
             "XTETrack"
