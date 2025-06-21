@@ -279,6 +279,8 @@ void registerAllPages(PageList &list){
     list.add(&registerPageWindRose);
     extern PageDescription registerPageWindRoseFlex;
     list.add(&registerPageWindRoseFlex); // 
+    extern PageDescription registerPageWindRoseFle2;
+    list.add(&registerPageWindRoseFlex); // 
     extern PageDescription registerPageVoltage;
     list.add(&registerPageVoltage);
     extern PageDescription registerPageDST810;

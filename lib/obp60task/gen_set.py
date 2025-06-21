@@ -31,6 +31,7 @@ no_of_fields_per_page = {
     "WhitePage": 0,
     "WindRose": 0,
     "WindRoseFlex": 6,
+    "WindRoseFlex2": 8,
     "SixValues" : 6,
 }
 
