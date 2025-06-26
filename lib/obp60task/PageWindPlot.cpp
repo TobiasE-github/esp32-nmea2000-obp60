@@ -394,7 +394,7 @@ public:
             bvalue = pageData.values[i];
             dataName[i] = xdrDelete(bvalue->getName());
             dataName[i] = dataName[i].substring(0, 6); // String length limit for value name
-            calibrationData.calibrateInstance(dataName[i], bvalue, logger); // Check if boat data value is to be calibrated
+            calibrationData.calibrateInstance(bvalue, logger); // Check if boat data value is to be calibrated
             dataValue[i] = bvalue->value; // Value as double in SI unit
             dataValid[i] = bvalue->valid;
             dataSValue[i] = formatValue(bvalue, *commonData).svalue; // Formatted value as string including unit conversion and switching decimal places
