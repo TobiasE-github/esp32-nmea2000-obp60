@@ -12,7 +12,6 @@
 #include <GxEPD2_BW.h>                  // GxEPD2 lib for b/w E-Ink displays
 #include "OBP60Extensions.h"            // Functions lib for extension board
 #include "OBP60Keypad.h"                // Functions for keypad
-#include "BoatDataCalibration.h"        // Functions lib for data instance calibration
 
 #ifdef BOARD_OBP40S3
 #include "driver/rtc_io.h"              // Needs for weakup from deep sleep
@@ -79,8 +78,8 @@ void OBP60Init(GwApi *api){
     }
 
     #ifdef BOARD_OBP40S3
-    bool sdcard = config->getBool(config->useSDCard);
-    if (sdcard) {
+    String sdcard = config->getConfigItem(config->useSDCard, true)->asString();
+    if (sdcard == "on") {
         SPIClass SD_SPI = SPIClass(HSPI);
         SD_SPI.begin(SD_SPI_CLK, SD_SPI_MISO, SD_SPI_MOSI);
         if (SD.begin(SD_SPI_CS, SD_SPI, 80000000)) {
@@ -275,13 +274,9 @@ void registerAllPages(PageList &list){
     list.add(&registerPageFourValues2);
     extern PageDescription registerPageWind;
     list.add(&registerPageWind);
-    extern PageDescription registerPageWindPlot;
-    list.add(&registerPageWindPlot); 
     extern PageDescription registerPageWindRose;
     list.add(&registerPageWindRose);
     extern PageDescription registerPageWindRoseFlex;
-    list.add(&registerPageWindRoseFlex); // 
-    extern PageDescription registerPageWindRoseFle2;
     list.add(&registerPageWindRoseFlex); // 
     extern PageDescription registerPageVoltage;
     list.add(&registerPageVoltage);
@@ -289,8 +284,6 @@ void registerAllPages(PageList &list){
     list.add(&registerPageDST810);
     extern PageDescription registerPageClock;
     list.add(&registerPageClock);
-    extern PageDescription registerPageCompass;
-    list.add(&registerPageCompass);
     extern PageDescription registerPageWhite;
     list.add(&registerPageWhite);
     extern PageDescription registerPageBME280;
@@ -313,6 +306,8 @@ void registerAllPages(PageList &list){
     list.add(&registerPageXTETrack);
     extern PageDescription registerPageFluid;
     list.add(&registerPageFluid);
+    extern PageDescription registerPageCompass;
+    list.add(&registerPageCompass);
 }
 
 // Undervoltage detection for shutdown display
@@ -530,9 +525,6 @@ void OBP60Task(GwApi *api){
     }
     // add out of band system page (always available)
     Page *syspage = allPages.pages[0]->creator(commonData);
-
-    // Read all calibration data settings from config
-    calibrationData.readConfig(config, logger);
 
     // Display screenshot handler for HTTP request
     // http://192.168.15.1/api/user/OBP60Task/screenshot
