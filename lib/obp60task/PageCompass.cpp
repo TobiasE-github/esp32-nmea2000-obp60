@@ -38,10 +38,12 @@ class PageCompass : public Page
         commonData->keydata[0].label = "CMP";
         commonData->keydata[1].label = "SRC";
    }
+
     
     virtual int handleKey(int key){
         // Code for keylock
    
+
         if ( key == 1 ) {
             WhichDataCompass += 1;
             if ( WhichDataCompass > ShowCOG)
@@ -65,18 +67,22 @@ class PageCompass : public Page
         GwConfigHandler *config = commonData->config;
         GwLog *logger = commonData->logger;
 
+
     
             // Old values for hold function
             static String OldDataText[HowManyValues] = {"", "", "","", "", ""};
             static String OldDataUnits[HowManyValues] = {"", "", "","", "", ""};
     
+
             // Get config data
             String lengthformat = config->getString(config->lengthFormat);
             // bool simulation = config->getBool(config->useSimuData);
             bool holdvalues = config->getBool(config->holdvalues);
             String flashLED = config->getString(config->flashLED);
             String backlightMode = config->getString(config->backlight);
+
             
+
             GwApi::BoatValue *bvalue;
             String DataName[HowManyValues];
             double DataValue[HowManyValues];
@@ -85,7 +91,9 @@ class PageCompass : public Page
             String DataUnits[HowManyValues];
             String DataFormat[HowManyValues];
             FormatedData TheFormattedData;
+
     
+
             for (int i = 0; i < HowManyValues; i++){
                 bvalue = pageData.values[i];
                 TheFormattedData = formatValue(bvalue, *commonData);   
@@ -109,6 +117,7 @@ class PageCompass : public Page
            
             //***********************************************************
     
+
             // Set display in partial refresh mode
             getdisplay().setPartialWindow(0, 0, getdisplay().width(), getdisplay().height()); // Set partial update
             getdisplay().setTextColor(commonData->fgcolor);
@@ -125,7 +134,7 @@ class PageCompass : public Page
             getdisplay().print(DataUnits[WhichDataDisplay]); 
             getdisplay().setCursor(200, 120);
             getdisplay().setFont(&DSEG7Classic_BoldItalic42pt7b);
-  
+
          if(holdvalues == false){
             getdisplay().print(DataText[WhichDataDisplay]);                                     // Real value as formated string
         }
@@ -153,6 +162,7 @@ class PageCompass : public Page
             getdisplay().print(DataName[WhichDataCompass]);                           // Page name
  
      
+
   // draw compass base line and pointer
             getdisplay().fillRect(0, Compass_Y0, 400, 3, commonData->fgcolor);            
             getdisplay().fillTriangle(Compass_X0,Compass_Y0-40,Compass_X0-10,Compass_Y0-80,Compass_X0+10,Compass_Y0-80,commonData->fgcolor);
@@ -169,7 +179,7 @@ class PageCompass : public Page
 // central line +  satellite lines
             double NextSector = round(TheAngle / ( M_PI / 9 )) * ( M_PI / 9 );       // get the next 20degree value
             double Offset = - ( NextSector -  TheAngle);                  // offest of the center line compared to TheAngle in Radian
-            
+
             int Delta_X = int (  Offset * 180.0 / M_PI  * Compass_LineDelta );
             for ( int i = 0; i <=4; i++ )
                 {
@@ -202,11 +212,13 @@ class PageCompass : public Page
                         AngleToDisplay -= 360.0;
                     x0 -= 4 * 5 * Compass_LineDelta;
             } while (  x0 >= 0 - 60  );
+
            
             AngleToDisplay = NextSector * 180.0 / M_PI - 20;
             if ( AngleToDisplay < 0 )
                 AngleToDisplay += 360.0;
  
+
             x0 = Compass_X0 + Delta_X + 4 * 5 * Compass_LineDelta;
             do {
                     getdisplay().setCursor(x0 - 40, Compass_Y0 + 40);
@@ -218,15 +230,17 @@ class PageCompass : public Page
                      buffer[1] = 0;
                 else if ( ( x0 - 40 )  >  325 ) 
                     buffer[2] = 0;
+
                  
                 getdisplay().print(buffer);             
  
+
                 AngleToDisplay -= 20;
                 if ( AngleToDisplay < 0 )
                    AngleToDisplay += 360.0;
                 x0 += 4 * 5 * Compass_LineDelta;
             } while (x0 < ( 400 - 20 -40 ) );
- 
+
             // static int x_test = 320;
             // x_test += 2;
 
@@ -238,9 +252,11 @@ class PageCompass : public Page
 
              // Update display
             getdisplay().nextPage();    // Partial update (fast)
+
     
         };
     
+
     };
 static Page *createPage(CommonData &common){
     return new PageCompass(common);

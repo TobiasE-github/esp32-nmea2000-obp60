@@ -31,8 +31,10 @@ no_of_fields_per_page = {
     "TwoValues": 2,
     "Voltage": 0,
     "WhitePage": 0,
+    "WindPlot": 0,
     "WindRose": 0,
     "WindRoseFlex": 6,
+    "WindRoseFlex2": 8,
 }
 
 # No changes needed beyond this point
@@ -89,7 +91,7 @@ for page_no in range(1, no_of_pages + 1):
             "label": f"Field {field_no}",
             "type": "boatData",
             "default": "",
-            "description": f"The display for field {numbers[field_no - 1]}",
+            "description": f"The value for field {numbers[field_no - 1]} on page {page_no}",
             "category": f"OBP60 Page {page_no}",
             "capabilities": {"obp60": "true"},
             "condition": [

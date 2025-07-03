@@ -275,9 +275,13 @@ void registerAllPages(PageList &list){
     list.add(&registerPageFourValues2);
     extern PageDescription registerPageWind;
     list.add(&registerPageWind);
+    extern PageDescription registerPageWindPlot;
+    list.add(&registerPageWindPlot); 
     extern PageDescription registerPageWindRose;
     list.add(&registerPageWindRose);
     extern PageDescription registerPageWindRoseFlex;
+    list.add(&registerPageWindRoseFlex); // 
+    extern PageDescription registerPageWindRoseFle2;
     list.add(&registerPageWindRoseFlex); // 
     extern PageDescription registerPageVoltage;
     list.add(&registerPageVoltage);
@@ -285,6 +289,8 @@ void registerAllPages(PageList &list){
     list.add(&registerPageDST810);
     extern PageDescription registerPageClock;
     list.add(&registerPageClock);
+    extern PageDescription registerPageCompass;
+    list.add(&registerPageCompass);
     extern PageDescription registerPageWhite;
     list.add(&registerPageWhite);
     extern PageDescription registerPageBME280;
