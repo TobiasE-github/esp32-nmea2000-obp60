@@ -9,6 +9,7 @@ class PageWindRoseFlex2 : public Page
 bool keylock=false;		    // Keylock
 int16_t lp = 80;                    // Pointer length
 char source = 'A';		    // data source (A)pparent | (T)rue
+String 	ssource="App."		    // String for Data Source 
 
 public:
     PageWindRoseFlex2(CommonData &common){
@@ -28,8 +29,10 @@ public:
 		    // Code for set source 
 		    if(source == 'A'){ 
 			    source = 'T'; 
+			    ssource = "True";
 		    } else { 
 			    source = 'A'; 
+			    ssource = "App.";
 		    } 
 	    } 
 	    return 0;               // Commit the key
@@ -73,28 +76,13 @@ public:
 	GwApi::BoatValue *bvalue1; // Value 1 for angle
         GwApi::BoatValue *bvalue2; // Value 2 for speed
 
-
-        // Get boat values for AWA ( 0 or 2)
-        /* GwApi::BoatValue *bvalue1 = pageData.values[0]; // First element in list (only one value by PageOneValue)
-        String name1 = xdrDelete(bvalue1->getName());   // Value name
-        name1 = name1.substring(0, 6);                  // String length limit for value name
-        calibrationData.calibrateInstance(bvalue1, logger); // Check if boat data value is to be calibrated
-        double value1 = bvalue1->value;                 // Value as double in SI unit
-        bool valid1 = bvalue1->valid;                   // Valid information
-        value1 = formatValue(bvalue1, *commonData).value;// Format only nesaccery for simulation data for pointer
-        String svalue1 = formatValue(bvalue1, *commonData).svalue;    // Formatted value as string including unit conversion and switching decimal places
-        String unit1 = formatValue(bvalue1, *commonData).unit;        // Unit of value
-        if(valid1 == true){
-            svalue1old = svalue1;   	                // Save old value
-            unit1old = unit1;                           // Save old unit
-        }
-	*/
-
-	// Get boat values for speed (AWA/TWA)
+	// Get boat values for speed (AWA/TWA), shown by Pointer
         if (source == 'A') {
-            bvalue1 = pageData.values[0];
+            //bvalue1 = pageData.values[0];
+            bvalue1 = pageData.values[4];
         } else {
-            bvalue1 = pageData.values[2];
+            //bvalue1 = pageData.values[2];
+            bvalue1 = pageData.values[6];
         }
         String name1 = bvalue1->getName().c_str();      // Value name
         name1 = name1.substring(0, 6);                  // String length limit for value name
@@ -108,26 +96,13 @@ public:
             unit1old = unit1;                           // Save old unit
         }
 
-        // Get boat values for AWS 
-        /* GwApi::BoatValue *bvalue2 = pageData.values[1]; // First element in list (only one value by PageOneValue)
-        String name2 = xdrDelete(bvalue2->getName());   // Value name
-        name2 = name2.substring(0, 6);                  // String length limit for value name
-        calibrationData.calibrateInstance(bvalue2, logger); // Check if boat data value is to be calibrated
-        double value2 = bvalue2->value;                 // Value as double in SI unit
-        bool valid2 = bvalue2->valid;                   // Valid information 
-        String svalue2 = formatValue(bvalue2, *commonData).svalue;    // Formatted value as string including unit conversion and switching decimal places
-        String unit2 = formatValue(bvalue2, *commonData).unit;        // Unit of value
-        if(valid2 == true){
-            svalue2old = svalue2;   	                // Save old value
-            unit2old = unit2;                           // Save old unit
-        } 
-	*/
-
-	// Get boat values for angle (AWS/TWS)
+	// Get boat values for angle (AWS/TWS), shown in top left corner
         if (source == 'A') {
-            bvalue2 = pageData.values[1];
+            //bvalue2 = pageData.values[1];
+            bvalue2 =pageData.values[5];
         } else {
-            bvalue2 = pageData.values[3];
+            //bvalue2 = pageData.values[3];
+            bvalue2 = pageData.values[7];
         }
         String name2 = bvalue2->getName().c_str();      // Value name
         name2 = name2.substring(0, 6);                  // String length limit for value name
@@ -146,8 +121,9 @@ public:
 
 
 
-        // Get boat values TWD (4)
-        GwApi::BoatValue *bvalue3 = pageData.values[4]; // Second element in list (only one value by PageOneValue)
+        // Get boat values for bottom left  corner
+        //GwApi::BoatValue *bvalue3 = pageData.values[4]; 
+        GwApi::BoatValue *bvalue3 = pageData.values[0]; 
         String name3 = xdrDelete(bvalue3->getName());   // Value name
         name3 = name3.substring(0, 6);                  // String length limit for value name
         calibrationData.calibrateInstance(bvalue3, logger); // Check if boat data value is to be calibrated
@@ -160,8 +136,9 @@ public:
             unit3old = unit3;                           // Save old unit
         }
 
-        // Get boat values TWS
-        GwApi::BoatValue *bvalue4 = pageData.values[5]; // Second element in list (only one value by PageOneValue)
+        // Get boat values  for top right corner
+        //GwApi::BoatValue *bvalue4 = pageData.values[5]; 
+        GwApi::BoatValue *bvalue4 = pageData.values[1]; 
         String name4 = xdrDelete(bvalue4->getName());      // Value name
         name4 = name4.substring(0, 6);                  // String length limit for value name
         calibrationData.calibrateInstance(bvalue4, logger); // Check if boat data value is to be calibrated
@@ -174,8 +151,9 @@ public:
             unit4old = unit4;                           // Save old unit
         }
 
-        // Get boat values DBT
-        GwApi::BoatValue *bvalue5 = pageData.values[6]; // Second element in list (only one value by PageOneValue)
+        // Get boat values bottom right conder
+        //GwApi::BoatValue *bvalue5 = pageData.values[6]; 
+        GwApi::BoatValue *bvalue5 = pageData.values[2]; 
         String name5 = xdrDelete(bvalue5->getName());      // Value name
         name5 = name5.substring(0, 6);                  // String length limit for value name
         calibrationData.calibrateInstance(bvalue5, logger); // Check if boat data value is to be calibrated
@@ -188,8 +166,9 @@ public:
             unit5old = unit5;                           // Save old unit
         }
 
-        // Get boat values STW
-        GwApi::BoatValue *bvalue6 = pageData.values[7]; // Second element in list (only one value by PageOneValue)
+        // Get boat values for center
+        //GwApi::BoatValue *bvalue6 = pageData.values[7]; 
+        GwApi::BoatValue *bvalue6 = pageData.values[3]; 
         String name6 = xdrDelete(bvalue6->getName());      // Value name
         name6 = name6.substring(0, 6);                  // String length limit for value name
         calibrationData.calibrateInstance(bvalue6, logger); // Check if boat data value is to be calibrated
@@ -413,7 +392,9 @@ if ( cos(value1) > 0){
     }
     else{  
         getdisplay().print(unit6old);                // Unit
-    } 
+    }
+    getdisplay().setCursor(160, 130);
+    getdisplay().print(ssource);
     }
     else{ 
     getdisplay().setFont(&DSEG7Classic_BoldItalic16pt7b);
@@ -428,6 +409,8 @@ if ( cos(value1) > 0){
     else{  
         getdisplay().print(unit6old);                // Unit
     }
+    getdisplay().setCursor(160, 200);
+    getdisplay().print(ssource);
     }
     
 
@@ -449,8 +432,8 @@ static Page *createPage(CommonData &common){
 PageDescription registerPageWindRoseFlex2(
     "WindRoseFlex2",         // Page name
     createPage,         // Action
-    8,                  // Number of bus values depends on selection in Web configuration; was zero
-    //{"AWA", "AWS", "TWA", "TWS", "COG", "SOG", "BTW", "DTW"},    // Bus values we need in the page, modified for WindRose2
+    4,                  // Number of bus values depends on selection in Web configuration; was zero
+    {"AWA", "AWS", "TWA", "TWS"},    // fixed  values we need in the page. They are inserted AFTER the web-configured values.
     true                // Show display header on/off
 );
 
