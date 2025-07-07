@@ -9,7 +9,7 @@ class PageWindRoseFlex2 : public Page
 bool keylock=false;		    // Keylock
 int16_t lp = 80;                    // Pointer length
 char source = 'A';		    // data source (A)pparent | (T)rue
-String 	ssource="App."		    // String for Data Source 
+String 	ssource="App.";		    // String for Data Source 
 
 public:
     PageWindRoseFlex2(CommonData &common){
