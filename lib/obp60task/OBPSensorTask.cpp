@@ -71,7 +71,7 @@ void sensorTask(void *param){
     batC.begin();
 
     // Create ring buffers for history storage of some boat data
-    // later read additonal data types from config and specify buffers accordingly
+    // later read data types from config and specify buffers accordingly
     RingBuffer<int16_t> twdHstry(960); // Circular buffer to store wind direction values; store 960 TWD values for 16 minutes history
     RingBuffer<int16_t> twsHstry(960); // Circular buffer to store wind speed values (TWS)
     RingBuffer<int16_t> dbtHstry(960); // Circular buffer to store water depth values (DBT)
@@ -381,18 +381,16 @@ void sensorTask(void *param){
     // later read data types from config and specify hstryvalList accordingly
     GwApi::BoatValue *twdBVal=new GwApi::BoatValue(GwBoatData::_TWD);
     GwApi::BoatValue *twsBVal=new GwApi::BoatValue(GwBoatData::_TWS);
-    GwApi::BoatValue *dbtBVal=new GwApi::BoatValue(GwBoatData::_STW); // STW just for testing
+    GwApi::BoatValue *dbtBVal=new GwApi::BoatValue(GwBoatData::_DBT);
     GwApi::BoatValue *hstryValList[]={twdBVal, twsBVal, dbtBVal}; // List of boat values for history storage
+    int twdHstryMin = 0;
+    int twsHstryMin = 0;
+    int dbtHstryMin = 0;
     // Initialize history buffers with meta data
     api->getBoatDataValues(3,hstryValList);
-    int hstryUpdFreq = 1000; // Update frequency for history buffers in ms
-    int hstryMinVal = 0; // Minimum value for history buffers
-    int twdHstryMax = 360;
-    int twsHstryMax = 100;
-    int dbtHstryMax = 327; // Max value for depth (due to signed 16 bit integer and decimals shift)
-    twdHstry.setMetaData(twdBVal->getName(), twdBVal->getFormat(), hstryUpdFreq, hstryMinVal, twdHstryMax);
-    twsHstry.setMetaData(twsBVal->getName(), twsBVal->getFormat(), hstryUpdFreq, hstryMinVal, twsHstryMax);
-    dbtHstry.setMetaData(dbtBVal->getName(), dbtBVal->getFormat(), hstryUpdFreq, hstryMinVal, dbtHstryMax);
+    twdHstry.setMetaData(twdBVal->getName(), twdBVal->getFormat(), 1000, twdHstryMin, 360); // Set meta data for TWD buffer: update frequency 1000ms, min value 0, max value 360
+    twsHstry.setMetaData(twsBVal->getName(), twsBVal->getFormat(), 1000, twsHstryMin, 100); // Set meta data for TWS buffer: update frequency 1000ms, min value 0, max value 100
+    dbtHstry.setMetaData(dbtBVal->getName(), dbtBVal->getFormat(), 1000, dbtHstryMin, 10928); // Set meta data for TWS buffer: update frequency 1000ms, min value 0, max value 10,928
 
     // Internal RTC with NTP init
     ESP32Time rtc(0);
@@ -523,18 +521,14 @@ void sensorTask(void *param){
         // Send supply voltage value all 1s
         if(millis() > starttime5 + 1000 && String(powsensor1) == "off"){
             starttime5 = millis();
-            float rawVoltage = 0;       // Default value
-            #ifdef BOARD_OBP40S3
-            sensors.batteryVoltage = 0; // If no sensor then zero voltage
-            #endif
-            #if defined(BOARD_OBP40S3)  && defined(VOLTAGE_SENSOR)
+            float rawVoltage = 0;
+            #if defined(BOARD_OBP40S3) && defined(VOLTAGE_SENSOR)
             rawVoltage = (float(analogRead(OBP_ANALOG0)) * 3.3 / 4096 + 0.53) * 2;   // Vin = 1/2 for OBP40
-            sensors.batteryVoltage = rawVoltage * vslope + voffset; // Calibration
             #endif
             #ifdef BOARD_OBP60S3
-            rawVoltage = (float(analogRead(OBP_ANALOG0)) * 3.3 / 4096 + 0.17) * 20;   // Vin = 1/20 for OBP60
-            sensors.batteryVoltage = rawVoltage * vslope + voffset; // Calibration  
+            rawVoltage = (float(analogRead(OBP_ANALOG0)) * 3.3 / 4096 + 0.17) * 20;   // Vin = 1/20 for OBP60    
             #endif
+            sensors.batteryVoltage = rawVoltage * vslope + voffset; // Calibration
             // Save new data in average array
             batV.reading(int(sensors.batteryVoltage * 100));
             // Calculate the average values for different time lines from integer values
@@ -808,48 +802,37 @@ void sensorTask(void *param){
         // Read TWD, TWS, DBT data from boatData every 1000ms for history and windplot display
         if(millis() > starttime20 + 1000){
             starttime20 = millis();
-            int16_t val;
             api->getBoatDataValues(3,hstryValList);
+            int16_t bValue;
             if (twdBVal->valid) {
-                val = static_cast<int16_t>(std::round(RadToDeg(twdBVal->value)));
-                if (val < hstryMinVal || val > twdHstryMax) {
-                    val = INT16_MIN; // Add invalid value
-                }
+                bValue = int16_t(RadToDeg(twdBVal->value));
+                twdHstry.add(bValue);
             } else {
-                val = INT16_MIN;
+                twdHstry.add(INT16_MIN); // Add invalid value
             }
-            twdHstry.add(val);
             if (twsBVal->valid) {
-                val = static_cast<int16_t>(twsBVal->value * 100); // Shift value to store decimals in int16_t
-                if (val < hstryMinVal || val > twsHstryMax) {
-                    val = INT16_MIN; // Add invalid value
-                }
+                bValue = int16_t(twsBVal->value);
+                twsHstry.add(bValue);
             } else {
-                val = INT16_MIN;
+                twsHstry.add(INT16_MIN); // Add invalid value
             }
-            twsHstry.add(val);
             if (dbtBVal->valid) {
-                val = static_cast<int16_t>(dbtBVal->value * 100); // Shift value to store decimals in int16_t
-                if (val < hstryMinVal || val > dbtHstryMax) {
-                    val = INT16_MIN; // Add invalid value
-                }
+                bValue = int16_t(dbtBVal->value);
+                dbtHstry.add(bValue);
             } else {
-                val = INT16_MIN;
+                dbtHstry.add(INT16_MIN); // Add invalid value
             }
-            dbtHstry.add(val);
-
-//            api->getLogger()->logDebug(GwLog::ERROR,"SensorTask pointer: TWD: %p, TWS: %p, STW: %p", twdHstry, twsHstry, dbtHstry);
-            api->getLogger()->logDebug(GwLog::ERROR,"SensorTask Data: TWD:%d TWS:%f DBT:%f", std::round(RadToDeg(twdBVal->value)), twsBVal->value, dbtBVal->value);
-            api->getLogger()->logDebug(GwLog::ERROR,"SensorTask buffers: TWD:%d TWS:%f DBT:%f", twdHstry.getLast(), twsHstry.getLast(), dbtHstry.getLast());
-
+            String TmpName;
+            String TmpFormat;
+            int TmpUpdFreq;
+            int TmpSmallest;
+            int TmpBiggest;
+            twdHstry.getMetaData(TmpName, TmpFormat, TmpUpdFreq, TmpSmallest, TmpBiggest);
+            api->getLogger()->logDebug(GwLog::ERROR,"History buffer TWD: name:%s format:%s Freq:%d, Min: %d, Max: %d", TmpName.c_str(), TmpFormat.c_str(), TmpUpdFreq, TmpSmallest, TmpBiggest);
+            api->getLogger()->logDebug(GwLog::ERROR,"History buffers: TWD:%d TWS:%d DBT:%d", twdHstry.getLast(), twsHstry.getLast(), dbtHstry.getLast());
         }
 
-        // Add sensor and history data to shared memory for transfer to pages
         shared->setSensorData(sensors);
-        shared->setHstryBuf(twdHstry, twsHstry, dbtHstry);
-//        tBoatHstryData tmpHstryData = shared->getHstryBuf();
-//        api->getLogger()->logDebug(GwLog::ERROR,"SensorTask tmpHstryData pointer: TWD: %p, TWS: %p, STW: %p", tmpHstryData.twdHstry, tmpHstryData.twsHstry, tmpHstryData.dbtHstry);
-
     }
     vTaskDelete(NULL);
 }

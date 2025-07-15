@@ -6,5 +6,6 @@
         "functional": "cpp",
         "*.tpp": "cpp"
     },
-    "github.copilot.nextEditSuggestions.enabled": false
+    "github.copilot.nextEditSuggestions.enabled": false,
+    "cmake.configureOnOpen": false
 }

@@ -20,7 +20,6 @@ RingBuffer<T>::RingBuffer(size_t size)
     updFreq = MIN_VAL;
     smallest = MIN_VAL;
     largest = MAX_VAL;
-
     buffer.resize(size, MIN_VAL);
 
     // return true;
@@ -47,9 +46,9 @@ bool RingBuffer<T>::getMetaData(String& name, String& format, int& updateFrequen
 
     name = dataName;
     format = dataFmt;
-    updateFrequency = updFreq;
-    minValue = smallest;
-    maxValue = largest;
+    updFreq = updFreq;
+    smallest = smallest;
+    largest = largest;
     return true; // Meta data successfully retrieved
 }
 
@@ -79,8 +78,12 @@ void RingBuffer<T>::add(const T& value)
 template <typename T>
 T RingBuffer<T>::get(size_t index) const
 {
-    if (isEmpty() || index < 0 || index >= count) {
+    if (isEmpty()) {
+        throw std::runtime_error("Buffer is empty");
+    }
+    if (index < 0 || index >= count) {
         return MIN_VAL;
+        //    throw std::out_of_range("Index out of range");
     }
 
     size_t realIndex = (first + index) % capacity;
@@ -100,6 +103,7 @@ T RingBuffer<T>::getFirst() const
 {
     if (isEmpty()) {
         return MIN_VAL;
+        // throw std::runtime_error("Buffer is empty");
     }
     return buffer[first];
 }
@@ -110,6 +114,7 @@ T RingBuffer<T>::getLast() const
 {
     if (isEmpty()) {
         return MIN_VAL;
+        // throw std::runtime_error("Buffer is empty");
     }
     return buffer[last];
 }
@@ -120,6 +125,7 @@ T RingBuffer<T>::getMin() const
 {
     if (isEmpty()) {
         return MIN_VAL;
+        // throw std::runtime_error("Buffer is empty");
     }
 
     T minVal = get(first);
@@ -139,6 +145,7 @@ T RingBuffer<T>::getMin(size_t amount) const
 {
     if (isEmpty() || amount <= 0) {
         return MIN_VAL;
+        // throw std::runtime_error("Buffer is empty");
     }
     if (amount > count)
         amount = count;
@@ -160,6 +167,7 @@ T RingBuffer<T>::getMax() const
 {
     if (isEmpty()) {
         return MIN_VAL;
+        // throw std::runtime_error("Buffer is empty");
     }
 
     T maxVal = get(first);
@@ -179,6 +187,7 @@ T RingBuffer<T>::getMax(size_t amount) const
 {
     if (isEmpty() || amount <= 0) {
         return MIN_VAL;
+        // throw std::runtime_error("Buffer is empty");
     }
     if (amount > count)
         amount = count;
@@ -200,6 +209,7 @@ T RingBuffer<T>::getMid() const
 {
     if (isEmpty()) {
         return MIN_VAL;
+        // throw std::runtime_error("Buffer is empty");
     }
 
     return (getMin() + getMax()) / static_cast<T>(2);
@@ -211,6 +221,7 @@ T RingBuffer<T>::getMid(size_t amount) const
 {
     if (isEmpty() || amount <= 0) {
         return MIN_VAL;
+        // throw std::runtime_error("Buffer is empty");
     }
 
     if (amount > count)
@@ -219,12 +230,44 @@ T RingBuffer<T>::getMid(size_t amount) const
     return (getMin(amount) + getMax(amount)) / static_cast<T>(2);
 }
 
+// ******************* works for wind direction only -> move out of here   *******************************
+// Get maximum difference of last <amount> of buffer values to center value
+template <typename T>
+T RingBuffer<T>::getRng(T center, size_t amount) const
+{
+    if (isEmpty() || amount <= 0) {
+        return MIN_VAL;
+        // throw std::runtime_error("Buffer is empty");
+    }
+    if (amount > count)
+        amount = count;
+
+    T value = 0;
+    T rng = 0;
+    T maxRng = MIN_VAL;
+    // Start from the newest value (last) and go backwards x times
+    for (size_t i = 0; i < amount; i++) {
+        value = get((last + capacity - i) % capacity);
+        if (value == MIN_VAL) {
+            continue;
+        }
+        rng = abs(((value - center + 540) % 360) - 180);
+        if (rng > maxRng)
+            maxRng = rng;
+    }
+    if (maxRng > 180) {
+        maxRng = 180;
+    }
+    return maxRng;
+}
+
 // Get the median value in the buffer
 template <typename T>
 T RingBuffer<T>::getMedian() const
 {
     if (isEmpty()) {
         return MIN_VAL;
+        // throw std::runtime_error("Buffer is empty");
     }
 
     // Create a temporary vector with current valid elements
@@ -254,6 +297,7 @@ T RingBuffer<T>::getMedian(size_t amount) const
 {
     if (isEmpty() || amount <= 0) {
         return MIN_VAL;
+        // throw std::runtime_error("Buffer is empty");
     }
     if (amount > count)
         amount = count;

@@ -715,7 +715,7 @@ void OBP60Task(GwApi *api){
                     }
                   
                     // #9 or #10 Refresh display after a new page after 4s waiting time and if refresh is disabled
-                    if(refreshmode == true && (keyboardMessage == 9 || keyboardMessage == 10 || keyboardMessage == 4 || keyboardMessage == 3)){
+                    if(refreshmode == true && (keyboardMessage == 9 || keyboardMessage == 10)){
                         starttime4 = millis();
                         starttime2 = millis();      // Reset the timer for full display update
                         delayedDisplayUpdate = true;
@@ -841,11 +841,6 @@ void OBP60Task(GwApi *api){
                             currentPage->displayNew(pages[pageNumber].parameters);
                             lastPage=pageNumber;
                         }
-                        pages[pageNumber].parameters.boatHstry = shared->getHstryBuf(); // Add boat history to page parameters
-                        LOG_DEBUG(GwLog::ERROR,"obp60task buffers: TWD:%d   TWS:%f   DBT:%f", pages[pageNumber].parameters.boatHstry.twdHstry->getLast(),
-                                    pages[pageNumber].parameters.boatHstry.twsHstry->getLast() * 0.0194384, pages[pageNumber].parameters.boatHstry.dbtHstry->getLast() / 100);
-//                          LOG_DEBUG(GwLog::ERROR, "obp60task pointer: TWD: %p, TWS: %p, STW: %p", pages[pageNumber].parameters.boatHstry.twdHstry,
-//                                         pages[pageNumber].parameters.boatHstry.twsHstry, pages[pageNumber].parameters.boatHstry.dbtHstry);
                         //call the page code
                         LOG_DEBUG(GwLog::DEBUG,"calling page %d",pageNumber);
                         // Show footer if enabled (together with header)
