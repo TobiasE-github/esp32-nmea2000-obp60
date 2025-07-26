@@ -34,6 +34,7 @@ no_of_fields_per_page = {
     "WindPlot": 0,
     "WindRose": 0,
     "WindRoseFlex": 6,
+    "Anchor", 0
 }
 
 # No changes needed beyond this point
