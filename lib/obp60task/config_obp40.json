@@ -76,6 +76,20 @@
         }
     },
     {
+        "name": "chainLength",
+        "label": "Anchor Chain Length [m]",
+        "type": "number",
+        "default": "0",
+        "check": "checkMinMax",
+        "min": 0,
+        "max": 255,
+        "description": "The length of the anchor chain [0...255m]",
+        "category": "OBP40 Settings",
+        "capabilities": {
+            "obp40":"true"
+        }
+    },
+    {
         "name": "fuelTank",
         "label": "Fuel Tank [l]",
         "type": "number",
