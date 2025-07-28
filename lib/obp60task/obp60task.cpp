@@ -17,7 +17,7 @@
 #include "OBPDataOperations.h"          // Functions lib for data operations such as true wind calculation
 
 #ifdef BOARD_OBP40S3
-#include "driver/rtc_io.h"              // Needs for weakup from deep sleep
+#include "driver/rtc_io.h"              // Needs for wakeup from deep sleep
 #include <FS.h>                         // SD-Card access
 #include <SD.h>
 #include <SPI.h>
