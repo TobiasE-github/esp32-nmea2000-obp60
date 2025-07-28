@@ -1,9 +1,3 @@
 {
-    "cmake.configureOnOpen": false,
-    "files.associations": {
-        "stdexcept": "cpp",
-        "limits": "cpp",
-        "functional": "cpp"
-    },
-    "github.copilot.nextEditSuggestions.enabled": false
+    "cmake.configureOnOpen": false
 }
