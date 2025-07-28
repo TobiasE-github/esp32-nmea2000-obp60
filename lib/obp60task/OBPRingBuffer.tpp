@@ -9,6 +9,8 @@ RingBuffer<T>::RingBuffer(size_t size)
     , count(0)
     , is_Full(false)
 {
+    bufLocker = xSemaphoreCreateMutex();
+
     if (size == 0) {
         // return false;
     }
@@ -17,9 +19,10 @@ RingBuffer<T>::RingBuffer(size_t size)
     MAX_VAL = std::numeric_limits<T>::max();
     dataName = "";
     dataFmt = "";
-    updFreq = MIN_VAL;
+    updFreq = -1;
     smallest = MIN_VAL;
     largest = MAX_VAL;
+
     buffer.resize(size, MIN_VAL);
 
     // return true;
@@ -27,39 +30,50 @@ RingBuffer<T>::RingBuffer(size_t size)
 
 // Specify meta data of buffer content
 template <typename T>
-void RingBuffer<T>::setMetaData(String name, String format, int updateFrequency, int minValue, int maxValue)
+void RingBuffer<T>::setMetaData(String name, String format, int updateFrequency, T minValue, T maxValue)
 {
+    GWSYNCHRONIZED(&bufLocker);
     dataName = name;
     dataFmt = format;
     updFreq = updateFrequency;
-    smallest = minValue;
-    largest = maxValue;
+    smallest = std::max(MIN_VAL, minValue);
+    largest = std::min(MAX_VAL, maxValue);
 }
 
 // Get meta data of buffer content
 template <typename T>
-bool RingBuffer<T>::getMetaData(String& name, String& format, int& updateFrequency, int& minValue, int& maxValue)
+bool RingBuffer<T>::getMetaData(String& name, String& format, int& updateFrequency, T& minValue, T& maxValue)
 {
-    if (updFreq == MIN_VAL || smallest == MIN_VAL || largest == MAX_VAL) {
+    if (dataName == "" || dataFmt == "" || updFreq == -1) {
         return false; // Meta data not set
     }
 
+    GWSYNCHRONIZED(&bufLocker);
     name = dataName;
     format = dataFmt;
-    updFreq = updFreq;
-    smallest = smallest;
-    largest = largest;
-    return true; // Meta data successfully retrieved
+    updateFrequency = updFreq;
+    minValue = smallest;
+    maxValue = largest;
+    return true;
+}
+
+// Get buffer name
+template <typename T>
+String RingBuffer<T>::getName() const
+{
+    return dataName;
 }
 
 // Add a new value to buffer
 template <typename T>
 void RingBuffer<T>::add(const T& value)
 {
+    GWSYNCHRONIZED(&bufLocker);
     if (value < smallest || value > largest) {
         buffer[head] = MIN_VAL; // Store MIN_VAL if value is out of range
+    } else {
+        buffer[head] = value;
     }
-    buffer[head] = value;
     last = head;
 
     if (is_Full) {
@@ -78,12 +92,9 @@ void RingBuffer<T>::add(const T& value)
 template <typename T>
 T RingBuffer<T>::get(size_t index) const
 {
-    if (isEmpty()) {
-        throw std::runtime_error("Buffer is empty");
-    }
-    if (index < 0 || index >= count) {
+    GWSYNCHRONIZED(&bufLocker);
+    if (isEmpty() || index < 0 || index >= count) {
         return MIN_VAL;
-        //    throw std::out_of_range("Index out of range");
     }
 
     size_t realIndex = (first + index) % capacity;
@@ -92,7 +103,7 @@ T RingBuffer<T>::get(size_t index) const
 
 // Operator[] for convenient access (same as get())
 template <typename T>
-T RingBuffer<T>::operator[](size_t index)
+T RingBuffer<T>::operator[](size_t index) const
 {
     return get(index);
 }
@@ -103,9 +114,8 @@ T RingBuffer<T>::getFirst() const
 {
     if (isEmpty()) {
         return MIN_VAL;
-        // throw std::runtime_error("Buffer is empty");
     }
-    return buffer[first];
+    return get(0);
 }
 
 // Get the last (newest) value in the buffer
@@ -114,9 +124,8 @@ T RingBuffer<T>::getLast() const
 {
     if (isEmpty()) {
         return MIN_VAL;
-        // throw std::runtime_error("Buffer is empty");
     }
-    return buffer[last];
+    return get(count - 1);
 }
 
 // Get the lowest value in the buffer
@@ -125,14 +134,13 @@ T RingBuffer<T>::getMin() const
 {
     if (isEmpty()) {
         return MIN_VAL;
-        // throw std::runtime_error("Buffer is empty");
     }
 
-    T minVal = get(first);
+    T minVal = MAX_VAL;
     T value;
     for (size_t i = 0; i < count; i++) {
         value = get(i);
-        if (value < minVal) {
+        if (value < minVal && value != MIN_VAL) {
             minVal = value;
         }
     }
@@ -145,15 +153,14 @@ T RingBuffer<T>::getMin(size_t amount) const
 {
     if (isEmpty() || amount <= 0) {
         return MIN_VAL;
-        // throw std::runtime_error("Buffer is empty");
     }
     if (amount > count)
         amount = count;
 
-    T minVal = get(last);
+    T minVal = MAX_VAL;
     T value;
     for (size_t i = 0; i < amount; i++) {
-        value = get((last + capacity - i) % capacity);
+        value = get(count - 1 - i);
         if (value < minVal && value != MIN_VAL) {
             minVal = value;
         }
@@ -167,14 +174,13 @@ T RingBuffer<T>::getMax() const
 {
     if (isEmpty()) {
         return MIN_VAL;
-        // throw std::runtime_error("Buffer is empty");
     }
 
-    T maxVal = get(first);
+    T maxVal = MIN_VAL;
     T value;
     for (size_t i = 0; i < count; i++) {
         value = get(i);
-        if (value > maxVal) {
+        if (value > maxVal && value != MIN_VAL) {
             maxVal = value;
         }
     }
@@ -187,15 +193,14 @@ T RingBuffer<T>::getMax(size_t amount) const
 {
     if (isEmpty() || amount <= 0) {
         return MIN_VAL;
-        // throw std::runtime_error("Buffer is empty");
     }
     if (amount > count)
         amount = count;
 
-    T maxVal = get(last);
+    T maxVal = MIN_VAL;
     T value;
     for (size_t i = 0; i < amount; i++) {
-        value = get((last + capacity - i) % capacity);
+        value = get(count - 1 - i);
         if (value > maxVal && value != MIN_VAL) {
             maxVal = value;
         }
@@ -209,7 +214,6 @@ T RingBuffer<T>::getMid() const
 {
     if (isEmpty()) {
         return MIN_VAL;
-        // throw std::runtime_error("Buffer is empty");
     }
 
     return (getMin() + getMax()) / static_cast<T>(2);
@@ -221,7 +225,6 @@ T RingBuffer<T>::getMid(size_t amount) const
 {
     if (isEmpty() || amount <= 0) {
         return MIN_VAL;
-        // throw std::runtime_error("Buffer is empty");
     }
 
     if (amount > count)
@@ -230,44 +233,12 @@ T RingBuffer<T>::getMid(size_t amount) const
     return (getMin(amount) + getMax(amount)) / static_cast<T>(2);
 }
 
-// ******************* works for wind direction only -> move out of here   *******************************
-// Get maximum difference of last <amount> of buffer values to center value
-template <typename T>
-T RingBuffer<T>::getRng(T center, size_t amount) const
-{
-    if (isEmpty() || amount <= 0) {
-        return MIN_VAL;
-        // throw std::runtime_error("Buffer is empty");
-    }
-    if (amount > count)
-        amount = count;
-
-    T value = 0;
-    T rng = 0;
-    T maxRng = MIN_VAL;
-    // Start from the newest value (last) and go backwards x times
-    for (size_t i = 0; i < amount; i++) {
-        value = get((last + capacity - i) % capacity);
-        if (value == MIN_VAL) {
-            continue;
-        }
-        rng = abs(((value - center + 540) % 360) - 180);
-        if (rng > maxRng)
-            maxRng = rng;
-    }
-    if (maxRng > 180) {
-        maxRng = 180;
-    }
-    return maxRng;
-}
-
 // Get the median value in the buffer
 template <typename T>
 T RingBuffer<T>::getMedian() const
 {
     if (isEmpty()) {
         return MIN_VAL;
-        // throw std::runtime_error("Buffer is empty");
     }
 
     // Create a temporary vector with current valid elements
@@ -297,7 +268,6 @@ T RingBuffer<T>::getMedian(size_t amount) const
 {
     if (isEmpty() || amount <= 0) {
         return MIN_VAL;
-        // throw std::runtime_error("Buffer is empty");
     }
     if (amount > count)
         amount = count;
@@ -337,6 +307,13 @@ size_t RingBuffer<T>::getCurrentSize() const
     return count;
 }
 
+// Get the first index of buffer
+template <typename T>
+size_t RingBuffer<T>::getFirstIdx() const
+{
+    return first;
+}
+
 // Get the last index of buffer
 template <typename T>
 size_t RingBuffer<T>::getLastIdx() const
@@ -358,7 +335,7 @@ bool RingBuffer<T>::isFull() const
     return is_Full;
 }
 
-// Get lowest possible value for buffer; used for initialized buffer data
+// Get lowest possible value for buffer; used for non-set buffer data
 template <typename T>
 T RingBuffer<T>::getMinVal() const
 {
@@ -376,6 +353,7 @@ T RingBuffer<T>::getMaxVal() const
 template <typename T>
 void RingBuffer<T>::clear()
 {
+    GWSYNCHRONIZED(&bufLocker);
     head = 0;
     first = 0;
     last = 0;
