@@ -301,7 +301,7 @@ public:
         return key;
     }
 
-    int displayPage(PageData& pageData)
+    virtual void displayPage(PageData& pageData)
     {
         GwConfigHandler* config = commonData->config;
         GwLog* logger = commonData->logger;
@@ -492,7 +492,7 @@ public:
 
         // chart labels
         char sWndLbl[4]; // char buffer for Wind angle label
-        getdisplay().setFont(&Ubuntu_Bold12pt8b);
+        getdisplay().setFont(&Ubuntu_Bold12pt7b);
         getdisplay().setCursor(xCenter - 88, yOffset - 3);
         getdisplay().print("TWD"); // Wind name
         // getdisplay().setCursor(xCenter - 20, yOffset - 3);
@@ -571,7 +571,7 @@ public:
         else if (!wndDataValid) {
             // No valid data available
             LOG_DEBUG(GwLog::LOG, "PageWindPlot: No valid data available");
-            getdisplay().setFont(&Ubuntu_Bold10pt8b);
+            getdisplay().setFont(&Ubuntu_Bold10pt7b);
             getdisplay().fillRect(xCenter - 66, height / 2 - 18, 146, 24, commonData->bgcolor); // Clear area for TWS value
             getdisplay().setCursor(xCenter - 66, height / 2);
             getdisplay().print("No sensor data");
@@ -603,10 +603,10 @@ public:
             getdisplay().setFont(&DSEG7Classic_BoldItalic16pt7b);
             getdisplay().setCursor(xPosTws, yPosTws);
             getdisplay().print(dataSValue[2]); // Value
-            getdisplay().setFont(&Ubuntu_Bold12pt8b);
+            getdisplay().setFont(&Ubuntu_Bold12pt7b);
             getdisplay().setCursor(xPosTws + 82, yPosTws - 14);
             getdisplay().print(dataName[2]); // Name
-            getdisplay().setFont(&Ubuntu_Bold8pt8b);
+            getdisplay().setFont(&Ubuntu_Bold8pt7b);
             getdisplay().setCursor(xPosTws + 78, yPosTws + 1);
             getdisplay().print(" ");
             if (holdValues == false) {
@@ -619,7 +619,7 @@ public:
         // chart Y axis labels; print last to overwrite potential chart lines in label area
         char sWndYAx[4]; // char buffer for wind Y axis labels
         int yPos;
-        getdisplay().setFont(&Ubuntu_Bold8pt8b);
+        getdisplay().setFont(&Ubuntu_Bold8pt7b);
         for (int i = 1; i <= 3; i++) {
             if (numWndValues < intvBufSize) {
                 // chart initially filled from botton to top -> revert minute labels
@@ -638,7 +638,6 @@ public:
         getdisplay().nextPage(); // Partial update (fast)
         unsigned long finish = millis() - start;
         LOG_DEBUG(GwLog::ERROR, "PageWindPlot Time: %lu", finish);
-    return PAGE_UPDATE;
     };
 };
 

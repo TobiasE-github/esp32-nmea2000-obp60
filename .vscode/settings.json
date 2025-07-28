@@ -3,9 +3,7 @@
     "files.associations": {
         "stdexcept": "cpp",
         "limits": "cpp",
-        "functional": "cpp",
-        "*.tpp": "cpp"
+        "functional": "cpp"
     },
-    "github.copilot.nextEditSuggestions.enabled": false,
-    "cmake.configureOnOpen": false
+    "github.copilot.nextEditSuggestions.enabled": false
 }
