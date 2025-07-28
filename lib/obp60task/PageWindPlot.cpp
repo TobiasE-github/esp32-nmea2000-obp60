@@ -301,7 +301,7 @@ public:
         return key;
     }
 
-    virtual void displayPage(PageData& pageData)
+    int displayPage(PageData& pageData)
     {
         GwConfigHandler* config = commonData->config;
         GwLog* logger = commonData->logger;
@@ -638,6 +638,7 @@ public:
         getdisplay().nextPage(); // Partial update (fast)
         unsigned long finish = millis() - start;
         LOG_DEBUG(GwLog::ERROR, "PageWindPlot Time: %lu", finish);
+    return PAGE_UPDATE;
     };
 };
 
