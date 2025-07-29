@@ -3,7 +3,11 @@
 */
 #include "ConfigMenu.h"
 
+<<<<<<< HEAD
 ConfigMenuItem::ConfigMenuItem(String itemtype, String itemlabel, uint16_t itemval, String itemunit) {
+=======
+ConfigMenuItem::ConfigMenuItem(String itemtype, String itemlabel) {
+>>>>>>> Start implementing config menu with page anchor
     if (! (itemtype == "int" or itemtype == "bool")) {
         valtype = "int";
     } else {
@@ -12,8 +16,11 @@ ConfigMenuItem::ConfigMenuItem(String itemtype, String itemlabel, uint16_t itemv
     label = itemlabel;
     min = 0;
     max = std::numeric_limits<uint16_t>::max();
+<<<<<<< HEAD
     value = itemval;
     unit = itemunit;
+=======
+>>>>>>> Start implementing config menu with page anchor
 }
 
 void ConfigMenuItem::setRange(uint16_t valmin, uint16_t valmax, std::vector<uint16_t> valsteps) {
@@ -22,6 +29,7 @@ void ConfigMenuItem::setRange(uint16_t valmin, uint16_t valmax, std::vector<uint
     steps = valsteps;
 };
 
+<<<<<<< HEAD
 bool ConfigMenuItem::checkRange(uint16_t checkval) {
     return (checkval >= min) and (checkval <= max);
 }
@@ -34,6 +42,8 @@ uint16_t ConfigMenuItem::getValue() {
     return value;
 }
 
+=======
+>>>>>>> Start implementing config menu with page anchor
 bool ConfigMenuItem::setValue(uint16_t newval) {
     if (valtype == "int") {
         if (newval >= min and newval <= max) {
@@ -48,6 +58,7 @@ bool ConfigMenuItem::setValue(uint16_t newval) {
     return false; // invalid type
 };
 
+<<<<<<< HEAD
 void ConfigMenuItem::incValue() {
     // increase value by step
     if (valtype == "int") {
@@ -99,6 +110,7 @@ int8_t ConfigMenuItem::getPos() {
     return position;
 };
 
+<<<<<<< HEAD
 void ConfigMenuItem::setPos(int8_t newpos) {
     position = newpos;
 };
@@ -107,17 +119,24 @@ String ConfigMenuItem::getType() {
     return valtype;
 }
 
+=======
+>>>>>>> Start implementing config menu with page anchor
 ConfigMenu::ConfigMenu(String menutitle, uint16_t menu_x, uint16_t menu_y) {
     title = menutitle;
     x = menu_x;
     y = menu_y;
 };
 
+<<<<<<< HEAD
 ConfigMenuItem* ConfigMenu::addItem(String key, String label, String valtype, uint16_t val, String valunit) {
+=======
+ConfigMenuItem* ConfigMenu::addItem(String key, String label, String valtype) {
+>>>>>>> Start implementing config menu with page anchor
     if (items.find(key) != items.end()) {
         // duplicate keys not allowed
         return nullptr;
     }
+<<<<<<< HEAD
     ConfigMenuItem *itm = new ConfigMenuItem(valtype, label, val, valunit);
     items.insert(std::pair<String, ConfigMenuItem*>(key, itm));
     // Append key to index, index starting with 0
@@ -142,6 +161,7 @@ void ConfigMenu::setItemDimension(uint16_t itemwidth, uint16_t itemheight) {
 };
 
 void ConfigMenu::setItemActive(String key) {
+<<<<<<< HEAD
     if (items.find(key) != items.end()) {
         activeitem = items[key]->getPos();
     } else {
@@ -194,6 +214,7 @@ uint8_t ConfigMenu::getItemCount() {
     return items.size();
 };
 
+<<<<<<< HEAD
 void ConfigMenu::goPrev() {
     if (activeitem == 0) {
         activeitem = items.size() - 1;

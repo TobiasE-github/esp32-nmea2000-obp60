@@ -50,10 +50,6 @@ public:
     ConfigMenuItem* addItem(String key, String label, String valtype, uint16_t val, String valunit);
     void setItemDimension(uint16_t itemwidth, uint16_t itemheight);
     int8_t getActiveIndex();
-=======
-    ConfigMenuItem* addItem(String key, String label, String valtype);
-    void setItemDimension(uint16_t itemwidth, uint16_t itemheight);
->>>>>>> Start implementing config menu with page anchor
     void setItemActive(String key);
     ConfigMenuItem* getActiveItem();
     ConfigMenuItem* getItemByIndex(uint8_t index);
@@ -64,9 +60,4 @@ public:
     Point getXY();
     Rect getRect();
     Rect getItemRect(int8_t index);
-=======
-    Point getXY();
-    /* void getRect();
-    void getItemRect(); */
->>>>>>> Start implementing config menu with page anchor
 };

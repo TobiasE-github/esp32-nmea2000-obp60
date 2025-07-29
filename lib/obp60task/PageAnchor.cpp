@@ -78,6 +78,8 @@ private:
 
     ConfigMenu *menu;
 
+    // ConfigMenu menu;
+
     void displayModeNormal(PageData &pageData) {
 
         // Boatvalues: DBS, HDT, AWS, AWD, LAT, LON, HDOP
@@ -128,6 +130,24 @@ private:
         if (bv_awd->valid) {
             fillPoly4(rotatePoints(c, pts_wind, bv_awd->value), commonData->fgcolor);
         }
+=======
+        /*size_t polysize = pts_boat.size();
+        for (size_t i = 0; i < polysize - 1; i++) {
+            getdisplay().drawLine(pts_boat[i].x, pts_boat[i].y, pts_boat[i+1].x, pts_boat[i+1].y, commonData->fgcolor);
+        }
+        // close path
+        getdisplay().drawLine(pts_boat[polysize-1].x, pts_boat[polysize-1].y, pts_boat[0].x, pts_boat[0].y, commonData->fgcolor);
+        */
+>>>>>>> Start implementing config menu with page anchor
+
+        // Draw wind arrow
+        std::vector<Point> pts_wind = {
+            {c.x, c.y - r + 25},
+            {c.x - 12, c.y - r - 4},
+            {c.x, c.y - r + 6},
+            {c.x + 12, c.y - r - 4}
+        };
+        fillPoly4(rotatePoints(c, pts_wind, 63), commonData->fgcolor);
 
         // Title and corner value headings
         getdisplay().setTextColor(commonData->fgcolor);
@@ -198,6 +218,17 @@ private:
             LOG_DEBUG(GwLog::LOG,"Drawing at PageAnchor; Alarm range = %d", r_range);
             getdisplay().drawCircle(c.x, c.y, r_range, commonData->fgcolor);
         }
+ 
+        // zoom scale
+        getdisplay().drawLine(c.x + 10, c.y, c.x + r - 4, c.y, commonData->fgcolor);
+        // arrow left
+        getdisplay().drawLine(c.x + 10, c.y, c.x + 16, c.y - 4, commonData->fgcolor);
+        getdisplay().drawLine(c.x + 10, c.y, c.x + 16, c.y + 4, commonData->fgcolor);
+        // arrow right
+        getdisplay().drawLine(c.x + r - 4, c.y, c.x + r - 10, c.y - 4, commonData->fgcolor);
+        getdisplay().drawLine(c.x + r - 4, c.y, c.x + r - 10, c.y + 4, commonData->fgcolor);
+        getdisplay().setFont(&Ubuntu_Bold8pt8b);
+        drawTextCenter(c.x + r / 2, c.y + 8, String(scale) + "m");
  
         // draw anchor symbol (as bitmap)
         getdisplay().drawXBitmap(c.x - anchor_width / 2, c.y - anchor_height / 2,
@@ -289,6 +320,31 @@ public:
         newitem = menu->addItem("anchor", "Anchor down", "bool", 0, "");
 #endif
         menu->setItemActive("zoom");
+=======
+       
+        chain = 0;
+        anchor_set = false;
+        /*
+        // Initialize config menu
+        ConfigMenuItem *newitem;
+        menu.setItemDimension(120, 20);
+        newitem = menu.addItem("chain", "Chain out", "int");
+        newitem->setRange(0, 200, {1, 5, 10});
+        newitem = menu.addItem("chainmax", "Chain max", "int");
+        newitem->setRange(0, 200, {1, 5, 10});
+        newitem = menu.addItem("zoom", "Zoom", "int");
+        newitem->setRange(0, 200, {1, });
+        newitem = menu.addItem("range", "Alarm range", "int");
+        newitem->setRange(0, 200, {1, 5, 10});
+        // START only for OBP40 
+        newitem = menu.addItem("anchor", "Anchor down", "bool");
+        newitem = menu.addItem("anchor_lat", "Adjust anchor lat.", "int");
+        newitem->setRange(0, 200, {1, 5, 10});
+        newitem = menu.addItem("anchor_lon", "Adjust anchor lon.", "int");
+        newitem->setRange(0, 200, {1, 5, 10});
+        // STOP only for OBP40
+        menu.setItemActive("chain"); */
+>>>>>>> Start implementing config menu with page anchor
      }
 
     void setupKeys(){
