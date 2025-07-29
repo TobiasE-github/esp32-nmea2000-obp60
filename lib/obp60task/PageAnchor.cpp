@@ -141,13 +141,15 @@ private:
 >>>>>>> Start implementing config menu with page anchor
 
         // Draw wind arrow
-        std::vector<Point> pts_wind = {
+        const std::vector<Point> pts_wind = {
             {c.x, c.y - r + 25},
             {c.x - 12, c.y - r - 4},
             {c.x, c.y - r + 6},
             {c.x + 12, c.y - r - 4}
         };
-        fillPoly4(rotatePoints(c, pts_wind, 63), commonData->fgcolor);
+        if (bv_awd->valid) {
+            fillPoly4(rotatePoints(c, pts_wind, bv_awd->value), commonData->fgcolor);
+        }
 
         // Title and corner value headings
         getdisplay().setTextColor(commonData->fgcolor);
@@ -229,6 +231,15 @@ private:
         getdisplay().drawLine(c.x + r - 4, c.y, c.x + r - 10, c.y + 4, commonData->fgcolor);
         getdisplay().setFont(&Ubuntu_Bold8pt8b);
         drawTextCenter(c.x + r / 2, c.y + 8, String(scale) + "m");
+ 
+        // alarm range circle
+        if (alarm_enabled) {
+            // alarm range in meter has to be smaller than the scale in meter
+            // r and r_range are pixel values
+            uint16_t r_range = int(alarm_range * r / scale);
+            LOG_DEBUG(GwLog::LOG,"Drawing at PageAnchor; Alarm range = %d", r_range);
+            getdisplay().drawCircle(c.x, c.y, r_range, commonData->fgcolor);
+        }
  
         // draw anchor symbol (as bitmap)
         getdisplay().drawXBitmap(c.x - anchor_width / 2, c.y - anchor_height / 2,
@@ -324,6 +335,7 @@ public:
        
         chain = 0;
         anchor_set = false;
+        alarm_range = 30;
         /*
         // Initialize config menu
         ConfigMenuItem *newitem;
