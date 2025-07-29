@@ -4,6 +4,7 @@
 #include <Arduino.h>
 #include "OBP60Hardware.h"
 #include "LedSpiTask.h"
+#include "Graphics.h"
 #include <GxEPD2_BW.h>                  // E-paper lib V2
 #include <Adafruit_FRAM_I2C.h>          // I2C FRAM
 
@@ -62,14 +63,9 @@ GxEPD2_BW<GxEPD2_420_SE0420NQ04, GxEPD2_420_SE0420NQ04::HEIGHT> & getdisplay();
 #define PAGE_UPDATE 1      // page wants display to update
 #define PAGE_HIBERNATE 2   // page wants displey to hibernate
 
-struct Point {
-    double x;
-    double y;
-};
-Point rotatePoint(const Point& origin, const Point& p, double angle);
-std::vector<Point> rotatePoints(const Point& origin, const std::vector<Point>& pts, double angle);
 void fillPoly4(const std::vector<Point>& p4, uint16_t color);
-
+void drawPoly(const std::vector<Point>& points, uint16_t color);
+ 
 void deepSleep(CommonData &common);
 
 uint8_t getLastPage();
