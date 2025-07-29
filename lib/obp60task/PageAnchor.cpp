@@ -2,6 +2,7 @@
 
 #include "Pagedata.h"
 #include "OBP60Extensions.h"
+#include "ConfigMenu.h"
 
 /*
   Anchor overview with additional associated data
@@ -48,13 +49,16 @@ static unsigned char anchor_bits[] = {
 
 class PageAnchor : public Page
 {
-    private:
+private:
     GwConfigHandler *config;
     GwLog *logger;
     bool simulation = false;
     bool holdvalues = false;
     String flashLED;
     String backlightMode;
+    String lengthformat;
+
+    int scale = 50; // Radius of display circle in meter
 
     bool alarm = false;
     bool alarm_enabled = false;
@@ -71,15 +75,19 @@ class PageAnchor : public Page
 
     char mode = 'N'; // (N)ormal, (C)onfig
 
+    // ConfigMenu menu;
+
     void displayModeNormal(PageData &pageData) {
 
         // Boatvalues: DBS, HDT, AWS, AWD, LAT, LON, HDOP
         GwApi::BoatValue *bv_dbs = pageData.values[0]; // DBS
         String sval_dbs = formatValue(bv_dbs, *commonData).svalue;
+        String sunit_dbs = formatValue(bv_dbs, *commonData).unit; 
         GwApi::BoatValue *bv_hdt = pageData.values[1]; // HDT
         String sval_hdt = formatValue(bv_hdt, *commonData).svalue;
         GwApi::BoatValue *bv_aws = pageData.values[2]; // AWS
         String sval_aws = formatValue(bv_aws, *commonData).svalue;
+        String sunit_aws = formatValue(bv_aws, *commonData).unit; 
         GwApi::BoatValue *bv_awd = pageData.values[3]; // AWD
         String sval_awd = formatValue(bv_awd, *commonData).svalue;
         GwApi::BoatValue *bv_lat = pageData.values[4]; // LAT
@@ -88,6 +96,7 @@ class PageAnchor : public Page
         String sval_lon = formatValue(bv_lon, *commonData).svalue;
         GwApi::BoatValue *bv_hdop = pageData.values[6]; // HDOP
         String sval_hdop = formatValue(bv_hdop, *commonData).svalue;
+        String sunit_hdop = formatValue(bv_hdop, *commonData).unit; 
 
         Point c = {200, 150}; // center = anchor position
         uint16_t r = 125;
@@ -98,55 +107,82 @@ class PageAnchor : public Page
             {b.x - 5, b.y},
             {b.x - 5, b.y - 10},
             {b.x, b.y - 16},
-            {b.x + 5, b.y - 10}
+            {b.x + 5, b.y - 10},
+            {b.x + 5, b.y}
         };
         //rotatePoints und dann Linien zeichnen
         // TODO rotate boat according to current heading
-        //fillPoly4(rotatePoints(c, pts, RadToDeg(value2)), commonData->fgcolor);
+        //drawPoly(rotatePoints(c, pts, RadToDeg(value2)), commonData->fgcolor);
+        drawPoly(pts_boat, commonData->fgcolor);
+
+        /*size_t polysize = pts_boat.size();
+        for (size_t i = 0; i < polysize - 1; i++) {
+            getdisplay().drawLine(pts_boat[i].x, pts_boat[i].y, pts_boat[i+1].x, pts_boat[i+1].y, commonData->fgcolor);
+        }
+        // close path
+        getdisplay().drawLine(pts_boat[polysize-1].x, pts_boat[polysize-1].y, pts_boat[0].x, pts_boat[0].y, commonData->fgcolor);
+        */
 
         // Draw wind arrow
-        /*
-        if self._bd.awa.value:
-            p = ((cx, cy - r + 25), (cx - 12, cy - r - 4), (cx, cy - r + 6), (cx + 12, cy - r - 4), (cx, cy - r + 25))
-            wind = self.rotate((cx, cy), p, self._bd.awa.value)
-            ctx.move_to(*wind[0])
-            for point in wind[1:]:
-                ctx.line_to(*point)
-            ctx.fill()
-        */
+        std::vector<Point> pts_wind = {
+            {c.x, c.y - r + 25},
+            {c.x - 12, c.y - r - 4},
+            {c.x, c.y - r + 6},
+            {c.x + 12, c.y - r - 4}
+        };
+        fillPoly4(rotatePoints(c, pts_wind, 63), commonData->fgcolor);
 
         // Title and corner value headings
         getdisplay().setTextColor(commonData->fgcolor);
-        getdisplay().setFont(&Ubuntu_Bold10pt8b);
+        getdisplay().setFont(&Ubuntu_Bold12pt8b);
         getdisplay().setCursor(8, 48);
         getdisplay().print("Anchor");
 
+        getdisplay().setFont(&Ubuntu_Bold10pt8b);
         getdisplay().setCursor(8, 200);
         getdisplay().print("Depth");
-
-        drawTextRalign(392, 50, "Chain");
+        drawTextRalign(392, 38, "Chain");
         drawTextRalign(392, 200, "Wind");
+
+        // Units
+        getdisplay().setCursor(8, 272);
+        getdisplay().print(sunit_dbs);
+        drawTextRalign(392, 272, sunit_aws);
+        drawTextRalign(392, 100, lengthformat); // chain unit not implemented
 
         // Corner values
         getdisplay().setFont(&Ubuntu_Bold8pt8b);
-        getdisplay().setCursor(2, 70);
+        getdisplay().setCursor(8, 70);
         getdisplay().print("Alarm: ");
         getdisplay().print(alarm_enabled ? "On" : "Off");
-        
-        // Units
 
         // Values
         getdisplay().setFont(&DSEG7Classic_BoldItalic20pt7b);
+        // Current chain used
+        getdisplay().setCursor(328, 85);
+        getdisplay().print("27");
+
         // Depth
         getdisplay().setCursor(8, 250);
         //getdisplay().print(sval_dbs);
         getdisplay().print("6.4");
         // Wind
-        getdisplay().setCursor(320, 250);
+        getdisplay().setCursor(328, 250);
         //getdisplay().print(sval_aws);
         getdisplay().print("12");
 
         getdisplay().drawCircle(c.x, c.y, r, commonData->fgcolor);
+ 
+        // zoom scale
+        getdisplay().drawLine(c.x + 10, c.y, c.x + r - 4, c.y, commonData->fgcolor);
+        // arrow left
+        getdisplay().drawLine(c.x + 10, c.y, c.x + 16, c.y - 4, commonData->fgcolor);
+        getdisplay().drawLine(c.x + 10, c.y, c.x + 16, c.y + 4, commonData->fgcolor);
+        // arrow right
+        getdisplay().drawLine(c.x + r - 4, c.y, c.x + r - 10, c.y - 4, commonData->fgcolor);
+        getdisplay().drawLine(c.x + r - 4, c.y, c.x + r - 10, c.y + 4, commonData->fgcolor);
+        getdisplay().setFont(&Ubuntu_Bold8pt8b);
+        drawTextCenter(c.x + r / 2, c.y + 8, String(scale) + "m");
  
         // draw anchor symbol (as bitmap)
         getdisplay().drawXBitmap(c.x - anchor_width / 2, c.y - anchor_height / 2,
@@ -159,10 +195,18 @@ class PageAnchor : public Page
         getdisplay().setFont(&Ubuntu_Bold12pt8b);
         getdisplay().setCursor(8, 48);
         getdisplay().print("Anchor configuration");
+        
+        // TODO
+        // show lat/lon for anchor pos
+        // show lat/lon for boat pos
+        // show distance anchor <-> boat
+
     }
 
-    public:
-    PageAnchor(CommonData &common){
+public:
+    PageAnchor(CommonData &common) 
+    // : menu("Options", 80, 20)
+    {
         commonData = &common;
         config = commonData->config;
         logger = commonData->logger;
@@ -173,10 +217,31 @@ class PageAnchor : public Page
         holdvalues = config->getBool(config->holdvalues);
         flashLED = config->getString(config->flashLED);
         backlightMode = config->getString(config->backlight);
-        chainLength = config->getInt(config->chainLength);
+        lengthformat = config->getString(config->lengthFormat);
+        chain_length = config->getInt(config->chainLength);
        
         chain = 0;
         anchor_set = false;
+        /*
+        // Initialize config menu
+        ConfigMenuItem *newitem;
+        menu.setItemDimension(120, 20);
+        newitem = menu.addItem("chain", "Chain out", "int");
+        newitem->setRange(0, 200, {1, 5, 10});
+        newitem = menu.addItem("chainmax", "Chain max", "int");
+        newitem->setRange(0, 200, {1, 5, 10});
+        newitem = menu.addItem("zoom", "Zoom", "int");
+        newitem->setRange(0, 200, {1, });
+        newitem = menu.addItem("range", "Alarm range", "int");
+        newitem->setRange(0, 200, {1, 5, 10});
+        // START only for OBP40 
+        newitem = menu.addItem("anchor", "Anchor down", "bool");
+        newitem = menu.addItem("anchor_lat", "Adjust anchor lat.", "int");
+        newitem->setRange(0, 200, {1, 5, 10});
+        newitem = menu.addItem("anchor_lon", "Adjust anchor lon.", "int");
+        newitem->setRange(0, 200, {1, 5, 10});
+        // STOP only for OBP40
+        menu.setItemActive("chain"); */
      }
 
     void setupKeys(){
@@ -211,7 +276,6 @@ class PageAnchor : public Page
     int displayPage(PageData &pageData){
 
         // Logging boat values
-        LOG_DEBUG(GwLog::LOG,"Drawing at PageAnchor");
         LOG_DEBUG(GwLog::LOG,"Drawing at PageAnchor; Mode=%c", mode);
 
         // Set display in partial refresh mode

@@ -276,28 +276,18 @@ String xdrDelete(String input){
     return input;
 }
 
-Point rotatePoint(const Point& origin, const Point& p, double angle) {
-    // rotate poind around origin by degrees
-    Point rotated;
-    double phi = angle * M_PI / 180.0;
-    double dx = p.x - origin.x;
-    double dy = p.y - origin.y;
-    rotated.x = origin.x + cos(phi) * dx - sin(phi) * dy;
-    rotated.y = origin.y + sin(phi) * dx + cos(phi) * dy;
-    return rotated;
-}
-
-std::vector<Point> rotatePoints(const Point& origin, const std::vector<Point>& pts, double angle) {
-    std::vector<Point> rotatedPoints;
-    for (const auto& p : pts) {
-         rotatedPoints.push_back(rotatePoint(origin, p, angle));
-    }
-     return rotatedPoints;
-}
-
 void fillPoly4(const std::vector<Point>& p4, uint16_t color) {
     getdisplay().fillTriangle(p4[0].x, p4[0].y, p4[1].x, p4[1].y, p4[2].x, p4[2].y, color);
     getdisplay().fillTriangle(p4[0].x, p4[0].y, p4[2].x, p4[2].y, p4[3].x, p4[3].y, color);
+}
+
+void drawPoly(const std::vector<Point>& points, uint16_t color) {
+    size_t polysize = points.size();
+    for (size_t i = 0; i < polysize - 1; i++) {
+        getdisplay().drawLine(points[i].x, points[i].y, points[i+1].x, points[i+1].y, color);
+    }
+    // close path
+    getdisplay().drawLine(points[polysize-1].x, points[polysize-1].y, points[0].x, points[0].y, color);
 }
 
 // Split string into words, whitespace separated
