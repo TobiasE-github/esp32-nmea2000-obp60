@@ -98,12 +98,14 @@ private:
         String sval_hdop = formatValue(bv_hdop, *commonData).svalue;
         String sunit_hdop = formatValue(bv_hdop, *commonData).unit; 
 
+        LOG_DEBUG(GwLog::DEBUG,"Drawing at PageAnchor; DBS=%f, HDT=%f, AWS=%f", bv_dbs->value, bv_hdt->value, bv_aws->value);
+
         Point c = {200, 150}; // center = anchor position
         uint16_t r = 125;
 
         Point b = {200, 180}; // boat position while dropping anchor
 
-        std::vector<Point> pts_boat = { // polygon lines
+        const std::vector<Point> pts_boat = { // polygon lines
             {b.x - 5, b.y},
             {b.x - 5, b.y - 10},
             {b.x, b.y - 16},
@@ -124,13 +126,15 @@ private:
         */
 
         // Draw wind arrow
-        std::vector<Point> pts_wind = {
+        const std::vector<Point> pts_wind = {
             {c.x, c.y - r + 25},
             {c.x - 12, c.y - r - 4},
             {c.x, c.y - r + 6},
             {c.x + 12, c.y - r - 4}
         };
-        fillPoly4(rotatePoints(c, pts_wind, 63), commonData->fgcolor);
+        if (bv_awd->valid) {
+            fillPoly4(rotatePoints(c, pts_wind, bv_awd->value), commonData->fgcolor);
+        }
 
         // Title and corner value headings
         getdisplay().setTextColor(commonData->fgcolor);
@@ -156,6 +160,16 @@ private:
         getdisplay().print("Alarm: ");
         getdisplay().print(alarm_enabled ? "On" : "Off");
 
+        getdisplay().setCursor(8, 90);
+        getdisplay().print("HDOP");
+        getdisplay().setCursor(8, 106);
+        if (bv_hdop->valid) {
+            getdisplay().print(round(bv_hdop->value), 0);
+            getdisplay().print(sunit_hdop);
+        } else {
+            getdisplay().print("n/a");
+        }
+
         // Values
         getdisplay().setFont(&DSEG7Classic_BoldItalic20pt7b);
         // Current chain used
@@ -164,14 +178,13 @@ private:
 
         // Depth
         getdisplay().setCursor(8, 250);
-        //getdisplay().print(sval_dbs);
-        getdisplay().print("6.4");
+        getdisplay().print(sval_dbs);
         // Wind
         getdisplay().setCursor(328, 250);
-        //getdisplay().print(sval_aws);
-        getdisplay().print("12");
+        getdisplay().print(sval_aws);
 
         getdisplay().drawCircle(c.x, c.y, r, commonData->fgcolor);
+        getdisplay().drawCircle(c.x, c.y, r + 1, commonData->fgcolor);
  
         // zoom scale
         getdisplay().drawLine(c.x + 10, c.y, c.x + r - 4, c.y, commonData->fgcolor);
@@ -184,6 +197,15 @@ private:
         getdisplay().setFont(&Ubuntu_Bold8pt8b);
         drawTextCenter(c.x + r / 2, c.y + 8, String(scale) + "m");
  
+        // alarm range circle
+        if (alarm_enabled) {
+            // alarm range in meter has to be smaller than the scale in meter
+            // r and r_range are pixel values
+            uint16_t r_range = int(alarm_range * r / scale);
+            LOG_DEBUG(GwLog::LOG,"Drawing at PageAnchor; Alarm range = %d", r_range);
+            getdisplay().drawCircle(c.x, c.y, r_range, commonData->fgcolor);
+        }
+ 
         // draw anchor symbol (as bitmap)
         getdisplay().drawXBitmap(c.x - anchor_width / 2, c.y - anchor_height / 2,
                                  anchor_bits, anchor_width, anchor_height, commonData->fgcolor);
@@ -191,6 +213,9 @@ private:
     }
 
     void displayModeConfig() {
+
+        // LOG_DEBUG(GwLog::LOG,"Drawing at PageAnchor; Mode=%c", mode);
+
         getdisplay().setTextColor(commonData->fgcolor);
         getdisplay().setFont(&Ubuntu_Bold12pt8b);
         getdisplay().setCursor(8, 48);
@@ -222,6 +247,7 @@ public:
        
         chain = 0;
         anchor_set = false;
+        alarm_range = 30;
         /*
         // Initialize config menu
         ConfigMenuItem *newitem;
