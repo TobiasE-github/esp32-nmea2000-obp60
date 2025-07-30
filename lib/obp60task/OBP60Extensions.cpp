@@ -351,6 +351,24 @@ void drawTextRalign(int16_t x, int16_t y, String text) {
     getdisplay().print(text);
 }
 
+// Draw text inside box, normal or inverted
+void drawTextBoxed(Rect box, String text, uint16_t fg, uint16_t bg, bool inverted, bool border) {
+    if (inverted) {
+        getdisplay().fillRect(box.x, box.y, box.w, box.h, fg);
+        getdisplay().setTextColor(bg);
+    } else {
+        if (border) {
+            getdisplay().fillRect(box.x + 1, box.y + 1, box.w - 2, box.h - 2, bg);
+            getdisplay().drawRect(box.x, box.y, box.w, box.h, fg);
+        }
+        getdisplay().setTextColor(fg);
+    }
+    uint16_t border_offset = box.h / 4; // 25% of box height
+    getdisplay().setCursor(box.x + border_offset, box.y + box.h - border_offset);
+    getdisplay().print(text);
+    getdisplay().setTextColor(fg);
+}
+
 // Show a triangle for trend direction high (x, y is the left edge)
 void displayTrendHigh(int16_t x, int16_t y, uint16_t size, uint16_t color){
     getdisplay().fillTriangle(x, y, x+size*2, y, x+size, y-size*2, color);
