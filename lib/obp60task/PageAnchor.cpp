@@ -78,7 +78,7 @@ private:
 
     ConfigMenu *menu;
 
-    // ConfigMenu menu;
+    ConfigMenu *menu;
 
     void displayModeNormal(PageData &pageData) {
 
