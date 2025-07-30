@@ -74,8 +74,9 @@ private:
     int anchor_ts; // time stamp anchor dropped
 
     char mode = 'N'; // (N)ormal, (C)onfig
+    int8_t editmode = -1; // marker for menu/edit/set function
 
-    // ConfigMenu menu;
+    ConfigMenu *menu;
 
     void displayModeNormal(PageData &pageData) {
 
@@ -116,14 +117,6 @@ private:
         // TODO rotate boat according to current heading
         //drawPoly(rotatePoints(c, pts, RadToDeg(value2)), commonData->fgcolor);
         drawPoly(pts_boat, commonData->fgcolor);
-
-        /*size_t polysize = pts_boat.size();
-        for (size_t i = 0; i < polysize - 1; i++) {
-            getdisplay().drawLine(pts_boat[i].x, pts_boat[i].y, pts_boat[i+1].x, pts_boat[i+1].y, commonData->fgcolor);
-        }
-        // close path
-        getdisplay().drawLine(pts_boat[polysize-1].x, pts_boat[polysize-1].y, pts_boat[0].x, pts_boat[0].y, commonData->fgcolor);
-        */
 
         // Draw wind arrow
         const std::vector<Point> pts_wind = {
@@ -214,8 +207,6 @@ private:
 
     void displayModeConfig() {
 
-        // LOG_DEBUG(GwLog::LOG,"Drawing at PageAnchor; Mode=%c", mode);
-
         getdisplay().setTextColor(commonData->fgcolor);
         getdisplay().setFont(&Ubuntu_Bold12pt8b);
         getdisplay().setCursor(8, 48);
@@ -226,11 +217,33 @@ private:
         // show lat/lon for boat pos
         // show distance anchor <-> boat
 
+        getdisplay().setFont(&Ubuntu_Bold8pt8b);
+        for (int i = 0 ; i < menu->getItemCount(); i++) {
+            ConfigMenuItem *itm = menu->getItemByIndex(i);
+            if (!itm) {
+                LOG_DEBUG(GwLog::ERROR, "Menu item not found: %d", i);
+            } else {
+                Rect r = menu->getItemRect(i);
+                bool inverted = (i == menu->getActiveIndex());
+                drawTextBoxed(r, itm->getLabel(), commonData->fgcolor, commonData->bgcolor, inverted, false);
+                if (inverted and editmode > 0) {
+                    // triangle as edit marker
+                    getdisplay().fillTriangle(r.x + r.w + 20, r.y, r.x + r.w + 30, r.y + r.h / 2, r.x + r.w + 20, r.y + r.h,  commonData->fgcolor);
+                }
+                getdisplay().setCursor(r.x + r.w + 40, r.y + r.h - 4);
+                if (itm->getType() == "int") {
+                    getdisplay().print(itm->getValue());
+                    getdisplay().print(itm->getUnit());
+                } else {
+                     getdisplay().print(itm->getValue() == 0 ? "No" : "Yes");
+                }
+            }
+        } 
+
     }
 
 public:
     PageAnchor(CommonData &common) 
-    // : menu("Options", 80, 20)
     {
         commonData = &common;
         config = commonData->config;
@@ -244,30 +257,38 @@ public:
         backlightMode = config->getString(config->backlight);
         lengthformat = config->getString(config->lengthFormat);
         chain_length = config->getInt(config->chainLength);
-       
+
         chain = 0;
         anchor_set = false;
         alarm_range = 30;
-        /*
+
         // Initialize config menu
+        menu = new ConfigMenu("Options", 40, 80);
+        menu->setItemDimension(150, 20);
+
         ConfigMenuItem *newitem;
-        menu.setItemDimension(120, 20);
-        newitem = menu.addItem("chain", "Chain out", "int");
+        newitem = menu->addItem("chain", "Chain out", "int", 0, "m");
+        if (! newitem) {
+            // Demo: in case of failure exit here, should never be happen
+            logger->logDebug(GwLog::ERROR,"Menu item creation failed");
+            return;
+        }
         newitem->setRange(0, 200, {1, 5, 10});
-        newitem = menu.addItem("chainmax", "Chain max", "int");
+        newitem = menu->addItem("chainmax", "Chain max", "int", chain_length, "m");
         newitem->setRange(0, 200, {1, 5, 10});
-        newitem = menu.addItem("zoom", "Zoom", "int");
+        newitem = menu->addItem("zoom", "Zoom", "int", 50, "m");
         newitem->setRange(0, 200, {1, });
-        newitem = menu.addItem("range", "Alarm range", "int");
+        newitem = menu->addItem("range", "Alarm range", "int", 40, "m");
         newitem->setRange(0, 200, {1, 5, 10});
-        // START only for OBP40 
-        newitem = menu.addItem("anchor", "Anchor down", "bool");
-        newitem = menu.addItem("anchor_lat", "Adjust anchor lat.", "int");
+        newitem = menu->addItem("alat", "Adjust anchor lat.", "int", 0, "m");
         newitem->setRange(0, 200, {1, 5, 10});
-        newitem = menu.addItem("anchor_lon", "Adjust anchor lon.", "int");
+        newitem = menu->addItem("alon", "Adjust anchor lon.", "int", 0, "m");
         newitem->setRange(0, 200, {1, 5, 10});
-        // STOP only for OBP40
-        menu.setItemActive("chain"); */
+#ifdef BOARD_OBP40S3
+        // Intodruced here because of missing keys for OBP40
+        newitem = menu->addItem("anchor", "Anchor down", "bool", 0, "");
+#endif
+        menu->setItemActive("zoom");
      }
 
     void setupKeys(){
@@ -276,6 +297,7 @@ public:
         commonData->keydata[1].label = "ALARM";
     }
 
+#ifdef BOARD_OBP60S3
     int handleKey(int key){
         if (key == 1) { // Switch between normal and config mode
             if (mode == 'N') {
@@ -285,9 +307,22 @@ public:
             }
             return 0;
         }
-        if (key == 2) { // Toggle alarm
-            alarm_enabled = !alarm_enabled;
-            return 0;
+        if (mode == 'N') {
+            if (key == 2) { // Toggle alarm
+                alarm_enabled = !alarm_enabled;
+                return 0;
+            }
+        } else { // Config mode
+            if (key == 3) {
+                // menu down
+                menu->goNext();
+                return 0;
+            }
+            if (key == 4) {
+                // menu up
+                menu->goPrev();
+                return 0;
+            }
         }
         if (key == 11) { // Code for keylock
             commonData->keylock = !commonData->keylock;
@@ -295,6 +330,65 @@ public:
         }
         return key;
     }
+#endif
+#ifdef BOARD_OBP40S3
+    int handleKey(int key){
+        if (key == 1) { // Switch between normal and config mode
+            if (mode == 'N') {
+                mode = 'C';
+                commonData->keydata[1].label = "EDIT";
+            } else {
+                mode = 'N';
+                commonData->keydata[1].label = "ALARM";
+            }
+            return 0;
+        }
+        if (mode == 'N') {
+            if (key == 2) { // Toggle alarm
+                alarm_enabled = !alarm_enabled;
+                return 0;
+            }
+        } else { // Config mode
+            // TODO different code for OBP40 / OBP60 
+            if (key == 9) {
+                // menu down
+                if (editmode > 0) {
+                    // decrease item value
+                    menu->getActiveItem()->decValue();
+                } else {
+                    menu->goNext();
+                }
+                return 0;
+            }
+            if (key == 10) {
+                // menu up or value up
+                if (editmode > 0) {
+                    // increase item value
+                    menu->getActiveItem()->incValue();
+                } else {
+                    menu->goPrev();
+                }
+                return 0;
+            }
+            if (key == 2) {
+                // enter / leave edit mode for current menu item
+                if (editmode > 0) {
+                    commonData->keydata[1].label = "EDIT";
+                    editmode = 0;
+                } else {
+                    commonData->keydata[1].label = "SET";
+                    editmode = 1;
+                }
+                return 0;
+            }
+        }
+        if (key == 11) { // Code for keylock
+            commonData->keylock = !commonData->keylock;
+            return 0;
+        }
+        return key;
+    }
+#endif
 
     void displayNew(PageData &pageData){
     };
