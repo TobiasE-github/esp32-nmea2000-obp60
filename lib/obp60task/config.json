@@ -1311,6 +1311,7 @@
             "obp60":"true"
         }
     },
+
     {
         "name": "page1type",
         "label": "Type",
@@ -1387,7 +1388,7 @@
         "label": "Field 1",
         "type": "boatData",
         "default": "",
-        "description": "The value for field one on page 1",
+        "description": "The display for field one",
         "category": "OBP60 Page 1",
         "capabilities": {
             "obp60": "true"
@@ -1430,7 +1431,7 @@
         "label": "Field 2",
         "type": "boatData",
         "default": "",
-        "description": "The value for field two on page 1",
+        "description": "The display for field two",
         "category": "OBP60 Page 1",
         "capabilities": {
             "obp60": "true"
@@ -1467,7 +1468,7 @@
         "label": "Field 3",
         "type": "boatData",
         "default": "",
-        "description": "The value for field three on page 1",
+        "description": "The display for field three",
         "category": "OBP60 Page 1",
         "capabilities": {
             "obp60": "true"
@@ -1498,7 +1499,7 @@
         "label": "Field 4",
         "type": "boatData",
         "default": "",
-        "description": "The value for field four on page 1",
+        "description": "The display for field four",
         "category": "OBP60 Page 1",
         "capabilities": {
             "obp60": "true"
@@ -1526,7 +1527,7 @@
         "label": "Field 5",
         "type": "boatData",
         "default": "",
-        "description": "The value for field five on page 1",
+        "description": "The display for field five",
         "category": "OBP60 Page 1",
         "capabilities": {
             "obp60": "true"
@@ -1545,7 +1546,7 @@
         "label": "Field 6",
         "type": "boatData",
         "default": "",
-        "description": "The value for field six on page 1",
+        "description": "The display for field six",
         "category": "OBP60 Page 1",
         "capabilities": {
             "obp60": "true"
@@ -1678,7 +1679,7 @@
         "label": "Field 1",
         "type": "boatData",
         "default": "",
-        "description": "The value for field one on page 2",
+        "description": "The display for field one",
         "category": "OBP60 Page 2",
         "capabilities": {
             "obp60": "true"
@@ -1721,7 +1722,7 @@
         "label": "Field 2",
         "type": "boatData",
         "default": "",
-        "description": "The value for field two on page 2",
+        "description": "The display for field two",
         "category": "OBP60 Page 2",
         "capabilities": {
             "obp60": "true"
@@ -1758,7 +1759,7 @@
         "label": "Field 3",
         "type": "boatData",
         "default": "",
-        "description": "The value for field three on page 2",
+        "description": "The display for field three",
         "category": "OBP60 Page 2",
         "capabilities": {
             "obp60": "true"
@@ -1789,7 +1790,7 @@
         "label": "Field 4",
         "type": "boatData",
         "default": "",
-        "description": "The value for field four on page 2",
+        "description": "The display for field four",
         "category": "OBP60 Page 2",
         "capabilities": {
             "obp60": "true"
@@ -1817,7 +1818,7 @@
         "label": "Field 5",
         "type": "boatData",
         "default": "",
-        "description": "The value for field five on page 2",
+        "description": "The display for field five",
         "category": "OBP60 Page 2",
         "capabilities": {
             "obp60": "true"
@@ -1836,7 +1837,7 @@
         "label": "Field 6",
         "type": "boatData",
         "default": "",
-        "description": "The value for field six on page 2",
+        "description": "The display for field six",
         "category": "OBP60 Page 2",
         "capabilities": {
             "obp60": "true"
@@ -1966,7 +1967,7 @@
         "label": "Field 1",
         "type": "boatData",
         "default": "",
-        "description": "The value for field one on page 3",
+        "description": "The display for field one",
         "category": "OBP60 Page 3",
         "capabilities": {
             "obp60": "true"
@@ -2009,7 +2010,7 @@
         "label": "Field 2",
         "type": "boatData",
         "default": "",
-        "description": "The value for field two on page 3",
+        "description": "The display for field two",
         "category": "OBP60 Page 3",
         "capabilities": {
             "obp60": "true"
@@ -2046,7 +2047,7 @@
         "label": "Field 3",
         "type": "boatData",
         "default": "",
-        "description": "The value for field three on page 3",
+        "description": "The display for field three",
         "category": "OBP60 Page 3",
         "capabilities": {
             "obp60": "true"
@@ -2077,7 +2078,7 @@
         "label": "Field 4",
         "type": "boatData",
         "default": "",
-        "description": "The value for field four on page 3",
+        "description": "The display for field four",
         "category": "OBP60 Page 3",
         "capabilities": {
             "obp60": "true"
@@ -2105,7 +2106,7 @@
         "label": "Field 5",
         "type": "boatData",
         "default": "",
-        "description": "The value for field five on page 3",
+        "description": "The display for field five",
         "category": "OBP60 Page 3",
         "capabilities": {
             "obp60": "true"
@@ -2124,7 +2125,7 @@
         "label": "Field 6",
         "type": "boatData",
         "default": "",
-        "description": "The value for field six on page 3",
+        "description": "The display for field six",
         "category": "OBP60 Page 3",
         "capabilities": {
             "obp60": "true"
@@ -2251,7 +2252,7 @@
         "label": "Field 1",
         "type": "boatData",
         "default": "",
-        "description": "The value for field one on page 4",
+        "description": "The display for field one",
         "category": "OBP60 Page 4",
         "capabilities": {
             "obp60": "true"
@@ -2294,7 +2295,7 @@
         "label": "Field 2",
         "type": "boatData",
         "default": "",
-        "description": "The value for field two on page 4",
+        "description": "The display for field two",
         "category": "OBP60 Page 4",
         "capabilities": {
             "obp60": "true"
@@ -2331,7 +2332,7 @@
         "label": "Field 3",
         "type": "boatData",
         "default": "",
-        "description": "The value for field three on page 4",
+        "description": "The display for field three",
         "category": "OBP60 Page 4",
         "capabilities": {
             "obp60": "true"
@@ -2362,7 +2363,7 @@
         "label": "Field 4",
         "type": "boatData",
         "default": "",
-        "description": "The value for field four on page 4",
+        "description": "The display for field four",
         "category": "OBP60 Page 4",
         "capabilities": {
             "obp60": "true"
@@ -2390,7 +2391,7 @@
         "label": "Field 5",
         "type": "boatData",
         "default": "",
-        "description": "The value for field five on page 4",
+        "description": "The display for field five",
         "category": "OBP60 Page 4",
         "capabilities": {
             "obp60": "true"
@@ -2409,7 +2410,7 @@
         "label": "Field 6",
         "type": "boatData",
         "default": "",
-        "description": "The value for field six on page 4",
+        "description": "The display for field six",
         "category": "OBP60 Page 4",
         "capabilities": {
             "obp60": "true"
@@ -2533,7 +2534,7 @@
         "label": "Field 1",
         "type": "boatData",
         "default": "",
-        "description": "The value for field one on page 5",
+        "description": "The display for field one",
         "category": "OBP60 Page 5",
         "capabilities": {
             "obp60": "true"
@@ -2576,7 +2577,7 @@
         "label": "Field 2",
         "type": "boatData",
         "default": "",
-        "description": "The value for field two on page 5",
+        "description": "The display for field two",
         "category": "OBP60 Page 5",
         "capabilities": {
             "obp60": "true"
@@ -2613,7 +2614,7 @@
         "label": "Field 3",
         "type": "boatData",
         "default": "",
-        "description": "The value for field three on page 5",
+        "description": "The display for field three",
         "category": "OBP60 Page 5",
         "capabilities": {
             "obp60": "true"
@@ -2644,7 +2645,7 @@
         "label": "Field 4",
         "type": "boatData",
         "default": "",
-        "description": "The value for field four on page 5",
+        "description": "The display for field four",
         "category": "OBP60 Page 5",
         "capabilities": {
             "obp60": "true"
@@ -2672,7 +2673,7 @@
         "label": "Field 5",
         "type": "boatData",
         "default": "",
-        "description": "The value for field five on page 5",
+        "description": "The display for field five",
         "category": "OBP60 Page 5",
         "capabilities": {
             "obp60": "true"
@@ -2691,7 +2692,7 @@
         "label": "Field 6",
         "type": "boatData",
         "default": "",
-        "description": "The value for field six on page 5",
+        "description": "The display for field six",
         "category": "OBP60 Page 5",
         "capabilities": {
             "obp60": "true"
@@ -2812,7 +2813,7 @@
         "label": "Field 1",
         "type": "boatData",
         "default": "",
-        "description": "The value for field one on page 6",
+        "description": "The display for field one",
         "category": "OBP60 Page 6",
         "capabilities": {
             "obp60": "true"
@@ -2855,7 +2856,7 @@
         "label": "Field 2",
         "type": "boatData",
         "default": "",
-        "description": "The value for field two on page 6",
+        "description": "The display for field two",
         "category": "OBP60 Page 6",
         "capabilities": {
             "obp60": "true"
@@ -2892,7 +2893,7 @@
         "label": "Field 3",
         "type": "boatData",
         "default": "",
-        "description": "The value for field three on page 6",
+        "description": "The display for field three",
         "category": "OBP60 Page 6",
         "capabilities": {
             "obp60": "true"
@@ -2923,7 +2924,7 @@
         "label": "Field 4",
         "type": "boatData",
         "default": "",
-        "description": "The value for field four on page 6",
+        "description": "The display for field four",
         "category": "OBP60 Page 6",
         "capabilities": {
             "obp60": "true"
@@ -2951,7 +2952,7 @@
         "label": "Field 5",
         "type": "boatData",
         "default": "",
-        "description": "The value for field five on page 6",
+        "description": "The display for field five",
         "category": "OBP60 Page 6",
         "capabilities": {
             "obp60": "true"
@@ -2970,7 +2971,7 @@
         "label": "Field 6",
         "type": "boatData",
         "default": "",
-        "description": "The value for field six on page 6",
+        "description": "The display for field six",
         "category": "OBP60 Page 6",
         "capabilities": {
             "obp60": "true"
@@ -3088,7 +3089,7 @@
         "label": "Field 1",
         "type": "boatData",
         "default": "",
-        "description": "The value for field one on page 7",
+        "description": "The display for field one",
         "category": "OBP60 Page 7",
         "capabilities": {
             "obp60": "true"
@@ -3131,7 +3132,7 @@
         "label": "Field 2",
         "type": "boatData",
         "default": "",
-        "description": "The value for field two on page 7",
+        "description": "The display for field two",
         "category": "OBP60 Page 7",
         "capabilities": {
             "obp60": "true"
@@ -3168,7 +3169,7 @@
         "label": "Field 3",
         "type": "boatData",
         "default": "",
-        "description": "The value for field three on page 7",
+        "description": "The display for field three",
         "category": "OBP60 Page 7",
         "capabilities": {
             "obp60": "true"
@@ -3199,7 +3200,7 @@
         "label": "Field 4",
         "type": "boatData",
         "default": "",
-        "description": "The value for field four on page 7",
+        "description": "The display for field four",
         "category": "OBP60 Page 7",
         "capabilities": {
             "obp60": "true"
@@ -3227,7 +3228,7 @@
         "label": "Field 5",
         "type": "boatData",
         "default": "",
-        "description": "The value for field five on page 7",
+        "description": "The display for field five",
         "category": "OBP60 Page 7",
         "capabilities": {
             "obp60": "true"
@@ -3246,7 +3247,7 @@
         "label": "Field 6",
         "type": "boatData",
         "default": "",
-        "description": "The value for field six on page 7",
+        "description": "The display for field six",
         "category": "OBP60 Page 7",
         "capabilities": {
             "obp60": "true"
@@ -3361,7 +3362,7 @@
         "label": "Field 1",
         "type": "boatData",
         "default": "",
-        "description": "The value for field one on page 8",
+        "description": "The display for field one",
         "category": "OBP60 Page 8",
         "capabilities": {
             "obp60": "true"
@@ -3404,7 +3405,7 @@
         "label": "Field 2",
         "type": "boatData",
         "default": "",
-        "description": "The value for field two on page 8",
+        "description": "The display for field two",
         "category": "OBP60 Page 8",
         "capabilities": {
             "obp60": "true"
@@ -3441,7 +3442,7 @@
         "label": "Field 3",
         "type": "boatData",
         "default": "",
-        "description": "The value for field three on page 8",
+        "description": "The display for field three",
         "category": "OBP60 Page 8",
         "capabilities": {
             "obp60": "true"
@@ -3472,7 +3473,7 @@
         "label": "Field 4",
         "type": "boatData",
         "default": "",
-        "description": "The value for field four on page 8",
+        "description": "The display for field four",
         "category": "OBP60 Page 8",
         "capabilities": {
             "obp60": "true"
@@ -3500,7 +3501,7 @@
         "label": "Field 5",
         "type": "boatData",
         "default": "",
-        "description": "The value for field five on page 8",
+        "description": "The display for field five",
         "category": "OBP60 Page 8",
         "capabilities": {
             "obp60": "true"
@@ -3519,7 +3520,7 @@
         "label": "Field 6",
         "type": "boatData",
         "default": "",
-        "description": "The value for field six on page 8",
+        "description": "The display for field six",
         "category": "OBP60 Page 8",
         "capabilities": {
             "obp60": "true"
@@ -3631,7 +3632,7 @@
         "label": "Field 1",
         "type": "boatData",
         "default": "",
-        "description": "The value for field one on page 9",
+        "description": "The display for field one",
         "category": "OBP60 Page 9",
         "capabilities": {
             "obp60": "true"
@@ -3674,7 +3675,7 @@
         "label": "Field 2",
         "type": "boatData",
         "default": "",
-        "description": "The value for field two on page 9",
+        "description": "The display for field two",
         "category": "OBP60 Page 9",
         "capabilities": {
             "obp60": "true"
@@ -3711,7 +3712,7 @@
         "label": "Field 3",
         "type": "boatData",
         "default": "",
-        "description": "The value for field three on page 9",
+        "description": "The display for field three",
         "category": "OBP60 Page 9",
         "capabilities": {
             "obp60": "true"
@@ -3742,7 +3743,7 @@
         "label": "Field 4",
         "type": "boatData",
         "default": "",
-        "description": "The value for field four on page 9",
+        "description": "The display for field four",
         "category": "OBP60 Page 9",
         "capabilities": {
             "obp60": "true"
@@ -3770,7 +3771,7 @@
         "label": "Field 5",
         "type": "boatData",
         "default": "",
-        "description": "The value for field five on page 9",
+        "description": "The display for field five",
         "category": "OBP60 Page 9",
         "capabilities": {
             "obp60": "true"
@@ -3789,7 +3790,7 @@
         "label": "Field 6",
         "type": "boatData",
         "default": "",
-        "description": "The value for field six on page 9",
+        "description": "The display for field six",
         "category": "OBP60 Page 9",
         "capabilities": {
             "obp60": "true"
@@ -3898,7 +3899,7 @@
         "label": "Field 1",
         "type": "boatData",
         "default": "",
-        "description": "The value for field one on page 10",
+        "description": "The display for field one",
         "category": "OBP60 Page 10",
         "capabilities": {
             "obp60": "true"
@@ -3941,7 +3942,7 @@
         "label": "Field 2",
         "type": "boatData",
         "default": "",
-        "description": "The value for field two on page 10",
+        "description": "The display for field two",
         "category": "OBP60 Page 10",
         "capabilities": {
             "obp60": "true"
@@ -3978,7 +3979,7 @@
         "label": "Field 3",
         "type": "boatData",
         "default": "",
-        "description": "The value for field three on page 10",
+        "description": "The display for field three",
         "category": "OBP60 Page 10",
         "capabilities": {
             "obp60": "true"
@@ -4009,7 +4010,7 @@
         "label": "Field 4",
         "type": "boatData",
         "default": "",
-        "description": "The value for field four on page 10",
+        "description": "The display for field four",
         "category": "OBP60 Page 10",
         "capabilities": {
             "obp60": "true"
@@ -4037,7 +4038,7 @@
         "label": "Field 5",
         "type": "boatData",
         "default": "",
-        "description": "The value for field five on page 10",
+        "description": "The display for field five",
         "category": "OBP60 Page 10",
         "capabilities": {
             "obp60": "true"
@@ -4056,7 +4057,7 @@
         "label": "Field 6",
         "type": "boatData",
         "default": "",
-        "description": "The value for field six on page 10",
+        "description": "The display for field six",
         "category": "OBP60 Page 10",
         "capabilities": {
             "obp60": "true"
