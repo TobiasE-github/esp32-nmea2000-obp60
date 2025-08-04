@@ -89,12 +89,6 @@ void ConfigMenuItem::setStep(uint16_t newstep) {
     step = newstep;
 }
 
-=======
-void ConfigMenuItem::setPos(int8_t newpos) {
-    position = newpos;
-};
-
->>>>>>> Start implementing config menu with page anchor
 int8_t ConfigMenuItem::getPos() {
     return position;
 };
@@ -125,15 +119,6 @@ ConfigMenuItem* ConfigMenu::addItem(String key, String label, String valtype, ui
     index[ix] = key;
     itm->setPos(ix);
     return itm;
-=======
-    ConfigMenuItem itm(valtype, "Test1");
-    return &itm;
-    // map.insert(std::pair<String, ConfigMenuItem>(itm));
-    // Append key to index
-    int8_t ix = items.size();
-    index[ix] = key;
-    itm.setPos(ix);
->>>>>>> Start implementing config menu with page anchor
 };
 
 void ConfigMenu::setItemDimension(uint16_t itemwidth, uint16_t itemheight) {
@@ -172,22 +157,6 @@ ConfigMenuItem* ConfigMenu::getItemByKey(String key) {
         return nullptr;
     }
     return items[key];
-=======
-    uint8_t ix = 
-    activeitem = ix;
-};
-
-ConfigMenuItem* ConfigMenu::getActiveItem() {
-    return nullptr;
-};
-
-ConfigMenuItem* ConfigMenu::getItemByIndex(uint8_t index) {
-    return nullptr;
-};
-
-ConfigMenuItem* ConfigMenu::getItemByKey(String Key) {
-    return nullptr;
->>>>>>> Start implementing config menu with page anchor
 };
 
 uint8_t ConfigMenu::getItemCount() {
@@ -223,16 +192,3 @@ Rect ConfigMenu::getItemRect(int8_t index) {
     return {static_cast<double>(x), static_cast<double>(y + index * h),
             static_cast<double>(w), static_cast<double>(h)};
 }
-=======
-Point ConfigMenu::getXY() {
-    return {x, y};
-}
-
-/*
-void getRect();
-void getItemRect();
-*/
-
-
-
->>>>>>> Start implementing config menu with page anchor
