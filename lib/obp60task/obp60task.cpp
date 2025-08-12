@@ -893,7 +893,7 @@ void OBP60Task(GwApi *api){
                 else{
                     getdisplay().fillScreen(commonData.fgcolor); // Clear display
                     #ifdef DISPLAY_GDEY042T81
-                        getdisplay().hibernate();                  // Set display in hybenate mode
+                        getdisplay().hibernate();                  // Set display in hybenate mode recent add, check
                         getdisplay().init(115200, true, 2, false); // Init for Waveshare boards with "clever" reset circuit, 2ms reset pulse
                     #else
                         getdisplay().init(115200);               // Init for normal displays
@@ -921,7 +921,7 @@ void OBP60Task(GwApi *api){
                 else{
                     getdisplay().fillScreen(commonData.fgcolor); // Clear display
                     #ifdef DISPLAY_GDEY042T81
-                        getdisplay().hibernate();                  // Set display in hybenate mode
+                        getdisplay().hibernate();                  // Set display in hybenate mode recent add, check
                         getdisplay().init(115200, true, 2, false); // Init for Waveshare boards with "clever" reset circuit, 2ms reset pulse
                     #else
                         getdisplay().init(115200);               // Init for normal displays
@@ -946,7 +946,7 @@ void OBP60Task(GwApi *api){
                 else{
                     getdisplay().fillScreen(commonData.fgcolor); // Clear display
                     #ifdef DISPLAY_GDEY042T81
-                        getdisplay().hibernate();                  // Set display in hybenate mode
+                        getdisplay().hibernate();                  // Set display in hybenate mode recent add, check
                         getdisplay().init(115200, true, 2, false); // Init for Waveshare boards with "clever" reset circuit, 2ms reset pulse
                     #else
                         getdisplay().init(115200);               // Init for normal displays
