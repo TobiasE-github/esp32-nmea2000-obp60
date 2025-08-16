@@ -35,7 +35,7 @@ public:
 			    ssource = "App.";
 		    } 
 	    } 
-	    return 0;               // Commit the key
+	    return key;               // Commit the key
 
         // Code for keylock
         if(key == 11){
