@@ -29,10 +29,10 @@ public:
 		    // Code for set source 
 		    if(source == 'A'){ 
 			    source = 'T'; 
-			    ssource = "True";
+			    ssource = "True"; // String to display
 		    } else { 
 			    source = 'A'; 
-			    ssource = "App.";
+			    ssource = "App."; // String to display
 		    } 
 	    } 
 	    return key;               // Commit the key
@@ -78,10 +78,8 @@ public:
 
 	// Get boat values for speed (AWA/TWA), shown by Pointer
         if (source == 'A') {
-            //bvalue1 = pageData.values[0];
             bvalue1 = pageData.values[4];
         } else {
-            //bvalue1 = pageData.values[2];
             bvalue1 = pageData.values[6];
         }
         String name1 = bvalue1->getName().c_str();      // Value name
@@ -98,10 +96,8 @@ public:
 
 	// Get boat values for angle (AWS/TWS), shown in top left corner
         if (source == 'A') {
-            //bvalue2 = pageData.values[1];
             bvalue2 =pageData.values[5];
         } else {
-            //bvalue2 = pageData.values[3];
             bvalue2 = pageData.values[7];
         }
         String name2 = bvalue2->getName().c_str();      // Value name
@@ -122,7 +118,6 @@ public:
 
 
         // Get boat values for bottom left  corner
-        //GwApi::BoatValue *bvalue3 = pageData.values[4]; 
         GwApi::BoatValue *bvalue3 = pageData.values[0]; 
         String name3 = xdrDelete(bvalue3->getName());   // Value name
         name3 = name3.substring(0, 6);                  // String length limit for value name
@@ -137,7 +132,6 @@ public:
         }
 
         // Get boat values  for top right corner
-        //GwApi::BoatValue *bvalue4 = pageData.values[5]; 
         GwApi::BoatValue *bvalue4 = pageData.values[1]; 
         String name4 = xdrDelete(bvalue4->getName());      // Value name
         name4 = name4.substring(0, 6);                  // String length limit for value name
@@ -152,7 +146,6 @@ public:
         }
 
         // Get boat values bottom right conder
-        //GwApi::BoatValue *bvalue5 = pageData.values[6]; 
         GwApi::BoatValue *bvalue5 = pageData.values[2]; 
         String name5 = xdrDelete(bvalue5->getName());      // Value name
         name5 = name5.substring(0, 6);                  // String length limit for value name
@@ -167,7 +160,6 @@ public:
         }
 
         // Get boat values for center
-        //GwApi::BoatValue *bvalue6 = pageData.values[7]; 
         GwApi::BoatValue *bvalue6 = pageData.values[3]; 
         String name6 = xdrDelete(bvalue6->getName());      // Value name
         name6 = name6.substring(0, 6);                  // String length limit for value name
@@ -199,7 +191,7 @@ public:
 
         getdisplay().setTextColor(commonData->fgcolor);
 
-        // Show value 2 at position of value 1 (top left)
+	// top left
         getdisplay().setFont(&DSEG7Classic_BoldItalic20pt7b);
         getdisplay().setCursor(10, 65);
         getdisplay().print(svalue2);                     // Value
@@ -219,7 +211,7 @@ public:
         // Horizintal separator left
         getdisplay().fillRect(0, 149, 60, 3, commonData->fgcolor);
 
-        // Show value 3 at bottom left
+        // bottom left
         getdisplay().setFont(&DSEG7Classic_BoldItalic20pt7b);
         getdisplay().setCursor(10, 270);
         getdisplay().print(svalue3);                     // Value
@@ -236,11 +228,10 @@ public:
             getdisplay().print(unit3old);                // Unit
         }
 
-        // Show value 4 at top right
+        // top right
         getdisplay().setFont(&DSEG7Classic_BoldItalic20pt7b);
         getdisplay().setCursor(295, 65);
         if(valid3 == true){
-           // getdisplay().print(abs(value3 * 180 / PI), 0);   // Value          
             getdisplay().print(svalue4);     // Value
         }
         else{
@@ -262,7 +253,7 @@ public:
         // Horizintal separator right
         getdisplay().fillRect(340, 149, 80, 3, commonData->fgcolor);
 
-        // Show value 5 at bottom right
+        // bottom right
         getdisplay().setFont(&DSEG7Classic_BoldItalic20pt7b);
         getdisplay().setCursor(295, 270);
         getdisplay().print(svalue5);                     // Value
@@ -379,7 +370,7 @@ public:
 
 //*******************************************************************************************
 
-// Show value6, so that it does not collide with the wind pointer
+// Show value4 and ssource,  so that they do not collide with the wind pointer
 if ( cos(value1) > 0){ 
     getdisplay().setFont(&DSEG7Classic_BoldItalic16pt7b);
     getdisplay().setCursor(160, 200);
@@ -393,10 +384,15 @@ if ( cos(value1) > 0){
     else{  
         getdisplay().print(unit6old);                // Unit
     }
-    getdisplay().setCursor(160, 130);
-    getdisplay().print(ssource);
+    if (sin(value1)>0){
+	    getdisplay().setCursor(160, 130);
     }
-    else{ 
+    else{
+	    getdisplay().setCursor(220, 130);
+    }
+    getdisplay().print(ssource);		// true or app.
+}
+else{ 
     getdisplay().setFont(&DSEG7Classic_BoldItalic16pt7b);
     getdisplay().setCursor(160, 130);
     getdisplay().print(svalue6);                     // Value
@@ -409,9 +405,14 @@ if ( cos(value1) > 0){
     else{  
         getdisplay().print(unit6old);                // Unit
     }
-    getdisplay().setCursor(160, 200);
-    getdisplay().print(ssource);
+    if (sin(value1)>0){
+	    getdisplay().setCursor(160, 130);
     }
+    else{
+	    getdisplay().setCursor(220, 130);
+    }
+    getdisplay().print(ssource);		//true or app. 
+}
     
 
         // Update display
@@ -423,13 +424,6 @@ if ( cos(value1) > 0){
 static Page *createPage(CommonData &common){
     return new PageWindRoseFlex2(common);
 }
-/**
- * with the code below we make this page known to the PageTask
- * we give it a type (name) that can be selected in the config
- * we define which function is to be called
- * and we provide the number of user parameters we expect (0 here)
- * and will will provide the names of the fixed values we need
- */
 PageDescription registerPageWindRoseFlex2(
     "WindRoseFlex2",         // Page name
     createPage,         // Action
