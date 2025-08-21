@@ -1311,7 +1311,6 @@
             "obp60":"true"
         }
     },
-
     {
         "name": "page1type",
         "label": "Type",
@@ -1343,7 +1342,6 @@
             "WindPlot",
             "WindRose",
             "WindRoseFlex",
-            "WindRoseFlex2",
             "XTETrack"
         ],
         "category": "OBP60 Page 1",
@@ -1420,9 +1418,6 @@
             },
             {
                 "page1type": "WindRoseFlex"
-            },
-            {
-                "page1type": "WindRoseFlex2"
             }
         ]
     },
@@ -1457,9 +1452,6 @@
             },
             {
                 "page1type": "WindRoseFlex"
-            },
-            {
-                "page1type": "WindRoseFlex2"
             }
         ]
     },
@@ -1488,9 +1480,6 @@
             },
             {
                 "page1type": "WindRoseFlex"
-            },
-            {
-                "page1type": "WindRoseFlex2"
             }
         ]
     },
@@ -1516,9 +1505,6 @@
             },
             {
                 "page1type": "WindRoseFlex"
-            },
-            {
-                "page1type": "WindRoseFlex2"
             }
         ]
     },
@@ -1631,7 +1617,6 @@
             "WindPlot",
             "WindRose",
             "WindRoseFlex",
-            "WindRoseFlex2",
             "XTETrack"
         ],
         "category": "OBP60 Page 2",
@@ -1705,9 +1690,6 @@
             },
             {
                 "page2type": "WindRoseFlex"
-            },
-            {
-                "page2type": "WindRoseFlex2"
             }
         ]
     },
@@ -1742,9 +1724,6 @@
             },
             {
                 "page2type": "WindRoseFlex"
-            },
-            {
-                "page2type": "WindRoseFlex2"
             }
         ]
     },
@@ -1773,9 +1752,6 @@
             },
             {
                 "page2type": "WindRoseFlex"
-            },
-            {
-                "page2type": "WindRoseFlex2"
             }
         ]
     },
@@ -1801,9 +1777,6 @@
             },
             {
                 "page2type": "WindRoseFlex"
-            },
-            {
-                "page2type": "WindRoseFlex2"
             }
         ]
     },
@@ -1916,7 +1889,6 @@
             "WindPlot",
             "WindRose",
             "WindRoseFlex",
-            "WindRoseFlex2",
             "XTETrack"
         ],
         "category": "OBP60 Page 3",
@@ -1987,9 +1959,6 @@
             },
             {
                 "page3type": "WindRoseFlex"
-            },
-            {
-                "page3type": "WindRoseFlex2"
             }
         ]
     },
@@ -2024,9 +1993,6 @@
             },
             {
                 "page3type": "WindRoseFlex"
-            },
-            {
-                "page3type": "WindRoseFlex2"
             }
         ]
     },
@@ -2055,9 +2021,6 @@
             },
             {
                 "page3type": "WindRoseFlex"
-            },
-            {
-                "page3type": "WindRoseFlex2"
             }
         ]
     },
@@ -2083,9 +2046,6 @@
             },
             {
                 "page3type": "WindRoseFlex"
-            },
-            {
-                "page3type": "WindRoseFlex2"
             }
         ]
     },
@@ -2198,7 +2158,6 @@
             "WindPlot",
             "WindRose",
             "WindRoseFlex",
-            "WindRoseFlex2",
             "XTETrack"
         ],
         "category": "OBP60 Page 4",
@@ -2266,9 +2225,6 @@
             },
             {
                 "page4type": "WindRoseFlex"
-            },
-            {
-                "page4type": "WindRoseFlex2"
             }
         ]
     },
@@ -2303,9 +2259,6 @@
             },
             {
                 "page4type": "WindRoseFlex"
-            },
-            {
-                "page4type": "WindRoseFlex2"
             }
         ]
     },
@@ -2334,9 +2287,6 @@
             },
             {
                 "page4type": "WindRoseFlex"
-            },
-            {
-                "page4type": "WindRoseFlex2"
             }
         ]
     },
@@ -2362,9 +2312,6 @@
             },
             {
                 "page4type": "WindRoseFlex"
-            },
-            {
-                "page4type": "WindRoseFlex2"
             }
         ]
     },
@@ -2477,7 +2424,6 @@
             "WindPlot",
             "WindRose",
             "WindRoseFlex",
-            "WindRoseFlex2",
             "XTETrack"
         ],
         "category": "OBP60 Page 5",
@@ -2542,9 +2488,6 @@
             },
             {
                 "page5type": "WindRoseFlex"
-            },
-            {
-                "page5type": "WindRoseFlex2"
             }
         ]
     },
@@ -2579,9 +2522,6 @@
             },
             {
                 "page5type": "WindRoseFlex"
-            },
-            {
-                "page5type": "WindRoseFlex2"
             }
         ]
     },
@@ -2610,9 +2550,6 @@
             },
             {
                 "page5type": "WindRoseFlex"
-            },
-            {
-                "page5type": "WindRoseFlex2"
             }
         ]
     },
@@ -2638,9 +2575,6 @@
             },
             {
                 "page5type": "WindRoseFlex"
-            },
-            {
-                "page5type": "WindRoseFlex2"
             }
         ]
     },
@@ -2753,7 +2687,6 @@
             "WindPlot",
             "WindRose",
             "WindRoseFlex",
-            "WindRoseFlex2",
             "XTETrack"
         ],
         "category": "OBP60 Page 6",
@@ -2815,9 +2748,6 @@
             },
             {
                 "page6type": "WindRoseFlex"
-            },
-            {
-                "page6type": "WindRoseFlex2"
             }
         ]
     },
@@ -2852,9 +2782,6 @@
             },
             {
                 "page6type": "WindRoseFlex"
-            },
-            {
-                "page6type": "WindRoseFlex2"
             }
         ]
     },
@@ -2883,9 +2810,6 @@
             },
             {
                 "page6type": "WindRoseFlex"
-            },
-            {
-                "page6type": "WindRoseFlex2"
             }
         ]
     },
@@ -2911,9 +2835,6 @@
             },
             {
                 "page6type": "WindRoseFlex"
-            },
-            {
-                "page6type": "WindRoseFlex2"
             }
         ]
     },
@@ -3026,7 +2947,6 @@
             "WindPlot",
             "WindRose",
             "WindRoseFlex",
-            "WindRoseFlex2",
             "XTETrack"
         ],
         "category": "OBP60 Page 7",
@@ -3085,9 +3005,6 @@
             },
             {
                 "page7type": "WindRoseFlex"
-            },
-            {
-                "page7type": "WindRoseFlex2"
             }
         ]
     },
@@ -3122,9 +3039,6 @@
             },
             {
                 "page7type": "WindRoseFlex"
-            },
-            {
-                "page7type": "WindRoseFlex2"
             }
         ]
     },
@@ -3153,9 +3067,6 @@
             },
             {
                 "page7type": "WindRoseFlex"
-            },
-            {
-                "page7type": "WindRoseFlex2"
             }
         ]
     },
@@ -3181,9 +3092,6 @@
             },
             {
                 "page7type": "WindRoseFlex"
-            },
-            {
-                "page7type": "WindRoseFlex2"
             }
         ]
     },
@@ -3296,7 +3204,6 @@
             "WindPlot",
             "WindRose",
             "WindRoseFlex",
-            "WindRoseFlex2",
             "XTETrack"
         ],
         "category": "OBP60 Page 8",
@@ -3352,9 +3259,6 @@
             },
             {
                 "page8type": "WindRoseFlex"
-            },
-            {
-                "page8type": "WindRoseFlex2"
             }
         ]
     },
@@ -3389,9 +3293,6 @@
             },
             {
                 "page8type": "WindRoseFlex"
-            },
-            {
-                "page8type": "WindRoseFlex2"
             }
         ]
     },
@@ -3420,9 +3321,6 @@
             },
             {
                 "page8type": "WindRoseFlex"
-            },
-            {
-                "page8type": "WindRoseFlex2"
             }
         ]
     },
@@ -3448,9 +3346,6 @@
             },
             {
                 "page8type": "WindRoseFlex"
-            },
-            {
-                "page8type": "WindRoseFlex2"
             }
         ]
     },
@@ -3563,7 +3458,6 @@
             "WindPlot",
             "WindRose",
             "WindRoseFlex",
-            "WindRoseFlex2",
             "XTETrack"
         ],
         "category": "OBP60 Page 9",
@@ -3616,9 +3510,6 @@
             },
             {
                 "page9type": "WindRoseFlex"
-            },
-            {
-                "page9type": "WindRoseFlex2"
             }
         ]
     },
@@ -3653,9 +3544,6 @@
             },
             {
                 "page9type": "WindRoseFlex"
-            },
-            {
-                "page9type": "WindRoseFlex2"
             }
         ]
     },
@@ -3684,9 +3572,6 @@
             },
             {
                 "page9type": "WindRoseFlex"
-            },
-            {
-                "page9type": "WindRoseFlex2"
             }
         ]
     },
@@ -3712,9 +3597,6 @@
             },
             {
                 "page9type": "WindRoseFlex"
-            },
-            {
-                "page9type": "WindRoseFlex2"
             }
         ]
     },
@@ -3827,7 +3709,6 @@
             "WindPlot",
             "WindRose",
             "WindRoseFlex",
-            "WindRoseFlex2",
             "XTETrack"
         ],
         "category": "OBP60 Page 10",
@@ -3877,9 +3758,6 @@
             },
             {
                 "page10type": "WindRoseFlex"
-            },
-            {
-                "page10type": "WindRoseFlex2"
             }
         ]
     },
@@ -3914,9 +3792,6 @@
             },
             {
                 "page10type": "WindRoseFlex"
-            },
-            {
-                "page10type": "WindRoseFlex2"
             }
         ]
     },
@@ -3945,9 +3820,6 @@
             },
             {
                 "page10type": "WindRoseFlex"
-            },
-            {
-                "page10type": "WindRoseFlex2"
             }
         ]
     },
@@ -3973,9 +3845,6 @@
             },
             {
                 "page10type": "WindRoseFlex"
-            },
-            {
-                "page10type": "WindRoseFlex2"
             }
         ]
     },

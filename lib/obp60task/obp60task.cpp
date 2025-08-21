@@ -110,79 +110,79 @@ void OBP60Init(GwApi *api){
     logger->logDebug(GwLog::DEBUG,"LED Mode is: %s", ledMode.c_str());
     if(String(ledMode) == "Off"){
         setBlinkingLED(false);
-}
+    }
 
-// Marker for init complete
-// Used in OBP60Task()
-initComplete = true;
+    // Marker for init complete
+    // Used in OBP60Task()
+    initComplete = true;
 
-// Buzzer tone for initialization finish
-setBuzzerPower(uint(api->getConfig()->getConfigItem(api->getConfig()->buzzerPower,true)->asInt()));
-buzzer(TONE4, 500);
+    // Buzzer tone for initialization finish
+    setBuzzerPower(uint(api->getConfig()->getConfigItem(api->getConfig()->buzzerPower,true)->asInt()));
+    buzzer(TONE4, 500);
 
 }
 
 typedef struct {
-int page0=0;
-QueueHandle_t queue;
-GwLog* logger = NULL;
+        int page0=0;
+        QueueHandle_t queue;
+        GwLog* logger = NULL;
 //        GwApi* api = NULL;
-uint sensitivity = 100;
-bool use_syspage = true;
-} MyData;
+        uint sensitivity = 100;
+        bool use_syspage = true;
+    } MyData;
 
 // Keyboard Task
 void keyboardTask(void *param){
-MyData *data=(MyData *)param;
+    MyData *data=(MyData *)param;
 
-int keycode = 0;
-data->logger->logDebug(GwLog::LOG,"Start keyboard task");
+    int keycode = 0;
+    data->logger->logDebug(GwLog::LOG,"Start keyboard task");
 
-// Loop for keyboard task
-while (true){
-keycode = readKeypad(data->logger, data->sensitivity, data->use_syspage);
-//send a key event
-if(keycode != 0){
-    xQueueSend(data->queue, &keycode, 0);
-    data->logger->logDebug(GwLog::LOG,"Send keycode: %d", keycode);
-}
-delay(20);      // 50Hz update rate (20ms)
-}
-vTaskDelete(NULL);
+    // Loop for keyboard task
+    while (true){
+        keycode = readKeypad(data->logger, data->sensitivity, data->use_syspage);
+        //send a key event
+        if(keycode != 0){
+            xQueueSend(data->queue, &keycode, 0);
+            data->logger->logDebug(GwLog::LOG,"Send keycode: %d", keycode);
+        }
+        delay(20);      // 50Hz update rate (20ms)
+    }
+    vTaskDelete(NULL);
 }
 
 class BoatValueList{
-public:
-static const int MAXVALUES=100;
-//we create a list containing all our BoatValues
-//this is the list we later use to let the api fill all the values
-//additionally we put the necessary values into the paga data - see below
-GwApi::BoatValue *allBoatValues[MAXVALUES];
-int numValues=0;
-
-bool addValueToList(GwApi::BoatValue *v){
-for (int i=0;i<numValues;i++){
-    if (allBoatValues[i] == v){
-	//already in list...
-	return true;
+    public:
+    static const int MAXVALUES=100;
+    //we create a list containing all our BoatValues
+    //this is the list we later use to let the api fill all the values
+    //additionally we put the necessary values into the paga data - see below
+    GwApi::BoatValue *allBoatValues[MAXVALUES];
+    int numValues=0;
+    
+    bool addValueToList(GwApi::BoatValue *v){
+        for (int i=0;i<numValues;i++){
+            if (allBoatValues[i] == v){
+                //already in list...
+                return true;
+            }
+        }
+        if (numValues >= MAXVALUES) return false;
+        allBoatValues[numValues]=v;
+        numValues++;
+        return true;
     }
-}
-if (numValues >= MAXVALUES) return false;
-allBoatValues[numValues]=v;
-numValues++;
-return true;
-}
-//helper to ensure that each BoatValue is only queried once
-GwApi::BoatValue *findValueOrCreate(String name){
-for (int i=0;i<numValues;i++){
-    if (allBoatValues[i]->getName() == name) {
-	return allBoatValues[i];
+    //helper to ensure that each BoatValue is only queried once
+    GwApi::BoatValue *findValueOrCreate(String name){
+        for (int i=0;i<numValues;i++){
+            if (allBoatValues[i]->getName() == name) {
+                return allBoatValues[i];
+            }
+        }
+        GwApi::BoatValue *rt=new GwApi::BoatValue(name);
+        addValueToList(rt);
+        return rt;
     }
-}
-GwApi::BoatValue *rt=new GwApi::BoatValue(name);
-addValueToList(rt);
-return rt;
-}
 };
 
 //we want to have a list that has all our page definitions
@@ -191,26 +191,26 @@ return rt;
 typedef std::vector<PageDescription*> Pages;
 //the page list class
 class PageList{
-public:
-Pages pages;
-void add(PageDescription *p){
-    pages.push_back(p);
-}
-PageDescription *find(String name){
-    for (auto it=pages.begin();it != pages.end();it++){
-	if ((*it)->pageName == name){
-	    return *it;
-	}
-    }
-    return NULL;
-}
+    public:
+        Pages pages;
+        void add(PageDescription *p){
+            pages.push_back(p);
+        }
+        PageDescription *find(String name){
+            for (auto it=pages.begin();it != pages.end();it++){
+                if ((*it)->pageName == name){
+                    return *it;
+                }
+            }
+            return NULL;
+        }
 };
 
 /**
-* this function will add all the pages we know to the pagelist
-* each page should have defined a registerXXXPage variable of type
-* PageData that describes what it needs
-*/
+ * this function will add all the pages we know to the pagelist
+ * each page should have defined a registerXXXPage variable of type
+ * PageData that describes what it needs
+ */
 void registerAllPages(PageList &list){
     //the next line says that this variable is defined somewhere else
     //in our case in a separate C++ source file
@@ -239,9 +239,7 @@ void registerAllPages(PageList &list){
     extern PageDescription registerPageWindRose;
     list.add(&registerPageWindRose);
     extern PageDescription registerPageWindRoseFlex;
-    list.add(&registerPageWindRoseFlex);  
-    extern PageDescription registerPageWindRoseFlex2;
-    list.add(&registerPageWindRoseFlex2);  
+    list.add(&registerPageWindRoseFlex);
     extern PageDescription registerPageVoltage;
     list.add(&registerPageVoltage);
     extern PageDescription registerPageDST810;
@@ -932,7 +930,7 @@ void OBP60Task(GwApi *api){
                 else{
                     getdisplay().fillScreen(commonData.fgcolor); // Clear display
                     #ifdef DISPLAY_GDEY042T81
-                        getdisplay().hibernate();                  // Set display in hybenate mode recent add, check
+                        getdisplay().hibernate();                  // Set display in hybenate mode
                         getdisplay().init(115200, true, 2, false); // Init for Waveshare boards with "clever" reset circuit, 2ms reset pulse
                     #else
                         getdisplay().init(115200);               // Init for normal displays
@@ -960,7 +958,7 @@ void OBP60Task(GwApi *api){
                 else{
                     getdisplay().fillScreen(commonData.fgcolor); // Clear display
                     #ifdef DISPLAY_GDEY042T81
-                        getdisplay().hibernate();                  // Set display in hybenate mode recent add, check
+                        getdisplay().hibernate();                  // Set display in hybenate mode
                         getdisplay().init(115200, true, 2, false); // Init for Waveshare boards with "clever" reset circuit, 2ms reset pulse
                     #else
                         getdisplay().init(115200);               // Init for normal displays
@@ -985,7 +983,7 @@ void OBP60Task(GwApi *api){
                 else{
                     getdisplay().fillScreen(commonData.fgcolor); // Clear display
                     #ifdef DISPLAY_GDEY042T81
-                        getdisplay().hibernate();                  // Set display in hybenate mode recent add, check
+                        getdisplay().hibernate();                  // Set display in hybenate mode
                         getdisplay().init(115200, true, 2, false); // Init for Waveshare boards with "clever" reset circuit, 2ms reset pulse
                     #else
                         getdisplay().init(115200);               // Init for normal displays
