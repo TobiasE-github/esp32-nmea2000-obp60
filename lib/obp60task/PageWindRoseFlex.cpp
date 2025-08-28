@@ -58,6 +58,11 @@ public:
         static String unit5old = "";
         static String svalue6old = "";
         static String unit6old = "";
+        static GFXfont name3font;
+        static GFXfont name4font;
+        static GFXfont name5font;
+        static GFXfont name6font;
+
 
         // Get config data
         String lengthformat = config->getString(config->lengthFormat);
@@ -114,6 +119,12 @@ public:
         GwApi::BoatValue *bvalue3 = pageData.values[0]; 
         String name3 = xdrDelete(bvalue3->getName());   // Value name
         name3 = name3.substring(0, 6);                  // String length limit for value name
+        if (name3.length()>3){
+            name3font=Ubuntu_Bold8pt8b;
+        }
+        else{
+            name3font=Ubuntu_Bold12pt8b;
+        }
         calibrationData.calibrateInstance(bvalue3, logger); // Check if boat data value is to be calibrated
         double value3 = bvalue3->value;                 // Value as double in SI unit
         bool valid3 = bvalue3->valid;                   // Valid information 
@@ -209,7 +220,7 @@ public:
         getdisplay().setFont(&DSEG7Classic_BoldItalic20pt7b);
         getdisplay().setCursor(10, 270);
         getdisplay().print(svalue3);                     // Value
-        getdisplay().setFont(&Ubuntu_Bold12pt8b);
+        getdisplay().setFont(&name3font);
         getdisplay().setCursor(10, 220);
         getdisplay().print(name3);                       // Name
         getdisplay().setFont(&Ubuntu_Bold8pt8b);
