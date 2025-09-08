@@ -117,9 +117,9 @@ public:
 
         // Get boat value for bottom left  corner
         GwApi::BoatValue *bvalue3 = pageData.values[0]; 
-       // String name3 = xdrDelete(bvalue3->getName());   // Value name
-        String name3 = "Foo";   // Value name
-       // String name3 = "FooBar";   // Value name
+        //String name3 = xdrDelete(bvalue3->getName());   // Value name
+        //String name3 = "Foo";   // Value name
+        String name3 = "FooBar";   // Value name
        // String name3 = "FooBarFoo";   // Value name
 
         name3 = name3.substring(0, 6);                  // String length limit for value name
@@ -141,8 +141,15 @@ public:
 
         // Get boat value  for top right corner
         GwApi::BoatValue *bvalue4 = pageData.values[1]; 
-        String name4 = xdrDelete(bvalue4->getName());      // Value name
+        //String name4 = xdrDelete(bvalue4->getName());      // Value name
+        String name4 = "tolongFooBar";   // Value name
         name4 = name4.substring(0, 6);                  // String length limit for value name
+        if (name4.length()>3){
+            name4font=Ubuntu_Bold8pt8b;
+        }
+        else{
+            name4font=Ubuntu_Bold12pt8b;
+        }
         calibrationData.calibrateInstance(bvalue4, logger); // Check if boat data value is to be calibrated
         double value4 = bvalue4->value;                 // Value as double in SI unit
         bool valid4 = bvalue4->valid;                   // Valid information 
@@ -157,6 +164,12 @@ public:
         GwApi::BoatValue *bvalue5 = pageData.values[2]; 
         String name5 = xdrDelete(bvalue5->getName());      // Value name
         name5 = name5.substring(0, 6);                  // String length limit for value name
+        if (name5.length()>3){
+            name5font=Ubuntu_Bold8pt8b;
+        }
+        else{
+            name5font=Ubuntu_Bold12pt8b;
+        }
         calibrationData.calibrateInstance(bvalue5, logger); // Check if boat data value is to be calibrated
         double value5 = bvalue5->value;                 // Value as double in SI unit
         bool valid5 = bvalue5->valid;                   // Valid information 
@@ -171,6 +184,12 @@ public:
         GwApi::BoatValue *bvalue6 = pageData.values[3]; 
         String name6 = xdrDelete(bvalue6->getName());      // Value name
         name6 = name6.substring(0, 6);                  // String length limit for value name
+        if (name6.length()>3){
+            name6font=Ubuntu_Bold8pt8b;
+        }
+        else{
+            name6font=Ubuntu_Bold12pt8b;
+        }
         calibrationData.calibrateInstance(bvalue6, logger); // Check if boat data value is to be calibrated
         double value6 = bvalue6->value;                 // Value as double in SI unit
         bool valid6 = bvalue6->valid;                   // Valid information 
@@ -225,6 +244,7 @@ public:
         getdisplay().setCursor(10, 270);
         getdisplay().print(svalue3);                     // Value
         getdisplay().setFont(&name3font);
+       // getdisplay().setFont(&Ubuntu_Bold12pt8b);
         getdisplay().setCursor(10, 220);
         getdisplay().print(name3);                       // Name
         getdisplay().setFont(&Ubuntu_Bold8pt8b);
@@ -246,10 +266,12 @@ public:
         else{
             getdisplay().print("---");                   // Value
         }
-        getdisplay().setFont(&Ubuntu_Bold12pt8b);
+       // getdisplay().setFont(&Ubuntu_Bold12pt8b);
+        getdisplay().setFont(&name4font);
         getdisplay().setCursor(335, 95);
         getdisplay().print(name4);                       // Name
         getdisplay().setFont(&Ubuntu_Bold8pt8b);
+        getdisplay().setFont(&name3font);
         getdisplay().setCursor(335, 115);
         getdisplay().print(" ");
         if(holdvalues == false){
@@ -266,7 +288,8 @@ public:
         getdisplay().setFont(&DSEG7Classic_BoldItalic20pt7b);
         getdisplay().setCursor(295, 270);
         getdisplay().print(svalue5);                     // Value
-        getdisplay().setFont(&Ubuntu_Bold12pt8b);
+        //getdisplay().setFont(&Ubuntu_Bold12pt8b);
+        getdisplay().setFont(&name5font);
         getdisplay().setCursor(335, 220);
         getdisplay().print(name5);                       // Name
         getdisplay().setFont(&Ubuntu_Bold8pt8b);
