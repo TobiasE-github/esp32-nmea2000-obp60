@@ -268,7 +268,7 @@ public:
         }
        // getdisplay().setFont(&Ubuntu_Bold12pt8b);
         getdisplay().setFont(&name4font);
-        getdisplay().setCursor(335, 95);
+        getdisplay().setCursor(325, 95);
         getdisplay().print(name4);                       // Name
         getdisplay().setFont(&Ubuntu_Bold8pt8b);
         getdisplay().setFont(&name3font);
