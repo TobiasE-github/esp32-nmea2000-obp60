@@ -124,7 +124,7 @@ public:
 
         name3 = name3.substring(0, 6);                  // String length limit for value name
         if (name3.length()>3){
-            name3font=Ubuntu_Bold8pt8b;
+            name3font=Ubuntu_Bold10pt8b;
         }
         else{
             name3font=Ubuntu_Bold12pt8b;
@@ -142,10 +142,10 @@ public:
         // Get boat value  for top right corner
         GwApi::BoatValue *bvalue4 = pageData.values[1]; 
         //String name4 = xdrDelete(bvalue4->getName());      // Value name
-        String name4 = "tolongFooBar";   // Value name
+        String name4 = "toolongFooBar";   // Value name
         name4 = name4.substring(0, 6);                  // String length limit for value name
         if (name4.length()>3){
-            name4font=Ubuntu_Bold8pt8b;
+            name4font=Ubuntu_Bold10pt8b;
         }
         else{
             name4font=Ubuntu_Bold12pt8b;
