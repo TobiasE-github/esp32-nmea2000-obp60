@@ -255,13 +255,8 @@ public:
 
         // Show value 4 (=second user-configured parameter) at top right
         getdisplay().setFont(&DSEG7Classic_BoldItalic20pt7b);
-        getdisplay().setCursor(295, 65);
-        if(valid4 == true){
-            getdisplay().print(svalue4);     // Value
-        }
-        else{
-            getdisplay().print("---");                   // Value
-        }
+        getdisplay().setCursor(295, 65); 
+        getdisplay().print(svalue4);     // Value
         getdisplay().setFont(&name4font);
         getdisplay().setCursor(325, 95);
         getdisplay().print(name4);                       // Name
@@ -286,7 +281,7 @@ public:
         getdisplay().setCursor(325, 220);
         getdisplay().print(name5);                       // Name
         getdisplay().setFont(&Ubuntu_Bold8pt8b);
-        getdisplay().setCursor(335, 190);
+        getdisplay().setCursor(325, 190);
         getdisplay().print(" ");
         if(holdvalues == false){
             getdisplay().print(unit5);                   // Unit
