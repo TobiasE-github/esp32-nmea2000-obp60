@@ -118,8 +118,6 @@ public:
         // Get boat value for bottom left  corner
         GwApi::BoatValue *bvalue3 = pageData.values[0]; 
         String name3 = xdrDelete(bvalue3->getName());   // Value name
-
-
         name3 = name3.substring(0, 6);                  // String length limit for value name
         if (name3.length()>3){
             name3font=Ubuntu_Bold10pt8b;
