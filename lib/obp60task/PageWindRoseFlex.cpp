@@ -8,7 +8,7 @@ class PageWindRoseFlex : public Page
 {
 int16_t lp = 80;                    // Pointer length
 char source = 'A';		    // data source (A)pparent | (T)rue
-String 	ssource="App.";		    // String for Data Source 
+String 	ssource="A";		    // String for Data Source 
 
 public:
     PageWindRoseFlex(CommonData &common){
@@ -26,10 +26,10 @@ public:
 	 // Code for set source 
 	    if(source == 'A'){ 
 		    source = 'T'; 
-		    ssource = "True"; // String to display
+		    ssource = "T"; // String to display
 	    } else { 
 		    source = 'A'; 
-		    ssource = "App."; // String to display
+		    ssource = "A"; // String to display
 	    } 
 	   } 
 	return key;               // Commit the key
@@ -381,8 +381,13 @@ public:
         }
 
         // Center circle
-        getdisplay().fillCircle(200, 150, startwidth + 6, commonData->bgcolor);
-        getdisplay().fillCircle(200, 150, startwidth + 4, commonData->fgcolor);
+        getdisplay().fillCircle(200, 150, startwidth + 8, commonData->bgcolor);
+        getdisplay().fillCircle(200, 150, startwidth + 6, commonData->fgcolor);
+        getdisplay().fillCircle(200, 150, startwidth + 4, commonData->bgcolor);
+    	getdisplay().setFont(&Ubuntu_Bold10pt8b);
+    	getdisplay().setCursor(194, 155);
+    	getdisplay().print(ssource); 
+
 
 //*******************************************************************************************
 
@@ -401,13 +406,14 @@ if ( cos(value1) > 0){
     else{  
         getdisplay().print(unit6old);                // Unit
     }
-    if (sin(value1)>0){
+    /*if (sin(value1)>0){
 	    getdisplay().setCursor(160, 130);
     }
     else{
 	    getdisplay().setCursor(220, 130);
     }
     getdisplay().print(ssource);		// true or app.
+    */
 }
 else{ 
     // pointer points downwards
@@ -423,13 +429,14 @@ else{
     else{  
         getdisplay().print(unit6old);                // Unit
     }
-    if (sin(value1)>0){
+    /*if (sin(value1)>0){
 	    getdisplay().setCursor(160, 200);
     }
     else{
 	    getdisplay().setCursor(220, 200);
     }
     getdisplay().print(ssource);		//true or app. 
+    */
 }
 
         return PAGE_UPDATE;
