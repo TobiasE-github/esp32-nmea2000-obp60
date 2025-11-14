@@ -8,7 +8,7 @@ class PageWindRoseFlex : public Page
 {
 int16_t lp = 80;                    // Pointer length
 char source = 'A';		    // data source (A)pparent | (T)rue
-String 	ssource="A";		    // String for Data Source 
+//String 	ssource="A";		    // String for Data Source 
 
 public:
     PageWindRoseFlex(CommonData &common){
@@ -26,10 +26,12 @@ public:
 	 // Code for set source 
 	    if(source == 'A'){ 
 		    source = 'T'; 
-		    ssource = "T"; // String to display
+		    //ssource = "T"; // String to display
+		    //ssource = String() + source; // String to display
 	    } else { 
 		    source = 'A'; 
-		    ssource = "A"; // String to display
+		    //ssource = "A"; // String to display
+		    //ssource = String() + source; // String to display
 	    } 
 	   } 
 	return key;               // Commit the key
@@ -386,7 +388,8 @@ public:
         getdisplay().fillCircle(200, 150, startwidth + 4, commonData->bgcolor);
     	getdisplay().setFont(&Ubuntu_Bold10pt8b);
     	getdisplay().setCursor(194, 155);
-    	getdisplay().print(ssource); 
+    	getdisplay().print({source}); 
+    	//getdisplay().print(ssource); 
 
 
 //*******************************************************************************************
