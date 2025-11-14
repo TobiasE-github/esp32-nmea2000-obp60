@@ -8,7 +8,6 @@ class PageWindRoseFlex : public Page
 {
 int16_t lp = 80;                    // Pointer length
 char source = 'A';		    // data source (A)pparent | (T)rue
-//String 	ssource="A";		    // String for Data Source 
 
 public:
     PageWindRoseFlex(CommonData &common){
@@ -26,12 +25,8 @@ public:
 	 // Code for set source 
 	    if(source == 'A'){ 
 		    source = 'T'; 
-		    //ssource = "T"; // String to display
-		    //ssource = String() + source; // String to display
 	    } else { 
 		    source = 'A'; 
-		    //ssource = "A"; // String to display
-		    //ssource = String() + source; // String to display
 	    } 
 	   } 
 	return key;               // Commit the key
@@ -389,12 +384,11 @@ public:
     	getdisplay().setFont(&Ubuntu_Bold10pt8b);
     	getdisplay().setCursor(194, 155);
     	getdisplay().print({source}); 
-    	//getdisplay().print(ssource); 
 
 
 //*******************************************************************************************
 
-	// Show value6 (=fourth user-configured parameter) and ssource, so that they do not collide with the wind pointer
+	// Show value6 (=fourth user-configured parameter) 
 if ( cos(value1) > 0){ 
     //pointer points upwards 
     getdisplay().setFont(&DSEG7Classic_BoldItalic16pt7b);
@@ -409,14 +403,6 @@ if ( cos(value1) > 0){
     else{  
         getdisplay().print(unit6old);                // Unit
     }
-    /*if (sin(value1)>0){
-	    getdisplay().setCursor(160, 130);
-    }
-    else{
-	    getdisplay().setCursor(220, 130);
-    }
-    getdisplay().print(ssource);		// true or app.
-    */
 }
 else{ 
     // pointer points downwards
@@ -432,14 +418,6 @@ else{
     else{  
         getdisplay().print(unit6old);                // Unit
     }
-    /*if (sin(value1)>0){
-	    getdisplay().setCursor(160, 200);
-    }
-    else{
-	    getdisplay().setCursor(220, 200);
-    }
-    getdisplay().print(ssource);		//true or app. 
-    */
 }
 
         return PAGE_UPDATE;

@@ -79,6 +79,8 @@ FormattedData formatValue(GwApi::BoatValue *value, CommonData &commondata){
     if (precision == "1") {
         fmt_dec_1 = "%3.1f";
         fmt_dec_10 = "%3.0f";
+        //fmt_dec_1 = "!%2.1f";
+        //fmt_dec_10 = "!%2.0f";
         fmt_dec_100 = "%3.0f";
     } else {
         fmt_dec_1 = "%3.2f";
