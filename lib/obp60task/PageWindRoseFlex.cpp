@@ -382,7 +382,12 @@ public:
         getdisplay().fillCircle(200, 150, startwidth + 6, commonData->fgcolor);
         getdisplay().fillCircle(200, 150, startwidth + 4, commonData->bgcolor);
     	getdisplay().setFont(&Ubuntu_Bold10pt8b);
-    	getdisplay().setCursor(194, 155);
+    	if (source=='A'){
+		getdisplay().setCursor(193, 155);
+	}
+	else {
+		getdisplay().setCursor(195, 156);
+	}
     	getdisplay().print({source}); 
 
 
