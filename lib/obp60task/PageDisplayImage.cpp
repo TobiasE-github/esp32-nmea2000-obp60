@@ -4,12 +4,12 @@
 #include "OBP60Extensions.h"
 #include "BoatDataCalibration.h"
 
-class PageOneValue : public Page
+class PageDisplayImage : public Page
 {
     public:
-    PageOneValue(CommonData &common){
+    PageDisplayImage(CommonData &common){
         commonData = &common;
-        common.logger->logDebug(GwLog::LOG,"Instantiate PageOneValue");
+        common.logger->logDebug(GwLog::LOG,"Instantiate PageDisplayImage");
     }
 
     virtual int handleKey(int key){
@@ -54,7 +54,7 @@ class PageOneValue : public Page
 
         // Logging boat values
         if (bvalue1 == NULL) return PAGE_OK; // WTF why this statement?
-        LOG_DEBUG(GwLog::LOG,"Drawing at PageOneValue, %s: %f", name1.c_str(), value1);
+        LOG_DEBUG(GwLog::LOG,"Drawing at PageDisplayImage, %s: %f", name1.c_str(), value1);
 
         // Draw page
         //***********************************************************
@@ -164,7 +164,7 @@ void loop() {
 };
 
 static Page* createPage(CommonData &common){
-    return new PageOneValue(common);
+    return new PageDisplayImage(common);
 }
 
 /**
@@ -174,8 +174,8 @@ static Page* createPage(CommonData &common){
  * and we provide the number of user parameters we expect
  * this will be number of BoatValue pointers in pageData.values
  */
-PageDescription registerPageOneValue(
-    "OneValue",     // Page name
+PageDescription registerPageDisplayImage(
+    "DisplayImage",     // Page name
     createPage,     // Action
     1,              // Number of bus values depends on selection in Web configuration
     true            // Show display header on/off
