@@ -87,6 +87,8 @@ void loop() {
                  "&grid=1"          // Show grid: On
                  ;         
 
+  //http://norbert-walter.dnshome.de:80/get_image_json?&zoom=15&lat=53.9028&lon=11.4441&mrot=0&mtype=9&dtype=1&width=400&height=250&cutout=0&tab=0&border=2&symbol=2&srot=0&ssize=15&grid=1
+    
     // If a network connection to URL
     if (net.fetchAndDecompressJson(url)) {        // Connect to URL, read gzip answare and deflate JSON content
         auto& json = net.json();                  // Parse JSON content
