@@ -14,11 +14,11 @@ private:
     int height; // Screen height
 
     bool keylock = false; // Keylock
-    char chrtMode = 'D'; // Chart mode: 'D' for TWD, 'S' for TWS, 'B' for both
+    char chrtMode = 'T'; // Chart mode: 'D' for TWD, 'S' for TWS, 'B' for both
     bool showTruW = true; // Show true wind or apparent wind in chart area
     bool oldShowTruW = false; // remember recent user selection of wind data type
 
-    int dataIntv = 1; // Update interval for wind history chart:
+    int dataIntv = 8; // Update interval for wind history chart:
                       // (1)|(2)|(3)|(4)|(8) x 240 seconds for 4, 8, 12, 16, 32 min. history chart
     bool useSimuData;
     String flashLED;
