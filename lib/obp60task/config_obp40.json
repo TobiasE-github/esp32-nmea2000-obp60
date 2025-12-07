@@ -224,7 +224,7 @@
         "label": "Calculate True Wind",
         "type": "boolean",
         "default": "false",
-        "description": "If not available, calculate true wind data from appearant wind and other boat data",
+        "description": "If not available, calculate true wind data from apparent wind and other boat data",
         "category": "OBP40 Settings",
         "capabilities": {
             "obp40": "true"
@@ -925,6 +925,117 @@
         ]
     },
     {
+        "name": "mapsource",
+        "label": "Map Source",
+        "type": "list",
+        "default": "OBP Service",
+        "description": "Type of map source, cloud service or local service",
+        "list": [
+            "OBP Service",
+            "Local Service"
+        ],
+        "category": "OBP60 Navigation",
+        "capabilities": {
+            "obp40":"true"
+        }
+    },
+    {
+        "name": "ipAddress",
+        "label": "IP Address",
+        "type": "string",
+        "default": "192.168.15.10",
+        "check": "checkIpAddress",
+        "description": "IP address only for local map service e.g. 192.168.15.10\nor an MDNS name like Raspi.local",
+        "category": "OBP60 Navigation",
+        "capabilities": {
+            "obp40":"true"
+        }
+    },
+    {
+        "name": "localPort",
+        "label": "Port",
+        "type": "number",
+        "default": "8080",
+        "check":"checkPort",
+        "description": "TCP port for local map server",
+        "category": "TCP client",
+        "capabilities": {
+            "obp40":"true"
+        }
+    },
+    {
+        "name": "maptype",
+        "label": "Map Type",
+        "type": "list",
+        "default": "Open Street Map",
+        "description": "Type of base navigation map with sea marks overlay",
+        "list": [
+            "Open Street Map",
+            "Google Street",
+            "Open Topo Map",
+            "Stadimaps Toner",
+            "Free Nautical Chart"
+        ],
+        "category": "OBP60 Navigation",
+        "capabilities": {
+            "obp40":"true"
+        }
+    },
+    {
+        "name": "zoomlevel",
+        "label": "Default Zool Level",
+        "type": "number",
+        "default": "15",
+        "check": "checkMinMax",
+        "min": 7,
+        "max": 17,
+        "description": "Zoom level for map [7..17]; 15 = default",
+        "category": "OBP60 Navigation",
+        "capabilities": {
+            "obp40":"true"
+        }
+    },
+    {
+        "name": "grid",
+        "label": "Show Grid",
+        "type": "boolean",
+        "default": "false",
+        "description": "Show the grid for latutude and longitude",
+        "category": "OBP60 Navigation",
+        "capabilities": {
+            "obp40": "true"
+        }
+    },
+    {
+        "name": "orientation",
+        "label": "Map Orientation",
+        "type": "list",
+        "default": "North Dirirection",
+        "description": "Map orientation for navigation",
+        "list": [
+            "North Direction",
+            "Travel Direction"
+        ],
+        "category": "OBP60 Navigation",
+        "capabilities": {
+            "obp40":"true"
+        }
+    },
+    {
+        "name": "refreshDistance",
+        "label": "Refresh Distance [m]",
+        "type": "number",
+        "default": "15",
+        "check": "checkMinMax",
+        "min": 1,
+        "max": 50,
+        "description": "Refresh distance between updates [1..50 m], 15 m = default",
+        "category": "OBP60 Navigation",
+        "capabilities": {
+            "obp40":"true"
+        }
+    },
+    {
         "name": "display",
         "label": "Display Mode",
         "type": "list",
@@ -1543,7 +1654,7 @@
         "description": "Wind source for page 1: [true|apparent]",
         "list": [
             "True wind",
-            "Apparant wind"
+            "apparent wind"
         ],
         "category": "OBP40 Page 1",
         "capabilities": {
@@ -1864,7 +1975,7 @@
         "description": "Wind source for page 2: [true|apparent]",
         "list": [
             "True wind",
-            "Apparant wind"
+            "apparent wind"
         ],
         "category": "OBP40 Page 2",
         "capabilities": {
@@ -2176,7 +2287,7 @@
         "description": "Wind source for page 3: [true|apparent]",
         "list": [
             "True wind",
-            "Apparant wind"
+            "apparent wind"
         ],
         "category": "OBP40 Page 3",
         "capabilities": {
@@ -2479,7 +2590,7 @@
         "description": "Wind source for page 4: [true|apparent]",
         "list": [
             "True wind",
-            "Apparant wind"
+            "apparent wind"
         ],
         "category": "OBP40 Page 4",
         "capabilities": {
@@ -2773,7 +2884,7 @@
         "description": "Wind source for page 5: [true|apparent]",
         "list": [
             "True wind",
-            "Apparant wind"
+            "apparent wind"
         ],
         "category": "OBP40 Page 5",
         "capabilities": {
@@ -3058,7 +3169,7 @@
         "description": "Wind source for page 6: [true|apparent]",
         "list": [
             "True wind",
-            "Apparant wind"
+            "apparent wind"
         ],
         "category": "OBP40 Page 6",
         "capabilities": {
@@ -3334,7 +3445,7 @@
         "description": "Wind source for page 7: [true|apparent]",
         "list": [
             "True wind",
-            "Apparant wind"
+            "apparent wind"
         ],
         "category": "OBP40 Page 7",
         "capabilities": {
@@ -3601,7 +3712,7 @@
         "description": "Wind source for page 8: [true|apparent]",
         "list": [
             "True wind",
-            "Apparant wind"
+            "apparent wind"
         ],
         "category": "OBP40 Page 8",
         "capabilities": {
@@ -3859,7 +3970,7 @@
         "description": "Wind source for page 9: [true|apparent]",
         "list": [
             "True wind",
-            "Apparant wind"
+            "apparent wind"
         ],
         "category": "OBP40 Page 9",
         "capabilities": {
@@ -4108,7 +4219,7 @@
         "description": "Wind source for page 10: [true|apparent]",
         "list": [
             "True wind",
-            "Apparant wind"
+            "apparent wind"
         ],
         "category": "OBP40 Page 10",
         "capabilities": {
