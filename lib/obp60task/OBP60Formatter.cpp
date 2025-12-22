@@ -79,10 +79,10 @@ FormattedData formatValue(GwApi::BoatValue *value, CommonData &commondata){
     const char* fmt_dec_10;
     const char* fmt_dec_100;
     if (precision == "1") {
-        fmt_dec_1 = "%3.1f";
-        fmt_dec_10 = "%3.0f";
-        //fmt_dec_1 = "!%2.1f";
-        //fmt_dec_10 = "!%2.0f";
+        //fmt_dec_1 = "%3.1f";
+        //fmt_dec_10 = "%3.0f";
+        fmt_dec_1 = "!%1.1f"; // ! is the caracter, where all 7 segments are off!
+        fmt_dec_10 = "!%2.0f";
         fmt_dec_100 = "%3.0f";
     } else {
         fmt_dec_1 = "%3.2f";
