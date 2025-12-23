@@ -84,7 +84,7 @@ FormattedData formatValue(GwApi::BoatValue *value, CommonData &commondata){
 	//For a space that is as long as a number, '!' is used. For details see  https://www.keshikan.net/fonts-e.html
 	//
         fmt_dec_1 = "!%1.1f";  //insert a blank digit and then display a two-digit number
-        fmt_dec_10 = "!%2.0f"  //insert a blank digit and then dilsplay a two-digit number;
+        fmt_dec_10 = "!%2.0f"; //insert a blank digit and then display a two-digit number
         fmt_dec_100 = "%3.0f"; //dispay a three digit number
     } else {
         fmt_dec_1 = "%3.2f";
