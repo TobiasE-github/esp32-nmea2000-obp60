@@ -6,29 +6,27 @@ struct Pos {
     int x;
     int y;
 };
+
 template <typename T> class RingBuffer;
 class GwLog;
 
-template <typename T>
-class Chart {
+template <typename T> class Chart {
 protected:
-    CommonData *commonData;
-    GwLog *logger;
+    CommonData* commonData;
+    GwLog* logger;
 
-    RingBuffer<T> &dataBuf; // Buffer to display
-    int8_t chrtDir; // Chart timeline direction: [0] = horizontal, [1] = vertical
+    RingBuffer<T>& dataBuf; // Buffer to display
+    char chrtDir; // Chart timeline direction: 'H' = horizontal, 'V' = vertical
     int8_t chrtSz; // Chart size: [0] = full size, [1] = half size left/top, [2] half size right/bottom
     double dfltRng; // Default range of chart, e.g. 30 = [0..30]
     uint16_t fgColor; // color code for any screen writing
     uint16_t bgColor; // color code for screen background
     bool useSimuData; // flag to indicate if simulation data is active
 
-    int top = 48; // display top header lines
-    int bottom = 22; // display bottom lines
+    int top = 44; // chart gap at top of display (25 lines for standard gap + 19 lines for axis labels)
+    int bottom = 25; // chart gap at bottom of display to keep space for status line
     int hGap = 11; // gap between 2 horizontal charts; actual gap is 2x <gap>
-    int vGap = 20; // gap between 2 vertical charts; actual gap is 2x <gap>
-    int xOffset = 33; // offset for horizontal axis (time/value), because of space for left vertical axis labeling
-    int yOffset = 10; // offset for vertical axis (time/value), because of space for top horizontal axis labeling
+    int vGap = 17; // gap between 2 vertical charts; actual gap is 2x <gap>
     int dWidth; // Display width
     int dHeight; // Display height
     int timAxis, valAxis; // size of time and value chart axis
@@ -41,7 +39,7 @@ protected:
     bool recalcRngCntr = false; // Flag for re-calculation of mid value of chart for wind data types
 
     String dbName, dbFormat; // Name and format of data buffer
-    int chrtDataFmt; // Data format of chart: [0] size values; [1] degree of course or wind; [2] rotational degrees
+    char chrtDataFmt; // Data format of chart: 'S' = size values; 'D' = depth value, 'W' = degree of course or wind; 'R' rotational degrees
     double dbMIN_VAL; // Lowest possible value of buffer of type <T>
     double dbMAX_VAL; // Highest possible value of buffer of type <T>; indicates invalid value in buffer
     size_t bufSize; // History buffer size: 1.920 values for 32 min. history chart
@@ -60,11 +58,22 @@ protected:
     void calcChrtBorders(double& rngMid, double& rngMin, double& rngMax, double& rng); // Calculate chart points for value axis and return range between <min> and <max>
     void drawChrtTimeAxis(int8_t chrtIntv); // Draw time axis of chart, value and lines
     void drawChrtValAxis(); // Draw value axis of chart, value and lines
-    void prntCurrValue(GwApi::BoatValue& currValue); // Add current boat data value to chart 
+    void prntCurrValue(GwApi::BoatValue& currValue); // Add current boat data value to chart
 
 public:
-    Chart(RingBuffer<T>& dataBuf, int8_t chrtDir, int8_t chrtSz, double dfltRng, CommonData& common, bool useSimuData); // Chart object of data chart
-    ~Chart();
-    void showChrt(int8_t chrtIntv, GwApi::BoatValue currValue); // Perform all actions to draw chart
+    // Define default chart range for each boat data type
+    static std::map<String, double> dfltChartRng;
 
+    Chart(RingBuffer<T>& dataBuf, char chrtDir, int8_t chrtSz, double dfltRng, CommonData& common, bool useSimuData); // Chart object of data chart
+    ~Chart();
+    void showChrt(int8_t chrtIntv, GwApi::BoatValue currValue, bool showCurrValue); // Perform all actions to draw chart
+};
+
+template <typename T>
+std::map<String, double> Chart<T>::dfltChartRng = {
+    { "formatWind", 60.0 * DEG_TO_RAD }, // default course range 60 degrees
+    { "formatCourse", 60.0 * DEG_TO_RAD }, // default course range 60 degrees
+    { "formatKnots", 5.1 }, // default speed range in m/s
+    { "formatDepth", 15 }, // default depth range in m
+    { "kelvinToC", 30 } // default temp range in °C/K
 };
