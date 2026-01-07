@@ -432,12 +432,11 @@ void OBP60Task(GwApi *api){
 #endif
     LOG_DEBUG(GwLog::LOG,"...done");
 
-    //int lastPage=pageNumber;
-    int lastPage=-1;
+    int lastPage=-1; // initialize with an impiossible value, so we can detect wether we are during startup and no page has been displayed yet
 
     BoatValueList boatValues; //all the boat values for the api query
-    HstryBuffers hstryBufList(1920, &boatValues, logger);  // Create empty list of boat data history buffers
-    WindUtils trueWind(&boatValues, logger);  // Create helper object for true wind calculation
+    HstryBuf hstryBufList(1920);  // Create ring buffers for history storage of some boat data (1920 seconds = 32 minutes)
+    WindUtils trueWind(&boatValues);  // Create helper object for true wind calculation
     //commonData.distanceformat=config->getString(xxx);
     //add all necessary data to common data
 
@@ -480,27 +479,21 @@ void OBP60Task(GwApi *api){
             LOG_DEBUG(GwLog::DEBUG,"added fixed value %s to page %d",value->getName().c_str(),i);
             pages[i].parameters.values.push_back(value); 
        }
-
-       // Read the specified boat data type of relevant pages and create a history buffer for each type
-       if (pages[i].parameters.pageName == "OneValue" || pages[i].parameters.pageName == "TwoValues" || pages[i].parameters.pageName == "WindPlot") {
-           for (auto pVal : pages[i].parameters.values) {
-                hstryBufList.addBuffer(pVal->getName());
-           }
-       }
-       // Add list of history buffers to page parameters
-       pages[i].parameters.hstryBuffers = &hstryBufList;
-
+       // Add boat history data to page parameters
+       pages[i].parameters.boatHstry = &hstryBufList;
     }
-
     // add out of band system page (always available)
     Page *syspage = allPages.pages[0]->creator(commonData);
+
+    // Read all calibration data settings from config
+    calibrationData.readConfig(config, logger);
 
     // Check user settings for true wind calculation
     bool calcTrueWnds = api->getConfig()->getBool(api->getConfig()->calcTrueWnds, false);
     bool useSimuData = api->getConfig()->getBool(api->getConfig()->useSimuData, false);
 
-    // Read all calibration data settings from config
-    calibrationData.readConfig(config, logger);
+    // Initialize history buffer for certain boat data
+    hstryBufList.init(&boatValues, logger);
 
     // Display screenshot handler for HTTP request
     // http://192.168.15.1/api/user/OBP60Task/screenshot
@@ -815,10 +808,10 @@ void OBP60Task(GwApi *api){
                 api->getStatus(commonData.status);
 
                 if (calcTrueWnds) {
-                    trueWind.addWinds();
+                    trueWind.addTrueWind(api, &boatValues, logger);
                 }
                 // Handle history buffers for certain boat data for windplot page and other usage
-                 hstryBufList.handleHstryBufs(useSimuData, commonData);
+                 hstryBufList.handleHstryBuf(useSimuData);
 
                 // Clear display
                 // getdisplay().fillRect(0, 0, getdisplay().width(), getdisplay().height(), commonData.bgcolor);
@@ -855,7 +848,7 @@ void OBP60Task(GwApi *api){
                     }
                     else{
                         if (lastPage != pageNumber){
-			    if (lastPage != -1){
+			    if (lastPage != -1){ // skip cleanup if we are during startup, and no page has been displayed yet. 
                                 pages[lastPage].page->leavePage(pages[lastPage].parameters); // call page cleanup code
                                 if (hasFRAM) fram.write(FRAM_PAGE_NO, pageNumber); // remember new page for device restart
 			    }
