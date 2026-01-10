@@ -1,23 +1,51 @@
 // Function lib for display of boat data in various graphical chart formats
 #pragma once
 #include "Pagedata.h"
+#include "OBP60Extensions.h"
 
 struct Pos {
     int x;
     int y;
 };
 
-template <typename T> class RingBuffer;
+struct ChartProps {
+    double range;
+    double step;
+};
+
+template <typename T>
+class RingBuffer;
 class GwLog;
 
-template <typename T> class Chart {
+class Chart {
 protected:
     CommonData* commonData;
     GwLog* logger;
 
-    RingBuffer<T>& dataBuf; // Buffer to display
-    char chrtDir; // Chart timeline direction: 'H' = horizontal, 'V' = vertical
-    int8_t chrtSz; // Chart size: [0] = full size, [1] = half size left/top, [2] half size right/bottom
+    enum ChrtDataFormat {
+        WIND,
+        ROTATION,
+        SPEED,
+        DEPTH,
+        TEMPERATURE,
+        OTHER
+    };
+
+    static constexpr char HORIZONTAL = 'H';
+    static constexpr char VERTICAL = 'V';
+    static constexpr int8_t FULL_SIZE = 0;
+    static constexpr int8_t HALF_SIZE_LEFT = 1;
+    static constexpr int8_t HALF_SIZE_RIGHT = 2;
+
+    static constexpr int8_t MIN_FREE_VALUES = 60; // free 60 values when chart line reaches chart end
+    static constexpr int8_t THRESHOLD_NO_DATA = 3; // max. seconds of invalid values in a row
+    static constexpr int8_t VALAXIS_STEP = 60; // pixels between two chart value axis labels
+
+    static constexpr bool NO_SIMUDATA = true; // switch off simulation feature of <formatValue> function
+
+    RingBuffer<uint16_t>& dataBuf; // Buffer to display
+    //char chrtDir; // Chart timeline direction: 'H' = horizontal, 'V' = vertical
+    //int8_t chrtSz; // Chart size: [0] = full size, [1] = half size left/top, [2] half size right/bottom
     double dfltRng; // Default range of chart, e.g. 30 = [0..30]
     uint16_t fgColor; // color code for any screen writing
     uint16_t bgColor; // color code for screen background
@@ -25,23 +53,23 @@ protected:
     String tempFormat; // user defined format for temperature
     double zeroValue; // "0" SI value for temperature
 
+    int dWidth; // Display width
+    int dHeight; // Display height
     int top = 44; // chart gap at top of display (25 lines for standard gap + 19 lines for axis labels)
     int bottom = 25; // chart gap at bottom of display to keep space for status line
     int hGap = 11; // gap between 2 horizontal charts; actual gap is 2x <gap>
     int vGap = 17; // gap between 2 vertical charts; actual gap is 2x <gap>
-    int dWidth; // Display width
-    int dHeight; // Display height
     int timAxis, valAxis; // size of time and value chart axis
-    Pos cStart; // start point of chart area
+    Pos cRoot; // start point of chart area
     double chrtRng; // Range of buffer values from min to max value
     double chrtMin; // Range low end value
     double chrtMax; // Range high end value
     double chrtMid; // Range mid value
     double rngStep; // Defines the step of adjustment (e.g. 10 m/s) for value axis range
-    bool recalcRngCntr = false; // Flag for re-calculation of mid value of chart for wind data types
+    bool recalcRngMid = false; // Flag for re-calculation of mid value of chart for wind data types
 
     String dbName, dbFormat; // Name and format of data buffer
-    char chrtDataFmt; // Data format of chart: 'S' = size values; 'D' = depth value, 'W' = degree of course or wind; 'R' rotational degrees
+    ChrtDataFormat chrtDataFmt; // Data format of chart boat data type
     double dbMIN_VAL; // Lowest possible value of buffer of type <T>
     double dbMAX_VAL; // Highest possible value of buffer of type <T>; indicates invalid value in buffer
     size_t bufSize; // History buffer size: 1.920 values for 32 min. history chart
@@ -60,27 +88,29 @@ protected:
     int x, y; // x and y coordinates for drawing
     int prevX, prevY; // Last x and y coordinates for drawing
 
-    void drawChrt(int8_t chrtIntv, GwApi::BoatValue& currValue); // Draw chart line
+    bool setChartDimensions(const char direction, const int8_t size); //define dimensions and start points for chart
+    void drawChrt(const char chrtDir, const int8_t chrtIntv, GwApi::BoatValue& currValue); // Draw chart line
+    void getBufferStartNSize(const int8_t chrtIntv); // Identify buffer size and buffer start position for chart
     void calcChrtBorders(double& rngMin, double& rngMid, double& rngMax, double& rng); // Calculate chart points for value axis and return range between <min> and <max>
-    void drawChrtTimeAxis(int8_t chrtIntv); // Draw time axis of chart, value and lines
-    void drawChrtValAxis(); // Draw value axis of chart, value and lines
-    void prntCurrValue(GwApi::BoatValue& currValue); // Add current boat data value to chart
-    double getAngleRng(double center, size_t amount); // Calculate range between chart center and edges
+    void drawChartLines(const char direction, const int8_t chrtIntv, const double chrtScale); // Draw chart graph
+    Pos setCurrentChartPoint(const int i, const char direction, const double chrtVal, const double chrtScale); // Set current chart point to draw
+    void drawChrtTimeAxis(const char chrtDir, const int8_t chrtSz, const int8_t chrtIntv); // Draw time axis of chart, value and lines
+    void drawChrtValAxis(const char chrtDir, const int8_t chrtSz, bool prntLabel); // Draw value axis of chart, value and lines
+    void prntCurrValue(const char chrtDir, GwApi::BoatValue& currValue); // Add current boat data value to chart
+    void prntNoValidData(const char chrtDir); // print message for no valid data available
+    double getAngleRng(const double center, size_t amount); // Calculate range between chart center and edges
+    void prntVerticChartThreeValueAxisLabel(const GFXfont* font); // print value axis label with only three values: top, mid, and bottom for vertical chart
+    void prntHorizChartThreeValueAxisLabel(const GFXfont* font); // print value axis label with only three values: top, mid, and bottom for horizontal chart
+    void prntHorizChartMultiValueAxisLabel(const GFXfont* font); // print value axis label with multiple axis lines for horizontal chart
+    void drawBoldLine(const int16_t x1, const int16_t y1, const int16_t x2, const int16_t y2); // Draw chart line with thickness of 2px
+    String convNformatLabel(const double& label); // Convert and format current axis label to user defined format; helper function for easier handling of OBP60Formatter
+    String formatLabel(const double& label); // Format current axis label for printing w/o data format conversion (has been done earlier)
 
 public:
-    // Define default chart range for each boat data type
-    static std::map<String, double> dfltChrtRng;
+    // Define default chart range and range step for each boat data type
+    static std::map<String, ChartProps> dfltChrtDta;
 
-    Chart(RingBuffer<T>& dataBuf, char chrtDir, int8_t chrtSz, double dfltRng, CommonData& common, bool useSimuData); // Chart object of data chart
+    Chart(RingBuffer<uint16_t>& dataBuf, double dfltRng, CommonData& common, bool useSimuData); // Chart object of data chart
     ~Chart();
-    void showChrt(GwApi::BoatValue currValue, int8_t chrtIntv, bool showCurrValue); // Perform all actions to draw chart
-};
-
-template <typename T>
-std::map<String, double> Chart<T>::dfltChrtRng = {
-    { "formatWind", 60.0 * DEG_TO_RAD }, // default course range 60 degrees
-    { "formatCourse", 60.0 * DEG_TO_RAD }, // default course range 60 degrees
-    { "formatKnots", 5.1 }, // default speed range in m/s
-    { "formatDepth", 15.0 }, // default depth range in m
-    { "kelvinToC", 30.0 } // default temp range in °C/K
+    void showChrt(char chrtDir, int8_t chrtSz, const int8_t chrtIntv, bool prntName, bool showCurrValue, GwApi::BoatValue currValue); // Perform all actions to draw chart
 };

@@ -4,21 +4,43 @@
 #include "OBP60Extensions.h"
 #include "OBPDataOperations.h"
 #include "BoatDataCalibration.h"
+#include "OBPDataOperations.h"
 #include "OBPcharts.h"
 
 class PageOneValue : public Page {
 private:
     GwLog* logger;
 
+    enum PageMode {
+        VALUE,
+        CHART,
+        BOTH
+    };
+    enum DisplayMode {
+        FULL,
+        HALF
+    };
+
+    static constexpr char HORIZONTAL = 'H';
+    static constexpr char VERTICAL = 'V';
+    static constexpr int8_t FULL_SIZE = 0;
+    static constexpr int8_t HALF_SIZE_TOP = 1;
+    static constexpr int8_t HALF_SIZE_BOTTOM = 2;
+
+    static constexpr bool PRNT_NAME = true;
+    static constexpr bool NO_PRNT_NAME = false;
+    static constexpr bool PRNT_VALUE = true;
+    static constexpr bool NO_PRNT_VALUE = false;
+
     int width; // Screen width
     int height; // Screen height
 
     bool keylock = false; // Keylock
-    char pageMode = 'C'; // Page mode: 'V' for value, 'C' for chart, 'B' for both
-    int dataIntv = 4; // Update interval for wind history chart:
-                      // (1)|(2)|(3)|(4)|(8) x 240 seconds for 4, 8, 12, 16, 32 min. history chart
+    PageMode pageMode = VALUE; // Page display mode
+    int8_t dataIntv = 1; // Update interval for wind history chart:
+                         // (1)|(2)|(3)|(4)|(8) x 240 seconds for 4, 8, 12, 16, 32 min. history chart
 
-    //String lengthformat;
+    // String lengthformat;
     bool useSimuData;
     bool holdValues;
     String flashLED;
@@ -31,14 +53,14 @@ private:
 
     // Data buffer pointer (owned by HstryBuffers)
     RingBuffer<uint16_t>* dataHstryBuf = nullptr;
-    std::unique_ptr<Chart<uint16_t>> dataFlChart, dataHfChart; // Chart object, full and half size
+    std::unique_ptr<Chart> dataChart; // Chart object
 
-    void showData(GwApi::BoatValue* bValue1, char size)
+    void showData(GwApi::BoatValue* bValue1, DisplayMode mode)
     {
         int nameXoff, nameYoff, unitXoff, unitYoff, value1Xoff, value1Yoff;
         const GFXfont *nameFnt, *unitFnt, *valueFnt1, *valueFnt2, *valueFnt3;
 
-        if (size == 'F') { // full size data display
+        if (mode == FULL) { // full size data display
             nameXoff = 0;
             nameYoff = 0;
             nameFnt = &Ubuntu_Bold32pt8b;
@@ -51,17 +73,17 @@ private:
             valueFnt2 = &Ubuntu_Bold32pt8b;
             valueFnt3 = &DSEG7Classic_BoldItalic60pt7b;
         } else { // half size data and chart display
-            nameXoff = 105;
-            nameYoff = -35;
+            nameXoff = -10;
+            nameYoff = -34;
             nameFnt = &Ubuntu_Bold20pt8b;
-            unitXoff = -35;
-            unitYoff = -102;
+            unitXoff = 63;
+            unitYoff = -119;
             unitFnt = &Ubuntu_Bold12pt8b;
             valueFnt1 = &Ubuntu_Bold12pt8b;
-            value1Xoff = 105;
-            value1Yoff = -102;
+            value1Xoff = 153;
+            value1Yoff = -119;
             valueFnt2 = &Ubuntu_Bold20pt8b;
-            valueFnt3 = &DSEG7Classic_BoldItalic30pt7b;
+            valueFnt3 = &DSEG7Classic_BoldItalic42pt7b;
         }
 
         String name1 = xdrDelete(bValue1->getName()); // Value name
@@ -124,7 +146,7 @@ public:
         height = getdisplay().height(); // Screen height
 
         // Get config data
-        //lengthformat = commonData->config->getString(commonData->config->lengthFormat);
+        // lengthformat = commonData->config->getString(commonData->config->lengthFormat);
         useSimuData = commonData->config->getBool(commonData->config->useSimuData);
         holdValues = commonData->config->getBool(commonData->config->holdvalues);
         flashLED = commonData->config->getString(commonData->config->flashLED);
@@ -136,51 +158,61 @@ public:
     {
         Page::setupKeys();
 
+#if defined BOARD_OBP60S3
+        constexpr int ZOOM_IDX = 4;
+#elif defined BOARD_OBP40S3
+        constexpr int ZOOM_IDX = 1;
+#endif
+
         if (dataHstryBuf) { // show "Mode" key only if chart supported boat data type is available
             commonData->keydata[0].label = "MODE";
+            commonData->keydata[ZOOM_IDX].label = "ZOOM";
         } else {
             commonData->keydata[0].label = "";
+            commonData->keydata[ZOOM_IDX].label = "";
         }
-#if defined BOARD_OBP60S3
-        commonData->keydata[4].label = "ZOOM";
-#elif defined BOARD_OBP40S3
-        commonData->keydata[1].label = "ZOOM";
-#endif
     }
 
     // Key functions
     virtual int handleKey(int key)
     {
-        // Set page mode value | full chart | value/half chart
-        if (key == 1) {
-            if (pageMode == 'V') {
-                pageMode = 'C';
-            } else if (pageMode == 'C') {
-                pageMode = 'B';
-            } else {
-                pageMode = 'V';
-            }
-            return 0; // Commit the key
-        }
+        if (dataHstryBuf) { // if boat data type supports charts
 
-        // Set interval for history chart update time (interval)
-#if defined BOARD_OBP60S3
-        if (key == 5) {
-#elif defined BOARD_OBP40S3
-        if (key == 2) {
-#endif
-            if (dataIntv == 1) {
-                dataIntv = 2;
-            } else if (dataIntv == 2) {
-                dataIntv = 3;
-            } else if (dataIntv == 3) {
-                dataIntv = 4;
-            } else if (dataIntv == 4) {
-                dataIntv = 8;
-            } else {
-                dataIntv = 1;
+            // Set page mode value | value/half chart | full chart
+            if (key == 1) {
+                switch (pageMode) {
+                case VALUE:
+                    pageMode = BOTH;
+                    break;
+                case BOTH:
+                    pageMode = CHART;
+                    break;
+                case CHART:
+                    pageMode = VALUE;
+                    break;
+                }
+                return 0; // Commit the key
             }
-            return 0; // Commit the key
+
+            // Set time frame to show for history chart
+#if defined BOARD_OBP60S3
+            if (key == 5) {
+#elif defined BOARD_OBP40S3
+            if (key == 2) {
+#endif
+                if (dataIntv == 1) {
+                    dataIntv = 2;
+                } else if (dataIntv == 2) {
+                    dataIntv = 3;
+                } else if (dataIntv == 3) {
+                    dataIntv = 4;
+                } else if (dataIntv == 4) {
+                    dataIntv = 8;
+                } else {
+                    dataIntv = 1;
+                }
+                return 0; // Commit the key
+            }
         }
 
         // Keylock function
@@ -201,7 +233,8 @@ public:
         }
 #endif
         // buffer initialization will fail, if page is default page, because <displayNew> is not executed at system start for default page
-        if (!dataFlChart) { // Create chart objects if they don't exist
+        if (!dataChart) { // Create chart objects if they don't exist
+
             GwApi::BoatValue* bValue1 = pageData.values[0]; // Page boat data element
             String bValName1 = bValue1->getName(); // Value name
             String bValFormat = bValue1->getFormat(); // Value format
@@ -209,8 +242,7 @@ public:
             dataHstryBuf = pageData.hstryBuffers->getBuffer(bValName1);
 
             if (dataHstryBuf) {
-                dataFlChart.reset(new Chart<uint16_t>(*dataHstryBuf, 'H', 0, Chart<uint16_t>::dfltChrtRng[bValFormat], *commonData, useSimuData));
-                dataHfChart.reset(new Chart<uint16_t>(*dataHstryBuf, 'H', 2, Chart<uint16_t>::dfltChrtRng[bValFormat], *commonData, useSimuData));
+                dataChart.reset(new Chart(*dataHstryBuf, Chart::dfltChrtDta[bValFormat].range, *commonData, useSimuData));
                 LOG_DEBUG(GwLog::DEBUG, "PageOneValue: Created chart objects for %s", bValName1);
             } else {
                 LOG_DEBUG(GwLog::DEBUG, "PageOneValue: No chart objects available for %s", bValName1);
@@ -222,10 +254,7 @@ public:
 
     int displayPage(PageData& pageData)
     {
-
         LOG_DEBUG(GwLog::LOG, "Display PageOneValue");
-        //GwConfigHandler* config = commonData->config;
-        //GwLog* logger = commonData->logger;
 
         // Get boat value for page
         GwApi::BoatValue* bValue1 = pageData.values[0]; // Page boat data element
@@ -236,24 +265,8 @@ public:
             setFlashLED(false);
         }
 
-/*        if (!dataFlChart) { // Create chart objects if they don't exist
-            GwApi::BoatValue* bValue1 = pageData.values[0]; // Page boat data element
-            String bValName1 = bValue1->getName(); // Value name
-            String bValFormat = bValue1->getFormat(); // Value format
-
-            dataHstryBuf = pageData.hstryBuffers->getBuffer(bValName1);
-
-            if (dataHstryBuf) {
-                dataFlChart.reset(new Chart<uint16_t>(*dataHstryBuf, 'H', 0, Chart<uint16_t>::dfltChrtRng[bValFormat], *commonData, useSimuData));
-                dataHfChart.reset(new Chart<uint16_t>(*dataHstryBuf, 'H', 2, Chart<uint16_t>::dfltChrtRng[bValFormat], *commonData, useSimuData));
-                LOG_DEBUG(GwLog::DEBUG, "PageOneValue: Created chart objects for %s", bValName1);
-            } else {
-                LOG_DEBUG(GwLog::DEBUG, "PageOneValue: No chart objects available for %s", bValName1);
-            }
-        } */
-
         if (bValue1 == NULL)
-            return PAGE_OK; // no data, no display of page
+            return PAGE_OK; // no data, no page to display
 
         LOG_DEBUG(GwLog::DEBUG, "PageOneValue: printing %s, %.3f", bValue1->getName().c_str(), bValue1->value);
 
@@ -262,19 +275,19 @@ public:
 
         getdisplay().setPartialWindow(0, 0, width, height); // Set partial update
 
-        if (pageMode == 'V' || dataHstryBuf == nullptr) {
+        if (pageMode == VALUE || dataHstryBuf == nullptr) {
             // show only data value; ignore other pageMode options if no chart supported boat data history buffer is available
-            showData(bValue1, 'F');
+            showData(bValue1, FULL);
 
-        } else if (pageMode == 'C') { // show only data chart
-            if (dataFlChart) {
-                dataFlChart->showChrt(*bValue1, dataIntv, true);
+        } else if (pageMode == CHART) { // show only data chart
+            if (dataChart) {
+                dataChart->showChrt(HORIZONTAL, FULL_SIZE, dataIntv, PRNT_NAME, PRNT_VALUE, *bValue1);
             }
 
-        } else if (pageMode == 'B') { // show data value and chart
-            showData(bValue1, 'H');
-            if (dataHfChart) {
-                dataHfChart->showChrt(*bValue1, dataIntv, false);
+        } else if (pageMode == BOTH) { // show data value and chart
+            showData(bValue1, HALF);
+            if (dataChart) {
+                dataChart->showChrt(HORIZONTAL, HALF_SIZE_BOTTOM, dataIntv, NO_PRNT_NAME, NO_PRNT_VALUE, *bValue1);
             }
         }
 
