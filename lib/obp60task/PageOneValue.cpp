@@ -2,6 +2,7 @@
 
 #include "Pagedata.h"
 #include "OBP60Extensions.h"
+#include "OBPDataOperations.h"
 #include "BoatDataCalibration.h"
 #include "OBPDataOperations.h"
 #include "OBPcharts.h"

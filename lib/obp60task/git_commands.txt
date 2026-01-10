@@ -10,3 +10,6 @@ git fetch upstream
 git checkout master
 git reset --hard upstream/master  
 git push origin master --force
+
+# how to squash the last 3 commits into one
+git rebase -i HEAD~3
