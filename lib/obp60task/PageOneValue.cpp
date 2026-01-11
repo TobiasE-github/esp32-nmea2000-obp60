@@ -13,8 +13,8 @@ private:
 
     enum PageMode {
         VALUE,
-        CHART,
-        BOTH
+        BOTH,
+        CHART
     };
     enum DisplayMode {
         FULL,
@@ -55,6 +55,7 @@ private:
     RingBuffer<uint16_t>* dataHstryBuf = nullptr;
     std::unique_ptr<Chart> dataChart; // Chart object
 
+    // display data value in display <mode> [FULL|HALF]
     void showData(GwApi::BoatValue* bValue1, DisplayMode mode)
     {
         int nameXoff, nameYoff, unitXoff, unitYoff, value1Xoff, value1Yoff;
@@ -76,7 +77,7 @@ private:
             nameXoff = -10;
             nameYoff = -34;
             nameFnt = &Ubuntu_Bold20pt8b;
-            unitXoff = 63;
+            unitXoff = -295;
             unitYoff = -119;
             unitFnt = &Ubuntu_Bold12pt8b;
             valueFnt1 = &Ubuntu_Bold12pt8b;
@@ -159,17 +160,17 @@ public:
         Page::setupKeys();
 
 #if defined BOARD_OBP60S3
-        constexpr int ZOOM_IDX = 4;
+        constexpr int ZOOM_KEY = 4;
 #elif defined BOARD_OBP40S3
-        constexpr int ZOOM_IDX = 1;
+        constexpr int ZOOM_KEY = 1;
 #endif
 
         if (dataHstryBuf) { // show "Mode" key only if chart supported boat data type is available
             commonData->keydata[0].label = "MODE";
-            commonData->keydata[ZOOM_IDX].label = "ZOOM";
+            commonData->keydata[ZOOM_KEY].label = "ZOOM";
         } else {
             commonData->keydata[0].label = "";
-            commonData->keydata[ZOOM_IDX].label = "";
+            commonData->keydata[ZOOM_KEY].label = "";
         }
     }
 
@@ -178,7 +179,7 @@ public:
     {
         if (dataHstryBuf) { // if boat data type supports charts
 
-            // Set page mode value | value/half chart | full chart
+            // Set page mode: value | value/half chart | full chart
             if (key == 1) {
                 switch (pageMode) {
                 case VALUE:
