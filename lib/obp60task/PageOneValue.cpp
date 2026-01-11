@@ -36,8 +36,8 @@ private:
     int height; // Screen height
 
     bool keylock = false; // Keylock
-    PageMode pageMode = VALUE; // Page display mode
-    int8_t dataIntv = 1; // Update interval for wind history chart:
+    PageMode pageMode = CHART; // Page display mode
+    int8_t dataIntv = 4; // Update interval for wind history chart:
                          // (1)|(2)|(3)|(4)|(8) x 240 seconds for 4, 8, 12, 16, 32 min. history chart
 
     // String lengthformat;
