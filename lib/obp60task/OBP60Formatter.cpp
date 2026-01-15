@@ -323,7 +323,6 @@ FormattedData formatValue(GwApi::BoatValue *value, CommonData &commondata, bool 
             snprintf(buffer, bsize, "%2.0f", speed);
         }
         else{
-            //speed = std::round(speed * 100) / 100;    // in rare cases, speed could be 9.959 kn instead of 10.0 kn
             if (speed < 9.95){
                 snprintf(buffer, bsize, fmt_dec_1, speed);
             }
