@@ -354,7 +354,7 @@ FormattedData formatValue(GwApi::BoatValue *value, CommonData &commondata, bool 
         if (rotation > 100){
             rotation = 99;
         }
-        if (rotation > -10 && rotation < 10){
+        if (rotation > -9.95 && rotation < 9.95){
             snprintf(buffer, bsize, "%3.2f", rotation);
         }
         if (rotation <= -10 || rotation >= 10){
@@ -489,7 +489,7 @@ FormattedData formatValue(GwApi::BoatValue *value, CommonData &commondata, bool 
         else{;
             result.unit = "m";
         }
-        if(xte < 10){
+        if(xte < 9.95){
             snprintf(buffer,bsize,"%3.2f",xte);
         }
         if(xte >= 10 && xte < 100){
@@ -840,7 +840,7 @@ FormattedData formatValue(GwApi::BoatValue *value, CommonData &commondata, bool 
             rawvalue = PI / 100 + (random(-5, 5) / 360 * 2* PI);
             angle = rawvalue * 57.2958;
         }
-        if (angle > -10 && angle < 10) {
+        if (angle > -9.95 && angle < 9.95) {
             snprintf(buffer,bsize,"%3.1f",angle);
         }
         else {
