@@ -10,3 +10,28 @@ git fetch upstream
 git checkout master
 git reset --hard upstream/master  
 git push origin master --force
+
+# how to squash the last 3 commits into one
+git rebase -i HEAD~3
+
+Get upddates from Norberts Repo
+
+git checkout master
+git remote -v
+git pull upstream master
+git push master
+
+
+update my dev branch from my master branch
+git checkout Sharky-dev
+git merge master
+git mergetool
+
+Jumping to the next git hunk (or conflict to fix) can be done with [c to backward or ]c to search forward
+to get it from the local version, use :diffget LO
+from remote: :diffget RE
+from base: :diffget BA
+:wqa
+
+git commit
+git push
