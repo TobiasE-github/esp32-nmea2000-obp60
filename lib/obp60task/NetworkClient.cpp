@@ -230,7 +230,7 @@ bool NetworkClient::httpGetGzip(const String& url, uint8_t*& outData, size_t& ou
                 }
 
                 if (millis() - lastData > READ_TIMEOUT) {
-                    if (DEBUGING) {Serial.println("TIMEOUT waiting for data!");}
+                    Serial.println("TIMEOUT waiting for data!");
                     aborting = true;   // NEW: mark abnormal exit
                     break;
                 }
