@@ -1,0 +1,6 @@
+Changes to original project (ellenvogel)
+
+* esp32-nmea2000-obp60/gwwifi/GwWifi.CPPDEFINES
+    - any fixes for reconnect handling
+* esp32-nmea2000-obp60/platformio.ini
+    - change to newer versions for AsyncTCP and AsyncWebServer (better handling for bad WiFi connections)
