@@ -4,3 +4,9 @@ Changes to original project (wellenvogel)
     - any fixes for reconnect handling
 * esp32-nmea2000-obp60/platformio.ini
     - change to newer versions for AsyncTCP and AsyncWebServer (better handling for bad WiFi connections)
+
+    From AsyncTCP-esphome @ 2.0.1
+         ottowinter/ESPAsyncWebServer-esphome@2.0.1
+
+    To AsyncTCP-esphome @ 2.1.1
+         ottowinter/ESPAsyncWebServer-esphome@3.4.0
