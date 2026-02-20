@@ -1,4 +1,4 @@
-Changes to original project (ellenvogel)
+Changes to original project (wellenvogel)
 
 * esp32-nmea2000-obp60/gwwifi/GwWifi.CPPDEFINES
     - any fixes for reconnect handling
