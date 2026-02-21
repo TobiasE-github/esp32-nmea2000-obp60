@@ -7,6 +7,8 @@
 #locally:
 #Update Libs 
 #~/.platformio/penv/bin/pio pkg update
+#clean all
+#~/.platformio/penv/bin/pio run -t fullclean
 
 ~/.platformio/penv/bin/pio run
 
