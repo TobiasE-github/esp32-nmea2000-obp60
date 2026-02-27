@@ -371,7 +371,7 @@ bool showValues = false; // Show values HDT, SOG, DBT in navigation map
         // ############### Draw Navigation Map ################
         
         // Set display in partial refresh mode
-        getdisplay().setPartialWindow(0, 0, getdisplay().width(), getdisplay().height()); // Set partial update
+        displaySetPartialWindow(0, 0, getdisplay().width(), getdisplay().height()); // Set partial update
         getdisplay().setTextColor(commonData->fgcolor);
 
         // If a network connection to URL then load the navigation map

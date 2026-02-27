@@ -229,7 +229,7 @@ public:
         uint16_t y0 = 48; // data table starts here
 
         // Set display in partial refresh mode
-        getdisplay().setPartialWindow(0, 0, getdisplay().width(), getdisplay().height()); // Set partial update
+        displaySetPartialWindow(0, 0, getdisplay().width(), getdisplay().height()); // Set partial update
 
         if (mode == 'N') {
 
@@ -550,7 +550,7 @@ public:
         }
 
         // Update display
-        getdisplay().nextPage();    // Partial update (fast)
+        displayNextPage();    // Partial update (fast)
         return PAGE_OK;
     };
 };

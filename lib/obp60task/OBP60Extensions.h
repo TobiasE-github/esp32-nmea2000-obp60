@@ -9,6 +9,10 @@
 #include <Adafruit_FRAM_I2C.h>          // I2C FRAM
 #include <math.h>
 
+#ifdef DISPLAY_ST7796
+#include <LovyanGFX.hpp>                // TFT LCD lib for ST7796
+#endif
+
 #ifdef BOARD_OBP40S3
 #include "esp_vfs_fat.h"
 #include "sdmmc_cmd.h"
@@ -74,10 +78,123 @@ GxEPD2_BW<GxEPD2_420_GYE042A87, GxEPD2_420_GYE042A87::HEIGHT> & getdisplay();
 GxEPD2_BW<GxEPD2_420_SE0420NQ04, GxEPD2_420_SE0420NQ04::HEIGHT> & getdisplay();
 #endif
 
+#ifdef DISPLAY_ST7796
+// LovyanGFX based display wrapper for ST7796
+class LGFX : public lgfx::LGFX_Device {
+public:
+  lgfx::Bus_SPI _bus_instance;
+  lgfx::Light_PWM _light_instance;
+
+  LGFX(void) {
+    {
+      auto cfg = _bus_instance.config();
+      cfg.spi_host = SPI2_HOST;
+      cfg.spi_mode = 0;
+      cfg.freq_write = 80000000;
+      cfg.freq_read  = 16000000;
+      cfg.pin_sclk = OBP_SPI_CLK;
+      cfg.pin_mosi = OBP_SPI_DIN;
+      cfg.pin_miso = -1;
+      cfg.pin_dc   = OBP_SPI_DC;
+      _bus_instance.config(cfg);
+      _panel_instance.setBus(&_bus_instance);
+    }
+    {
+      auto cfg = _panel_instance.config();
+      cfg.pin_cs  = OBP_SPI_CS;
+      cfg.pin_rst = OBP_SPI_RST;
+      cfg.pin_busy = -1;
+      cfg.panel_width  = 480;
+      cfg.panel_height = 320;
+      cfg.offset_x     = 0;
+      cfg.offset_y     = 0;
+      cfg.offset_rotation = 0;
+      cfg.dummy_read_pixel = 8;
+      cfg.dummy_read_bits  = 1;
+      cfg.memory_width     = 480;
+      cfg.memory_height    = 320;
+      // cfg.pwm_control not available in this LovyanGFX version
+      cfg.invert = false;
+      cfg.rgb_order = false;
+      cfg.dlen_16bit = false;
+      cfg.bus_shared = true;
+      _panel_instance.config(cfg);
+    }
+    {
+      auto cfg = _light_instance.config();
+      cfg.pin_bl = -1;
+      _light_instance.config(cfg);
+      _panel_instance.setLight(&_light_instance);
+    }
+    setPanel(&_panel_instance);
+  }
+
+  // compatibility helpers --------------------------------------------------
+  // Adafruit GFX fonts support: ignore on TFT, use base on E-Ink
+  void setFont(const GFXfont *font) { (void)font; }
+  // E-Ink interface compatibility
+  void setFullWindow() { /* no-op on TFT */ }
+
+private:
+  lgfx::Panel_ST7796 _panel_instance;
+};
+
+LGFX & getdisplay();
+#endif
+
 // Page display return values
 #define PAGE_OK 0          // all ok, do nothing
 #define PAGE_UPDATE 1      // page wants display to update
 #define PAGE_HIBERNATE 2   // page wants displey to hibernate
+
+// Display wrapper functions for E-Ink/TFT compatibility
+inline void displayFirstPage() {
+    #ifdef DISPLAY_ST7796
+    // TFT LCD doesn't need firstPage() 
+    #else
+    getdisplay().firstPage();
+    #endif
+}
+
+inline void displayNextPage() {
+    #ifdef DISPLAY_ST7796
+    // TFT LCD doesn't need nextPage() for refresh
+    #else
+    getdisplay().nextPage();
+    #endif
+}
+
+inline void displaySetPartialWindow(uint16_t x, uint16_t y, uint16_t w, uint16_t h) {
+    #ifdef DISPLAY_ST7796
+    // TFT LCD doesn't use partial windows
+    (void)x; (void)y; (void)w; (void)h;
+    #else
+    getdisplay().setPartialWindow(x, y, w, h);
+    #endif
+}
+
+inline void displaySetFullWindow() {
+    #ifdef DISPLAY_ST7796
+    // TFT LCD doesn't need setFullWindow()
+    #else
+    getdisplay().setFullWindow();
+    #endif
+}
+
+// replacement for getTextBounds that works with both EPD and ST7796
+inline void displayGetTextBounds(const String &txt, int16_t x, int16_t y,
+                                 int16_t *x0, int16_t *y0,
+                                 uint16_t *w, uint16_t *h) {
+#ifdef DISPLAY_ST7796
+    // LovyanGFX doesn't expose getTextBounds; compute via helpers
+    *w = getdisplay().textWidth(txt);
+    *h = getdisplay().fontHeight();
+    if (x0) *x0 = 0;
+    if (y0) *y0 = 0;
+#else
+    getdisplay().getTextBounds(txt, x, y, x0, y0, w, h);
+#endif
+}
 
 void fillPoly4(const std::vector<Point>& p4, uint16_t color);
 void drawPoly(const std::vector<Point>& points, uint16_t color);
