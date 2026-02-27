@@ -374,8 +374,21 @@ bool showValues = false; // Show values HDT, SOG, DBT in navigation map
         getdisplay().setPartialWindow(0, 0, getdisplay().width(), getdisplay().height()); // Set partial update
         getdisplay().setTextColor(commonData->fgcolor);
 
+        // NEW: simple exponential backoff for 1 Hz polling (prevents connection-refused storms)
+        static uint32_t nextAllowedMs = 0;
+        static uint8_t  failCount = 0;
+
+        uint32_t now = millis();
+
+        // NEW: if we are in backoff window, skip network call and use backup immediately
+        bool allowFetch = ((int32_t)(now - nextAllowedMs) >= 0);
+        
         // If a network connection to URL then load the navigation map
-        if (net.fetchAndDecompressJson(url)) {
+        if (allowFetch && net.fetchAndDecompressJson(url)) {
+
+            // NEW: reset backoff on success
+            failCount = 0;
+            nextAllowedMs = now + 1000; // keep 1 Hz on success
 
             auto& json = net.json();                // Extract JSON content
             int numPix = json["number_pixels"] | 0; // Read number of pixels
@@ -397,7 +410,7 @@ bool showValues = false; // Show values HDT, SOG, DBT in navigation map
             size_t imgSize = numPix;    // Calculate image size
             uint8_t* imageData = (uint8_t*) heap_caps_malloc(imgSize, MALLOC_CAP_SPIRAM);           // Allocate PSRAM for image
             if (!imageData) {
-                LOG_DEBUG(GwLog::ERROR,"Error PageNavigation: PPSRAM alloc image buffer failed");
+                LOG_DEBUG(GwLog::ERROR,"Error PageNavigation: PSRAM alloc image buffer failed");
                 free(b64);
                 return PAGE_UPDATE;
             }
@@ -426,12 +439,25 @@ bool showValues = false; // Show values HDT, SOG, DBT in navigation map
         }
         // If no network connection then use backup navigation map
         else{
+
+            // NEW: update backoff only if we actually attempted a fetch (not when skipping due to backoff)
+            if (allowFetch) {
+                // NEW: exponential backoff: 1s,2s,4s,8s,16s,30s (capped)
+                if (failCount < 6) failCount++;
+                uint32_t backoffMs = 1000u << failCount;
+                if (backoffMs > 30000u) backoffMs = 30000u;
+                nextAllowedMs = now + backoffMs;
+            } else {
+                // NEW: we are currently backing off; do not increase failCount further
+                // nextAllowedMs stays unchanged
+            }
+
             // Show backup image (backup navigation map)
             if (hasImageBackup) {
                 getdisplay().drawBitmap(0, 25, imageBackupData, imageBackupWidth, imageBackupHeight, commonData->fgcolor);
             }    
 
-            // Show info: Connection lost when 5 page refreshes has a connection lost to the map server
+            // Show connection lost info when 5 page refreshes has a connection lost to the map server
             // Short connection losts are uncritical
             if(lostCounter >= 5){
                 getdisplay().setFont(&Ubuntu_Bold12pt8b);
@@ -443,7 +469,6 @@ bool showValues = false; // Show values HDT, SOG, DBT in navigation map
 
             lostCounter++; // Increment lost counter
         }
-
 
         // ############### Draw Values ################
         getdisplay().setFont(&Ubuntu_Bold12pt8b);
