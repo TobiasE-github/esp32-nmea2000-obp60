@@ -130,12 +130,27 @@ public:
   }
 
   // compatibility helpers --------------------------------------------------
-  // Adafruit GFX fonts support: ignore on TFT, use base on E-Ink
-  void setFont(const GFXfont *font) { (void)font; }
+    using lgfx::LGFX_Device::setFont;
+    // Adafruit GFX fonts support on TFT via LovyanGFX bridge
+    void setFont(const GFXfont *font) {
+        if (font == nullptr) {
+            lgfx::LGFX_Device::setFont(nullptr);
+            return;
+        }
+        _adfFontBridge = lgfx::GFXfont(
+            const_cast<uint8_t*>(font->bitmap),
+            reinterpret_cast<lgfx::GFXglyph*>(const_cast<GFXglyph*>(font->glyph)),
+            font->first,
+            font->last,
+            font->yAdvance
+        );
+        lgfx::LGFX_Device::setFont(&_adfFontBridge);
+    }
   // E-Ink interface compatibility
   void setFullWindow() { /* no-op on TFT */ }
 
 private:
+    lgfx::GFXfont _adfFontBridge { nullptr, nullptr, 0, 0, 0 };
   lgfx::Panel_ST7796 _panel_instance;
 };
 
