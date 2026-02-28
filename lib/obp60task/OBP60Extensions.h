@@ -106,9 +106,9 @@ public:
       cfg.pin_busy = -1;
       cfg.panel_width  = 480;
       cfg.panel_height = 320;
-      cfg.offset_x     = 0;
-      cfg.offset_y     = 0;
-      cfg.offset_rotation = 0;
+      cfg.offset_x     = 40;
+      cfg.offset_y     = 10;
+      cfg.offset_rotation = 3;
       cfg.dummy_read_pixel = 8;
       cfg.dummy_read_bits  = 1;
       cfg.memory_width     = 480;
