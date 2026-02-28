@@ -488,11 +488,10 @@ std::vector<String> wordwrap(String &line, uint16_t maxwidth) {
 // Draw centered text
 void drawTextCenter(int16_t cx, int16_t cy, String text) {
 #ifdef DISPLAY_ST7796
+    uint16_t w = getdisplay().textWidth(text);
     uint16_t h = getdisplay().fontHeight();
-    auto oldDatum = getdisplay().getTextDatum();
-    getdisplay().setTextDatum(textdatum_t::top_center);
-    getdisplay().drawString(text, cx, cy - static_cast<int16_t>(h / 2));
-    getdisplay().setTextDatum(oldDatum);
+    getdisplay().setCursor(cx - static_cast<int16_t>(w / 2), cy + static_cast<int16_t>(h / 2));
+    getdisplay().print(text);
 #else
     int16_t x1, y1;
     uint16_t w, h;
