@@ -487,42 +487,55 @@ std::vector<String> wordwrap(String &line, uint16_t maxwidth) {
 
 // Draw centered text
 void drawTextCenter(int16_t cx, int16_t cy, String text) {
+#ifdef DISPLAY_ST7796
+    auto oldDatum = getdisplay().getTextDatum();
+    getdisplay().setTextDatum(textdatum_t::middle_center);
+    getdisplay().drawString(text, cx, cy);
+    getdisplay().setTextDatum(oldDatum);
+#else
     int16_t x1, y1;
     uint16_t w, h;
-#ifdef DISPLAY_ST7796
-    // LovyanGFX doesn't expose getTextBounds; use width/height helpers
-    w = getdisplay().textWidth(text);
-    h = getdisplay().fontHeight();
-#else
     getdisplay().getTextBounds(text, 0, 150, &x1, &y1, &w, &h);
-#endif
     getdisplay().setCursor(cx - w / 2, cy + h / 2);
     getdisplay().print(text);
+#endif
 }
 
 // Draw centered botton with centered text
 void drawButtonCenter(int16_t cx, int16_t cy, int8_t sx, int8_t sy, String text, uint16_t fg, uint16_t bg, bool inverted) {
-    int16_t x1, y1;
-    uint16_t w, h;
     uint16_t color;
 
-#ifdef DISPLAY_ST7796
-    w = getdisplay().textWidth(text);
-    h = getdisplay().fontHeight();
-#else
+#ifndef DISPLAY_ST7796
+    int16_t x1, y1;
+    uint16_t w, h;
     getdisplay().getTextBounds(text, cx, cy, &x1, &y1, &w, &h); // Find text center
 #endif
-    getdisplay().setCursor(cx - w/2, cy + h/2);                 // Set cursor to center
     //getdisplay().drawPixel(cx, cy, fg);                         // Debug pixel for center position
     if (inverted) {
         getdisplay().fillRoundRect(cx - sx / 2, cy - sy / 2, sx, sy, 5, fg); // Draw button
         getdisplay().setTextColor(bg);
+#ifdef DISPLAY_ST7796
+        auto oldDatum = getdisplay().getTextDatum();
+        getdisplay().setTextDatum(textdatum_t::middle_center);
+        getdisplay().drawString(text, cx, cy);
+        getdisplay().setTextDatum(oldDatum);
+#else
+        getdisplay().setCursor(cx - w/2, cy + h/2);                 // Set cursor to center
         getdisplay().print(text);                               // Draw text
+#endif
      }
      else{
         getdisplay().drawRoundRect(cx - sx / 2, cy - sy / 2, sx, sy, 5, fg); // Draw button
         getdisplay().setTextColor(fg);
+#ifdef DISPLAY_ST7796
+        auto oldDatum = getdisplay().getTextDatum();
+        getdisplay().setTextDatum(textdatum_t::middle_center);
+        getdisplay().drawString(text, cx, cy);
+        getdisplay().setTextDatum(oldDatum);
+#else
+        getdisplay().setCursor(cx - w/2, cy + h/2);                 // Set cursor to center
         getdisplay().print(text);                               // Draw text
+#endif
      }
 }
 
