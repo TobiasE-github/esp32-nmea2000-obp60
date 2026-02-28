@@ -397,7 +397,7 @@ void OBP60Task(GwApi *api){
     displayNextPage();                            // Fast Refresh
     if(String(displaymode) == "Logo + QR Code" || String(displaymode) == "Logo"){
         getdisplay().fillScreen(commonData.bgcolor);
-        getdisplay().drawBitmap(0, 0, gImage_Logo_OBP_400x300_sw, getdisplay().width(), getdisplay().height(), commonData.fgcolor); // Draw start logo
+        drawMonochromeBitmap(0, 0, gImage_Logo_OBP_400x300_sw, getdisplay().width(), getdisplay().height(), commonData.fgcolor); // Draw start logo
         displayNextPage();                 // Fast Refresh
         displayNextPage();                 // Fast Refresh
         delay(SHOW_TIME);                        // Logo show time
