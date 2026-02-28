@@ -148,30 +148,43 @@ LGFX & getdisplay();
 #define PAGE_HIBERNATE 2   // page wants displey to hibernate
 
 // Draw monochrome bitmap on both E-Ink and TFT displays
-// Konvertiert 1-Bit Bilder automatisch zu RGB565 für Farbdisplays
+// supports various packing and bit orders; optional runtime conversion for TFT
 inline void drawMonochromeBitmap(
-    int16_t x, int16_t y, 
-    const uint8_t *bitmap,
+    int16_t x, int16_t y,
+    const uint8_t *bmp,
     int16_t w, int16_t h,
-    uint16_t color) {
-    
+    uint16_t color,
+    bool vertical=false,    // true: bytes run vertically (each byte 8 pixels down)
+    bool lsbFirst=false)    // true: least significant bit = left/top pixel
+{
     #ifdef DISPLAY_ST7796
-    // Für RGB565 TFT: Konvertierung von 1-Bit zu Pixel-Zeichnung
-    for (int row = 0; row < h; row++) {
-        for (int col = 0; col < w; col++) {
-            int byteIdx = (row * ((w + 7) / 8)) + (col / 8);
-            int bitIdx = col % 8;
-            uint8_t byte = bitmap[byteIdx];
-            
-            // LSB-first format (Adafruit standard)
-            if (byte & (1 << bitIdx)) {
-                getdisplay().drawPixel(x + col, y + row, color);
+    // TFT converts per‑pixel
+    for (int yy = 0; yy < h; yy++) {
+        for (int xx = 0; xx < w; xx++) {
+            int byteIdx;
+            int bitIdx;
+            if (vertical) {
+                byteIdx = xx * ((h + 7) / 8) + (yy / 8);
+                bitIdx  = yy % 8;
+            } else {
+                byteIdx = yy * ((w + 7) / 8) + (xx / 8);
+                bitIdx  = xx % 8;
+            }
+            uint8_t b = bmp[byteIdx];
+            bool pix;
+            if (lsbFirst) {
+                pix = b & (1 << bitIdx);
+            } else {
+                pix = b & (1 << (7 - bitIdx));
+            }
+            if (pix) {
+                getdisplay().drawPixel(x + xx, y + yy, color);
             }
         }
     }
     #else
-    // Für E-Ink Displays: direkt drawBitmap verwenden
-    getdisplay().drawBitmap(x, y, bitmap, w, h, color);
+    // E‑Paper: just hand over to driver (expects MSB‑first horizontal)
+    getdisplay().drawBitmap(x, y, bmp, w, h, color);
     #endif
 }
 
