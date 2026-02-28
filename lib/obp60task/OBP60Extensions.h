@@ -155,20 +155,26 @@ inline void drawMonochromeBitmap(
     int16_t w, int16_t h,
     uint16_t color,
     bool vertical=false,    // true: bytes run vertically (each byte 8 pixels down)
-    bool lsbFirst=false)    // true: least significant bit = left/top pixel
+    bool lsbFirst=false,    // true: least significant bit = left/top pixel
+    bool mirrorX=false)      // true: bytes run right-to-left within each row
 {
     #ifdef DISPLAY_ST7796
     // TFT converts per‑pixel
+    int bytesPerRow = (w + 7) / 8;
     for (int yy = 0; yy < h; yy++) {
         for (int xx = 0; xx < w; xx++) {
             int byteIdx;
             int bitIdx;
             if (vertical) {
-                byteIdx = xx * ((h + 7) / 8) + (yy / 8);
+                // vertical packing: column-major bytes
+                int col = mirrorX ? (w - 1 - xx) : xx;
+                byteIdx = col * ((h + 7) / 8) + (yy / 8);
                 bitIdx  = yy % 8;
             } else {
-                byteIdx = yy * ((w + 7) / 8) + (xx / 8);
-                bitIdx  = xx % 8;
+                // horizontal packing: row-major bytes
+                int col = mirrorX ? (w - 1 - xx) : xx;
+                byteIdx = yy * bytesPerRow + (col / 8);
+                bitIdx  = col % 8;
             }
             uint8_t b = bmp[byteIdx];
             bool pix;
