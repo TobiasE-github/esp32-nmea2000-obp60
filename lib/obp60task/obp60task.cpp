@@ -839,7 +839,9 @@ void OBP60Task(GwApi *api){
 
                 // Clear display
                 // getdisplay().fillRect(0, 0, getdisplay().width(), getdisplay().height(), commonData.bgcolor);
+                #ifndef DISPLAY_ST7796
                 getdisplay().fillScreen(commonData.bgcolor);  // Clear display
+                #endif
 
                 // Show header if enabled
                 if (pages[pageNumber].description && pages[pageNumber].description->header or systemPage){
