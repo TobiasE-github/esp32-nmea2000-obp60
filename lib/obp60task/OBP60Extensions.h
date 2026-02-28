@@ -194,7 +194,34 @@ inline void drawMonochromeBitmap(
     #endif
 }
 
+// helper for built-in OBP logo (400×300 mono bitmap)
+inline void drawOBPLogo(int16_t x, int16_t y, uint16_t color) {
+    constexpr int LOGO_W = 400;
+    constexpr int LOGO_H = 300;
+    drawMonochromeBitmap(x, y,
+                         gImage_Logo_OBP_400x300_sw,
+                         LOGO_W, LOGO_H,
+                         color,
+                         /*vertical=*/false,
+                         /*lsbFirst=*/false,
+                         /*mirrorX=*/false);
+}
+
 // Display wrapper functions for E-Ink/TFT compatibility
+
+// generic bitmap draw that accepts 1‑bit data; TFT version
+// forwards to drawMonochromeBitmap whereas EPD uses native drawBitmap
+inline void displayDrawBitmap(int16_t x, int16_t y,
+                              const uint8_t *bmp,
+                              int16_t w, int16_t h,
+                              uint16_t color) {
+    #ifdef DISPLAY_ST7796
+    drawMonochromeBitmap(x, y, bmp, w, h, color);
+    #else
+    getdisplay().drawBitmap(x, y, bmp, w, h, color);
+    #endif
+}
+
 inline void displayFirstPage() {
     #ifdef DISPLAY_ST7796
     // TFT LCD doesn't need firstPage() 
