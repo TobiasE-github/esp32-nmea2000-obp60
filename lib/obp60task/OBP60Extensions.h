@@ -128,14 +128,20 @@ public:
 
   // compatibility helpers --------------------------------------------------
     using lgfx::LGFX_Device::setFont;
+    void setFont(const lgfx::IFont* font) {
+        _currentAdfFont = nullptr;
+        lgfx::LGFX_Device::setFont(font);
+    }
     // Adafruit GFX fonts support on TFT via LovyanGFX bridge
     void setFont(const GFXfont *font) {
         if (font == nullptr) {
+            _currentAdfFont = nullptr;
             lgfx::LGFX_Device::setFont(nullptr);
             return;
         }
 
         if (font->glyph == nullptr || font->bitmap == nullptr || font->last < font->first) {
+            _currentAdfFont = nullptr;
             lgfx::LGFX_Device::setFont(nullptr);
             return;
         }
@@ -176,7 +182,80 @@ public:
             font->last,
             font->yAdvance
         );
+        _currentAdfFont = font;
         lgfx::LGFX_Device::setFont(&_adfFontBridge);
+    }
+
+    void getTextBounds(const String &txt, int16_t x, int16_t y,
+                                         int16_t *x0, int16_t *y0,
+                                         uint16_t *w, uint16_t *h) {
+        if (w == nullptr || h == nullptr) {
+            return;
+        }
+        if (_currentAdfFont == nullptr || txt.length() == 0) {
+            *w = textWidth(txt);
+            *h = fontHeight();
+            if (x0) *x0 = x;
+            if (y0) *y0 = y - static_cast<int16_t>(*h);
+            return;
+        }
+
+        const float sx = getTextSizeX();
+        const float sy = getTextSizeY();
+
+        int32_t cursorX = x;
+        int32_t cursorY = y;
+        int32_t minX = 0;
+        int32_t minY = 0;
+        int32_t maxX = 0;
+        int32_t maxY = 0;
+        bool hasPixel = false;
+
+        for (size_t i = 0; i < txt.length(); ++i) {
+            char c = txt[i];
+            if (c == '\r') continue;
+            if (c == '\n') {
+                cursorX = x;
+                cursorY += static_cast<int32_t>(_currentAdfFont->yAdvance * sy);
+                continue;
+            }
+            if (c < _currentAdfFont->first || c > _currentAdfFont->last) {
+                continue;
+            }
+
+            const GFXglyph* glyph = &_currentAdfFont->glyph[static_cast<uint16_t>(c) - _currentAdfFont->first];
+            const int32_t gw = static_cast<int32_t>(glyph->width * sx);
+            const int32_t gh = static_cast<int32_t>(glyph->height * sy);
+            const int32_t gx1 = cursorX + static_cast<int32_t>(glyph->xOffset * sx);
+            const int32_t gy1 = cursorY + static_cast<int32_t>(glyph->yOffset * sy);
+
+            if (gw > 0 && gh > 0) {
+                const int32_t gx2 = gx1 + gw - 1;
+                const int32_t gy2 = gy1 + gh - 1;
+                if (!hasPixel) {
+                    minX = gx1; minY = gy1; maxX = gx2; maxY = gy2;
+                    hasPixel = true;
+                } else {
+                    if (gx1 < minX) minX = gx1;
+                    if (gy1 < minY) minY = gy1;
+                    if (gx2 > maxX) maxX = gx2;
+                    if (gy2 > maxY) maxY = gy2;
+                }
+            }
+            cursorX += static_cast<int32_t>(glyph->xAdvance * sx);
+        }
+
+        if (hasPixel) {
+            if (x0) *x0 = static_cast<int16_t>(minX);
+            if (y0) *y0 = static_cast<int16_t>(minY);
+            *w = static_cast<uint16_t>(maxX - minX + 1);
+            *h = static_cast<uint16_t>(maxY - minY + 1);
+        } else {
+            if (x0) *x0 = x;
+            if (y0) *y0 = y;
+            *w = 0;
+            *h = 0;
+        }
     }
   // E-Ink interface compatibility
   void setFullWindow() { /* no-op on TFT */ }
@@ -185,6 +264,7 @@ private:
     lgfx::GFXfont _adfFontBridge { nullptr, nullptr, 0, 0, 0 };
     lgfx::GFXglyph* _adfGlyphBridge = nullptr;
     uint16_t _adfGlyphCount = 0;
+    const GFXfont* _currentAdfFont = nullptr;
   lgfx::Panel_ST7796 _panel_instance;
 };
 
@@ -297,11 +377,7 @@ inline void displayGetTextBounds(const String &txt, int16_t x, int16_t y,
                                  int16_t *x0, int16_t *y0,
                                  uint16_t *w, uint16_t *h) {
 #ifdef DISPLAY_ST7796
-    // LovyanGFX doesn't expose getTextBounds; compute via helpers
-    *w = getdisplay().textWidth(txt);
-    *h = getdisplay().fontHeight();
-    if (x0) *x0 = 0;
-    if (y0) *y0 = 0;
+    getdisplay().getTextBounds(txt, x, y, x0, y0, w, h);
 #else
     getdisplay().getTextBounds(txt, x, y, x0, y0, w, h);
 #endif
