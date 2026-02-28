@@ -104,15 +104,15 @@ public:
       cfg.pin_cs  = OBP_SPI_CS;
       cfg.pin_rst = OBP_SPI_RST;
       cfg.pin_busy = -1;
-      cfg.panel_width  = 480;
-      cfg.panel_height = 320;
-      cfg.offset_x     = 40;
-      cfg.offset_y     = 10;
-      cfg.offset_rotation = 3;
+      cfg.panel_width  = 320;       // Native width resolution
+      cfg.panel_height = 480;       // Native hight resolution
+      cfg.offset_x     = 10;        // Display output 400x300 pix to housing center adjusted 
+      cfg.offset_y     = -20;       // Display output 400x300 pix to housing center adjusted
+      cfg.offset_rotation = 3;      // Rotate display content conter clock wise 90 deg
       cfg.dummy_read_pixel = 8;
       cfg.dummy_read_bits  = 1;
-      cfg.memory_width     = 480;
-      cfg.memory_height    = 320;
+      cfg.memory_width     = 320;
+      cfg.memory_height    = 480;
       // cfg.pwm_control not available in this LovyanGFX version
       cfg.invert = false;
       cfg.rgb_order = false;
