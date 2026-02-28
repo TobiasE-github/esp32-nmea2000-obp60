@@ -122,6 +122,8 @@ public:
         // No dedicated TFT PWM backlight pin configured on this board.
         // Keep backlight handling outside LovyanGFX to avoid LEDC init on invalid GPIO.
     setPanel(&_panel_instance);
+        // Match Adafruit GFX cursor semantics: y coordinate is text baseline.
+        setTextDatum(textdatum_t::baseline_left);
   }
 
   // compatibility helpers --------------------------------------------------
