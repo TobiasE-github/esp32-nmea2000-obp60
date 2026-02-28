@@ -83,7 +83,6 @@ GxEPD2_BW<GxEPD2_420_SE0420NQ04, GxEPD2_420_SE0420NQ04::HEIGHT> & getdisplay();
 class LGFX : public lgfx::LGFX_Device {
 public:
   lgfx::Bus_SPI _bus_instance;
-  lgfx::Light_PWM _light_instance;
 
   LGFX(void) {
     {
@@ -120,12 +119,8 @@ public:
       cfg.bus_shared = true;
       _panel_instance.config(cfg);
     }
-    {
-      auto cfg = _light_instance.config();
-      cfg.pin_bl = -1;
-      _light_instance.config(cfg);
-      _panel_instance.setLight(&_light_instance);
-    }
+        // No dedicated TFT PWM backlight pin configured on this board.
+        // Keep backlight handling outside LovyanGFX to avoid LEDC init on invalid GPIO.
     setPanel(&_panel_instance);
   }
 
