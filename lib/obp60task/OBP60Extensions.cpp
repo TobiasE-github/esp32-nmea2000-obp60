@@ -487,41 +487,33 @@ std::vector<String> wordwrap(String &line, uint16_t maxwidth) {
 
 // Draw centered text
 void drawTextCenter(int16_t cx, int16_t cy, String text) {
-#ifdef DISPLAY_ST7796
-    uint16_t w = getdisplay().textWidth(text);
-    uint16_t h = getdisplay().fontHeight();
-    getdisplay().setCursor(cx - static_cast<int16_t>(w / 2), cy + static_cast<int16_t>(h / 2));
-    getdisplay().print(text);
-#else
     int16_t x1, y1;
     uint16_t w, h;
-    getdisplay().getTextBounds(text, 0, 150, &x1, &y1, &w, &h);
-    getdisplay().setCursor(cx - w / 2, cy + h / 2);
+    displayGetTextBounds(text, 0, 0, &x1, &y1, &w, &h);
+    int16_t cursorX = cx - (x1 + static_cast<int16_t>(w / 2));
+    int16_t cursorY = cy - (y1 + static_cast<int16_t>(h / 2));
+    getdisplay().setCursor(cursorX, cursorY);
     getdisplay().print(text);
-#endif
 }
 
 // Draw centered botton with centered text
 void drawButtonCenter(int16_t cx, int16_t cy, int8_t sx, int8_t sy, String text, uint16_t fg, uint16_t bg, bool inverted) {
-    uint16_t w, h;
-#ifdef DISPLAY_ST7796
-    w = getdisplay().textWidth(text);
-    h = getdisplay().fontHeight();
-#else
     int16_t x1, y1;
-    getdisplay().getTextBounds(text, cx, cy, &x1, &y1, &w, &h); // Find text center
-#endif
+    uint16_t w, h;
+    displayGetTextBounds(text, 0, 0, &x1, &y1, &w, &h);
+    int16_t cursorX = cx - (x1 + static_cast<int16_t>(w / 2));
+    int16_t cursorY = cy - (y1 + static_cast<int16_t>(h / 2));
     //getdisplay().drawPixel(cx, cy, fg);                         // Debug pixel for center position
     if (inverted) {
         getdisplay().fillRoundRect(cx - sx / 2, cy - sy / 2, sx, sy, 5, fg); // Draw button
         getdisplay().setTextColor(bg);
-        getdisplay().setCursor(cx - w/2, cy + h/2);                 // Set cursor to center
+        getdisplay().setCursor(cursorX, cursorY);                 // Set cursor to center
         getdisplay().print(text);                               // Draw text
      }
      else{
         getdisplay().drawRoundRect(cx - sx / 2, cy - sy / 2, sx, sy, 5, fg); // Draw button
         getdisplay().setTextColor(fg);
-        getdisplay().setCursor(cx - w/2, cy + h/2);                 // Set cursor to center
+        getdisplay().setCursor(cursorX, cursorY);                 // Set cursor to center
         getdisplay().print(text);                               // Draw text
      }
 }
