@@ -397,7 +397,16 @@ void OBP60Task(GwApi *api){
     displayNextPage();                            // Fast Refresh
     if(String(displaymode) == "Logo + QR Code" || String(displaymode) == "Logo"){
         getdisplay().fillScreen(commonData.bgcolor);
-        drawMonochromeBitmap(0, 0, gImage_Logo_OBP_400x300_sw, getdisplay().width(), getdisplay().height(), commonData.fgcolor); // Draw start logo
+        // logo is 400×300 pixels regardless of physical display resolution
+        const int LOGO_W = 400;
+        const int LOGO_H = 300;
+        // bitmap is stored row‑wise LSB‑oriented (adfruit generator), no vertical packing
+        drawMonochromeBitmap(0, 0, gImage_Logo_OBP_400x300_sw,
+                              LOGO_W, LOGO_H,
+                              commonData.fgcolor,
+                              /*vertical=*/false,
+                              /*lsbFirst=*/false,
+                              /*mirrorX=*/false);
         displayNextPage();                 // Fast Refresh
         displayNextPage();                 // Fast Refresh
         delay(SHOW_TIME);                        // Logo show time
