@@ -194,18 +194,6 @@ inline void drawMonochromeBitmap(
     #endif
 }
 
-// helper for built-in OBP logo (400×300 mono bitmap)
-inline void drawOBPLogo(int16_t x, int16_t y, uint16_t color) {
-    constexpr int LOGO_W = 400;
-    constexpr int LOGO_H = 300;
-    drawMonochromeBitmap(x, y,
-                         gImage_Logo_OBP_400x300_sw,
-                         LOGO_W, LOGO_H,
-                         color,
-                         /*vertical=*/false,
-                         /*lsbFirst=*/false,
-                         /*mirrorX=*/false);
-}
 
 // Display wrapper functions for E-Ink/TFT compatibility
 
