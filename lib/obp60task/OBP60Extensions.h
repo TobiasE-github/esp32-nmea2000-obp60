@@ -104,15 +104,15 @@ public:
       cfg.pin_cs  = OBP_SPI_CS;
       cfg.pin_rst = OBP_SPI_RST;
       cfg.pin_busy = -1;
-      cfg.panel_width  = 480;
-      cfg.panel_height = 320;
-      cfg.offset_x     = 0;
-      cfg.offset_y     = 0;
-      cfg.offset_rotation = 0;
+      cfg.panel_width  = 320;       // Native width resolution
+      cfg.panel_height = 480;       // Native hight resolution
+      cfg.offset_x     = 10;        // Display output 400x300 pix to housing center adjusted 
+      cfg.offset_y     = -20;       // Display output 400x300 pix to housing center adjusted
+      cfg.offset_rotation = 3;      // Rotate display content conter clock wise 90 deg
       cfg.dummy_read_pixel = 8;
       cfg.dummy_read_bits  = 1;
-      cfg.memory_width     = 480;
-      cfg.memory_height    = 320;
+      cfg.memory_width     = 320;
+      cfg.memory_height    = 480;
       // cfg.pwm_control not available in this LovyanGFX version
       cfg.invert = false;
       cfg.rgb_order = false;
@@ -147,7 +147,69 @@ LGFX & getdisplay();
 #define PAGE_UPDATE 1      // page wants display to update
 #define PAGE_HIBERNATE 2   // page wants displey to hibernate
 
+// Draw monochrome bitmap on both E-Ink and TFT displays
+// supports various packing and bit orders; optional runtime conversion for TFT
+inline void drawMonochromeBitmap(
+    int16_t x, int16_t y,
+    const uint8_t *bmp,
+    int16_t w, int16_t h,
+    uint16_t color,
+    bool vertical=false,    // true: bytes run vertically (each byte 8 pixels down)
+    bool lsbFirst=false,    // true: least significant bit = left/top pixel
+    bool mirrorX=false)      // true: bytes run right-to-left within each row
+{
+    #ifdef DISPLAY_ST7796
+    // TFT converts per‑pixel
+    int bytesPerRow = (w + 7) / 8;
+    for (int yy = 0; yy < h; yy++) {
+        for (int xx = 0; xx < w; xx++) {
+            int byteIdx;
+            int bitIdx;
+            if (vertical) {
+                // vertical packing: column-major bytes
+                int col = mirrorX ? (w - 1 - xx) : xx;
+                byteIdx = col * ((h + 7) / 8) + (yy / 8);
+                bitIdx  = yy % 8;
+            } else {
+                // horizontal packing: row-major bytes
+                int col = mirrorX ? (w - 1 - xx) : xx;
+                byteIdx = yy * bytesPerRow + (col / 8);
+                bitIdx  = col % 8;
+            }
+            uint8_t b = bmp[byteIdx];
+            bool pix;
+            if (lsbFirst) {
+                pix = b & (1 << bitIdx);
+            } else {
+                pix = b & (1 << (7 - bitIdx));
+            }
+            if (pix) {
+                getdisplay().drawPixel(x + xx, y + yy, color);
+            }
+        }
+    }
+    #else
+    // E‑Paper: just hand over to driver (expects MSB‑first horizontal)
+    getdisplay().drawBitmap(x, y, bmp, w, h, color);
+    #endif
+}
+
+
 // Display wrapper functions for E-Ink/TFT compatibility
+
+// generic bitmap draw that accepts 1‑bit data; TFT version
+// forwards to drawMonochromeBitmap whereas EPD uses native drawBitmap
+inline void displayDrawBitmap(int16_t x, int16_t y,
+                              const uint8_t *bmp,
+                              int16_t w, int16_t h,
+                              uint16_t color) {
+    #ifdef DISPLAY_ST7796
+    drawMonochromeBitmap(x, y, bmp, w, h, color);
+    #else
+    getdisplay().drawBitmap(x, y, bmp, w, h, color);
+    #endif
+}
+
 inline void displayFirstPage() {
     #ifdef DISPLAY_ST7796
     // TFT LCD doesn't need firstPage() 
