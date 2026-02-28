@@ -132,9 +132,44 @@ public:
             lgfx::LGFX_Device::setFont(nullptr);
             return;
         }
+
+        if (font->glyph == nullptr || font->bitmap == nullptr || font->last < font->first) {
+            lgfx::LGFX_Device::setFont(nullptr);
+            return;
+        }
+
+        const uint16_t glyphCount = static_cast<uint16_t>(font->last - font->first + 1);
+        if (glyphCount == 0) {
+            lgfx::LGFX_Device::setFont(nullptr);
+            return;
+        }
+
+        if (_adfGlyphCount != glyphCount || _adfGlyphBridge == nullptr) {
+            if (_adfGlyphBridge != nullptr) {
+                free(_adfGlyphBridge);
+                _adfGlyphBridge = nullptr;
+                _adfGlyphCount = 0;
+            }
+            _adfGlyphBridge = static_cast<lgfx::GFXglyph*>(malloc(sizeof(lgfx::GFXglyph) * glyphCount));
+            if (_adfGlyphBridge == nullptr) {
+                lgfx::LGFX_Device::setFont(nullptr);
+                return;
+            }
+            _adfGlyphCount = glyphCount;
+        }
+
+        for (uint16_t index = 0; index < glyphCount; ++index) {
+            _adfGlyphBridge[index].bitmapOffset = font->glyph[index].bitmapOffset;
+            _adfGlyphBridge[index].width = font->glyph[index].width;
+            _adfGlyphBridge[index].height = font->glyph[index].height;
+            _adfGlyphBridge[index].xAdvance = font->glyph[index].xAdvance;
+            _adfGlyphBridge[index].xOffset = font->glyph[index].xOffset;
+            _adfGlyphBridge[index].yOffset = font->glyph[index].yOffset;
+        }
+
         _adfFontBridge = lgfx::GFXfont(
             const_cast<uint8_t*>(font->bitmap),
-            reinterpret_cast<lgfx::GFXglyph*>(const_cast<GFXglyph*>(font->glyph)),
+            _adfGlyphBridge,
             font->first,
             font->last,
             font->yAdvance
@@ -146,6 +181,8 @@ public:
 
 private:
     lgfx::GFXfont _adfFontBridge { nullptr, nullptr, 0, 0, 0 };
+    lgfx::GFXglyph* _adfGlyphBridge = nullptr;
+    uint16_t _adfGlyphCount = 0;
   lgfx::Panel_ST7796 _panel_instance;
 };
 
