@@ -56,6 +56,12 @@ GxEPD2_BW<GxEPD2_420_SE0420NQ04, GxEPD2_420_SE0420NQ04::HEIGHT> display(GxEPD2_4
 GxEPD2_BW<GxEPD2_420_SE0420NQ04, GxEPD2_420_SE0420NQ04::HEIGHT> & getdisplay(){return display;}
 #endif
 
+#ifdef DISPLAY_ST7796
+// only instantiate; class defined in header
+static LGFX display;
+LGFX & getdisplay(){return display;}
+#endif
+
 // Horter I2C moduls
 PCF8574 pcf8574_Modul1(PCF8574_I2C_ADDR1); // First digital IO modul PCF8574 from Horter
 
@@ -251,8 +257,10 @@ void deepSleep(CommonData &common){
     getdisplay().setFont(&Ubuntu_Bold8pt8b);
     getdisplay().setCursor(65, 175);
     getdisplay().print("To wake up press key and wait 5s");
-    getdisplay().nextPage();                // Update display contents
+    displayNextPage();                // Update display contents
+    #ifndef DISPLAY_ST7796
     getdisplay().powerOff();                // Display power off
+    #endif
     setPortPin(OBP_POWER_50, false);        // Power off ePaper display
     // Stop system
     esp_deep_sleep_start();                 // Deep Sleep with weakup via touch pin
@@ -276,8 +284,10 @@ void deepSleep(CommonData &common){
     getdisplay().setFont(&Ubuntu_Bold8pt8b);
     getdisplay().setCursor(65, 175);
     getdisplay().print("To wake up press wheel and wait 5s");
-    getdisplay().nextPage();                // Partial update
+    displayNextPage();                // Partial update
+    #ifndef DISPLAY_ST7796
     getdisplay().powerOff();                // Display power off
+    #endif
     setPortPin(OBP_POWER_EPD, false);       // Power off ePaper display
     setPortPin(OBP_POWER_SD, false);        // Power off SD card
     // Stop system
@@ -479,7 +489,13 @@ std::vector<String> wordwrap(String &line, uint16_t maxwidth) {
 void drawTextCenter(int16_t cx, int16_t cy, String text) {
     int16_t x1, y1;
     uint16_t w, h;
+#ifdef DISPLAY_ST7796
+    // LovyanGFX doesn't expose getTextBounds; use width/height helpers
+    w = getdisplay().textWidth(text);
+    h = getdisplay().fontHeight();
+#else
     getdisplay().getTextBounds(text, 0, 150, &x1, &y1, &w, &h);
+#endif
     getdisplay().setCursor(cx - w / 2, cy + h / 2);
     getdisplay().print(text);
 }
@@ -490,7 +506,12 @@ void drawButtonCenter(int16_t cx, int16_t cy, int8_t sx, int8_t sy, String text,
     uint16_t w, h;
     uint16_t color;
 
+#ifdef DISPLAY_ST7796
+    w = getdisplay().textWidth(text);
+    h = getdisplay().fontHeight();
+#else
     getdisplay().getTextBounds(text, cx, cy, &x1, &y1, &w, &h); // Find text center
+#endif
     getdisplay().setCursor(cx - w/2, cy + h/2);                 // Set cursor to center
     //getdisplay().drawPixel(cx, cy, fg);                         // Debug pixel for center position
     if (inverted) {
@@ -509,7 +530,12 @@ void drawButtonCenter(int16_t cx, int16_t cy, int8_t sx, int8_t sy, String text,
 void drawTextRalign(int16_t x, int16_t y, String text) {
     int16_t x1, y1;
     uint16_t w, h;
+#ifdef DISPLAY_ST7796
+    w = getdisplay().textWidth(text);
+    h = getdisplay().fontHeight();
+#else
     getdisplay().getTextBounds(text, 0, 150, &x1, &y1, &w, &h);
+#endif
     getdisplay().setCursor(x - w - 1, y); // '-1' required since some strings wrap around w/o it
     getdisplay().print(text);
 }
@@ -1000,7 +1026,14 @@ void displayRudderPosition(int rudderPosition, uint8_t rangeDeg, uint16_t cx, ui
         String lbl = String(angle);
         int16_t bx, by;
         uint16_t bw, bh;
-        getdisplay().getTextBounds(lbl, 0, 0, &bx, &by, &bw, &bh);
+        #ifdef DISPLAY_ST7796
+            // LovyanGFX: compute width/height manually
+            bw = getdisplay().textWidth(lbl);
+            bh = getdisplay().fontHeight();
+            bx = 0; by = 0;
+        #else
+            getdisplay().getTextBounds(lbl, 0, 0, &bx, &by, &bw, &bh);
+        #endif
         int16_t tx = xpos - bw/2;
         int16_t ty = top + h + bh + 5; // A little spacing
         getdisplay().setCursor(tx, ty);
@@ -1019,9 +1052,16 @@ void doImageRequest(GwApi *api, int *pageno, const PageStruct pages[MAX_PAGE_NUM
 
     logger->logDebug(GwLog::LOG,"handle image request [%s]: %s", imgformat, filename);
 
-    uint8_t *fb = getdisplay().getBuffer(); // EPD framebuffer
+    uint8_t *fb = nullptr; // EPD framebuffer
     std::vector<uint8_t> imageBuffer;       // image in webserver transferbuffer
     String mimetype;
+    #ifndef DISPLAY_ST7796
+        fb = getdisplay().getBuffer(); // available only for EPD
+    #endif
+    if (!fb) {
+        request->send(500, "text/plain", "screenshot not available");
+        return;
+    }
 
     if (imgformat == "gif") {
         // GIF is commpressed with LZW, so small
