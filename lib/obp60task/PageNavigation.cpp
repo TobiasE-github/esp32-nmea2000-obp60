@@ -431,7 +431,7 @@ bool showValues = false; // Show values HDT, SOG, DBT in navigation map
             lostCounter = 0;
 
             // Show image (navigation map)
-            getdisplay().drawBitmap(0, 25, imageData, imgWidth, imgHeight, commonData->fgcolor);
+            displayDrawBitmap(0, 25, imageData, imgWidth, imgHeight, commonData->fgcolor);
 
             // Clean PSRAM
             free(b64);
@@ -454,7 +454,7 @@ bool showValues = false; // Show values HDT, SOG, DBT in navigation map
 
             // Show backup image (backup navigation map)
             if (hasImageBackup) {
-                getdisplay().drawBitmap(0, 25, imageBackupData, imageBackupWidth, imageBackupHeight, commonData->fgcolor);
+                displayDrawBitmap(0, 25, imageBackupData, imageBackupWidth, imageBackupHeight, commonData->fgcolor);
             }    
 
             // Show connection lost info when 5 page refreshes has a connection lost to the map server
