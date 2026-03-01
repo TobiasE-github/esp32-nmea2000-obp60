@@ -316,6 +316,9 @@ inline void drawMonochromeBitmap(
                 getdisplay().drawPixel(x + xx, y + yy, color);
             }
         }
+        if ((yy & 0x0F) == 0) {
+            yield();
+        }
     }
     #else
     // E‑Paper: just hand over to driver (expects MSB‑first horizontal)
