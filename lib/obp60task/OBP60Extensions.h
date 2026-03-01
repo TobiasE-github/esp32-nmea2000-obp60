@@ -432,10 +432,15 @@ bool initDisplayShadowBuffer();
 #define PAGE_HIBERNATE 2   // page wants displey to hibernate
 
 #ifdef DISPLAY_ST7796
+#ifndef OBP_TFT_ENABLE_SCALING
+#define OBP_TFT_ENABLE_SCALING 1
+#endif
+
 #ifndef OBP_TFT_SCALE_ANTIALIAS
 #define OBP_TFT_SCALE_ANTIALIAS 1
 #endif
 
+#if OBP_TFT_SCALE_ANTIALIAS
 inline uint16_t lerpRgb565(uint16_t c0, uint16_t c1, uint16_t w8) {
     const uint16_t r0 = (c0 >> 11) & 0x1F;
     const uint16_t g0 = (c0 >> 5)  & 0x3F;
@@ -462,6 +467,7 @@ inline uint16_t sampleBilinearRgb565(LGFXCanvas& src, uint16_t x0, uint16_t y0, 
     const uint16_t bot = lerpRgb565(c01, c11, wx);
     return lerpRgb565(top, bot, wy);
 }
+#endif
 #endif
 
 // Draw monochrome bitmap on both E-Ink and TFT displays
@@ -549,6 +555,12 @@ inline void displayNextPage() {
         const uint16_t dstW = static_cast<uint16_t>(dst.width());
         const uint16_t dstH = static_cast<uint16_t>(dst.height());
 
+        #if !OBP_TFT_ENABLE_SCALING
+        const uint16_t drawX = static_cast<uint16_t>((dstW > srcW) ? ((dstW - srcW) / 2U) : 0U);
+        const uint16_t drawY = static_cast<uint16_t>((dstH > srcH) ? ((dstH - srcH) / 2U) : 0U);
+        src.pushSprite(drawX, drawY);
+        #else
+
         const uint16_t targetH = (dstH < 320U) ? dstH : 320U;
         const uint32_t scaledW32 = (static_cast<uint32_t>(srcW) * targetH + (srcH / 2U)) / srcH;
         const uint16_t targetW = static_cast<uint16_t>((scaledW32 < dstW) ? scaledW32 : dstW);
@@ -592,6 +604,7 @@ inline void displayNextPage() {
             }
         }
         dst.endWrite();
+        #endif
     }
     #else
     getdisplay().nextPage();
