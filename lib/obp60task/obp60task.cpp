@@ -391,7 +391,9 @@ void OBP60Task(GwApi *api){
 
     #ifdef DISPLAY_ST7796
     getpaneldisplay().setRotation(0);            // Set display orientation (horizontal)
+    getpaneldisplay().setPanelOffset(0, 0);      // Use full native framebuffer coordinates
     getpaneldisplay().fillScreen(0x0000);        // Initialize full TFT screen to black (native RGB565)
+    getpaneldisplay().setPanelOffset(OBP_TFT_OFFSET_X, OBP_TFT_OFFSET_Y); // Restore centered 400x300 operating offset
     #else
     getdisplay().setRotation(0);                 // Set display orientation (horizontal)
     #endif

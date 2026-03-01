@@ -105,8 +105,8 @@ public:
       cfg.pin_busy = -1;
       cfg.panel_width  = 320;       // Native width resolution
       cfg.panel_height = 480;       // Native hight resolution
-      cfg.offset_x     = 10;        // Display output 400x300 pix to housing center adjusted 
-      cfg.offset_y     = -20;       // Display output 400x300 pix to housing center adjusted
+      cfg.offset_x     = 0;         // No panel offset: full framebuffer mapping
+      cfg.offset_y     = 0;         // No panel offset: full framebuffer mapping
       cfg.offset_rotation = 3;      // Rotate display content conter clock wise 90 deg
       cfg.dummy_read_pixel = 8;
       cfg.dummy_read_bits  = 1;
@@ -259,6 +259,20 @@ public:
     }
   // E-Ink interface compatibility
   void setFullWindow() { /* no-op on TFT */ }
+
+    // Runtime panel offset control (ST7796)
+    void setPanelOffset(int16_t x, int16_t y) {
+            auto cfg = _panel_instance.config();
+            cfg.offset_x = x;
+            cfg.offset_y = y;
+            _panel_instance.config(cfg);
+    }
+
+    void getPanelOffset(int16_t &x, int16_t &y) {
+            auto cfg = _panel_instance.config();
+            x = cfg.offset_x;
+            y = cfg.offset_y;
+    }
 
 private:
     lgfx::GFXfont _adfFontBridge { nullptr, nullptr, 0, 0, 0 };
@@ -494,7 +508,7 @@ inline void displayFirstPage() {
 inline void displayNextPage() {
     #ifdef DISPLAY_ST7796
     if (initDisplayShadowBuffer()) {
-        getdisplay().pushSprite(0, 0);
+        getdisplay().pushSprite((480 - GxEPD_WIDTH) / 2, (320 - GxEPD_HEIGHT) / 2);
     }
     #else
     getdisplay().nextPage();
