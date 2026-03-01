@@ -285,7 +285,9 @@ void underVoltageError(CommonData &common) {
     getdisplay().setCursor(65, 175);
     getdisplay().print("Charge battery and restart system");
     displayNextPage();                // Partial update
-    #ifndef DISPLAY_ST7796
+    #ifdef DISPLAY_ST7796
+    getpaneldisplay().powerSave(true);      // Display power save
+    #else
     getdisplay().powerOff();                // Display power off
     #endif
     setPortPin(OBP_POWER_EPD, false);       // Power off ePaper display
@@ -307,7 +309,9 @@ void underVoltageError(CommonData &common) {
     getdisplay().setCursor(65, 175);
     getdisplay().print("To wake up repower system");
     displayNextPage();                // Partial update
-    #ifndef DISPLAY_ST7796
+    #ifdef DISPLAY_ST7796
+    getpaneldisplay().powerSave(true);      // Display power save
+    #else
     getdisplay().powerOff();                // Display power off
     #endif
 #endif
@@ -380,12 +384,19 @@ void OBP60Task(GwApi *api){
     #ifdef DISPLAY_GDEY042T81
         getdisplay().init(115200, true, 2, false);  // Init for Waveshare boards with "clever" reset circuit, 2ms reset pulse
     #elif defined DISPLAY_ST7796
-        getdisplay().init();                        // Init for ST7796 TFT LCD
+        getpaneldisplay().init();                   // Init for ST7796 TFT LCD panel
     #else
         getdisplay().init(115200);                  // Init for normal displays
     #endif
 
+    #ifdef DISPLAY_ST7796
+    getpaneldisplay().setRotation(0);            // Set display orientation (horizontal)
+    getpaneldisplay().setPanelOffset(0, 0);      // Use full native framebuffer coordinates
+    getpaneldisplay().fillScreen(0x0000);        // Initialize full TFT screen to black (native RGB565)
+    getpaneldisplay().setPanelOffset(OBP_TFT_OFFSET_X, OBP_TFT_OFFSET_Y); // Restore configured operating panel offset
+    #else
     getdisplay().setRotation(0);                 // Set display orientation (horizontal)
+    #endif
     displaySetFullWindow();                       // Set full Refresh (E-Ink only)
     displayFirstPage();                           // set first page
     getdisplay().fillScreen(commonData.bgcolor);

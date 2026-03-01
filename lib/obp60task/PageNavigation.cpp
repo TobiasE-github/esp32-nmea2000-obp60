@@ -394,8 +394,20 @@ bool showValues = false; // Show values HDT, SOG, DBT in navigation map
             int numPix = json["number_pixels"] | 0; // Read number of pixels
             imgWidth = json["width"] | 0;           // Read width of image
             imgHeight = json["height"] | 0;         // Read height og image
+            size_t requiredBytes = 0;
+            if (imgWidth > 0 && imgHeight > 0){
+                requiredBytes = (size_t)((imgWidth + 7) / 8) * (size_t)imgHeight;
+            }
+            if (requiredBytes == 0){
+                LOG_DEBUG(GwLog::ERROR,"Error PageNavigation: invalid image geometry w=%d h=%d",imgWidth,imgHeight);
+                return PAGE_UPDATE;
+            }
 
             const char* b64src = json["picture_base64"].as<const char*>();  // Read picture as Base64 content
+            if (b64src == nullptr){
+                LOG_DEBUG(GwLog::ERROR,"Error PageNavigation: picture_base64 missing");
+                return PAGE_UPDATE;
+            }
             size_t b64len = strlen(b64src);                                 // Calculate length of Base64 content
             // Copy Base64 content in PSRAM
             char* b64 = (char*) heap_caps_malloc(b64len + 1, MALLOC_CAP_SPIRAM);    // Allcate PSRAM for Base64 content
@@ -407,7 +419,10 @@ bool showValues = false; // Show values HDT, SOG, DBT in navigation map
 
             // Set image buffer in PSRAM
             //size_t imgSize = getdisplay().width() * getdisplay().height();
-            size_t imgSize = numPix;    // Calculate image size
+            size_t imgSize = (numPix > 0) ? (size_t)numPix : requiredBytes;    // Calculate image size
+            if (imgSize < requiredBytes){
+                imgSize = requiredBytes;
+            }
             uint8_t* imageData = (uint8_t*) heap_caps_malloc(imgSize, MALLOC_CAP_SPIRAM);           // Allocate PSRAM for image
             if (!imageData) {
                 LOG_DEBUG(GwLog::ERROR,"Error PageNavigation: PSRAM alloc image buffer failed");
@@ -417,17 +432,30 @@ bool showValues = false; // Show values HDT, SOG, DBT in navigation map
 
             // Decode Base64 content to image
             size_t decodedSize = 0;
-            decoder.decodeBase64(b64, imageData, imgSize, decodedSize);
+            bool decodeOk = decoder.decodeBase64(b64, imageData, imgSize, decodedSize);
+            if (!decodeOk || decodedSize < requiredBytes){
+                LOG_DEBUG(GwLog::ERROR,
+                    "Error PageNavigation: decode failed (ok=%d, decoded=%u, required=%u)",
+                    decodeOk ? 1 : 0,
+                    (unsigned int)decodedSize,
+                    (unsigned int)requiredBytes
+                );
+                free(b64);
+                free(imageData);
+                return PAGE_UPDATE;
+            }
 
             // Copy actual navigation man to ackup map
             imageBackupWidth  = imgWidth;
             imageBackupHeight = imgHeight;
             imageBackupSize   = imgSize;
-            if (decodedSize > 0) {
-                memcpy(imageBackupData, imageData, decodedSize);
-                imageBackupSize = decodedSize;
+            if (decodedSize > 0 && imageBackupData != nullptr) {
+                size_t backupCapacity = (size_t)GxEPD_WIDTH * (size_t)GxEPD_HEIGHT;
+                size_t copySize = (decodedSize > backupCapacity) ? backupCapacity : decodedSize;
+                memcpy(imageBackupData, imageData, copySize);
+                imageBackupSize = copySize;
             }
-            hasImageBackup = true;
+            hasImageBackup = (imageBackupData != nullptr);
             lostCounter = 0;
 
             // Show image (navigation map)

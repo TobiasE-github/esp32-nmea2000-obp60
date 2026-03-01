@@ -57,9 +57,30 @@ GxEPD2_BW<GxEPD2_420_SE0420NQ04, GxEPD2_420_SE0420NQ04::HEIGHT> & getdisplay(){r
 #endif
 
 #ifdef DISPLAY_ST7796
-// only instantiate; class defined in header
-static LGFX display;
-LGFX & getdisplay(){return display;}
+// panel device + offscreen shadow framebuffer
+static LGFX panelDisplay;
+static LGFXCanvas shadowDisplay(&panelDisplay);
+static bool shadowDisplayInitialized = false;
+
+LGFXCanvas & getdisplay(){return shadowDisplay;}
+LGFX & getpaneldisplay(){return panelDisplay;}
+
+bool initDisplayShadowBuffer(){
+    if (shadowDisplayInitialized) return true;
+
+    shadowDisplay.setPsram(true);
+    shadowDisplay.setColorDepth(16);
+    shadowDisplay.setTextDatum(textdatum_t::baseline_left);
+
+    if (shadowDisplay.createSprite(GxEPD_WIDTH, GxEPD_HEIGHT) == nullptr) {
+        shadowDisplayInitialized = false;
+        return false;
+    }
+
+    shadowDisplay.fillScreen(GxEPD_BLACK);
+    shadowDisplayInitialized = true;
+    return true;
+}
 #endif
 
 // Horter I2C moduls
@@ -258,7 +279,9 @@ void deepSleep(CommonData &common){
     getdisplay().setCursor(65, 175);
     getdisplay().print("To wake up press key and wait 5s");
     displayNextPage();                // Update display contents
-    #ifndef DISPLAY_ST7796
+    #ifdef DISPLAY_ST7796
+    getpaneldisplay().powerSave(true);      // Display power save
+    #else
     getdisplay().powerOff();                // Display power off
     #endif
     setPortPin(OBP_POWER_50, false);        // Power off ePaper display
@@ -285,7 +308,9 @@ void deepSleep(CommonData &common){
     getdisplay().setCursor(65, 175);
     getdisplay().print("To wake up press wheel and wait 5s");
     displayNextPage();                // Partial update
-    #ifndef DISPLAY_ST7796
+    #ifdef DISPLAY_ST7796
+    getpaneldisplay().powerSave(true);      // Display power save
+    #else
     getdisplay().powerOff();                // Display power off
     #endif
     setPortPin(OBP_POWER_EPD, false);       // Power off ePaper display

@@ -105,8 +105,8 @@ public:
       cfg.pin_busy = -1;
       cfg.panel_width  = 320;       // Native width resolution
       cfg.panel_height = 480;       // Native hight resolution
-      cfg.offset_x     = 10;        // Display output 400x300 pix to housing center adjusted 
-      cfg.offset_y     = -20;       // Display output 400x300 pix to housing center adjusted
+      cfg.offset_x     = 0;         // No panel offset: full framebuffer mapping
+      cfg.offset_y     = 0;         // No panel offset: full framebuffer mapping
       cfg.offset_rotation = 3;      // Rotate display content conter clock wise 90 deg
       cfg.dummy_read_pixel = 8;
       cfg.dummy_read_bits  = 1;
@@ -260,6 +260,20 @@ public:
   // E-Ink interface compatibility
   void setFullWindow() { /* no-op on TFT */ }
 
+    // Runtime panel offset control (ST7796)
+    void setPanelOffset(int16_t x, int16_t y) {
+            auto cfg = _panel_instance.config();
+            cfg.offset_x = x;
+            cfg.offset_y = y;
+            _panel_instance.config(cfg);
+    }
+
+    void getPanelOffset(int16_t &x, int16_t &y) {
+            auto cfg = _panel_instance.config();
+            x = cfg.offset_x;
+            y = cfg.offset_y;
+    }
+
 private:
     lgfx::GFXfont _adfFontBridge { nullptr, nullptr, 0, 0, 0 };
     lgfx::GFXglyph* _adfGlyphBridge = nullptr;
@@ -268,13 +282,193 @@ private:
   lgfx::Panel_ST7796 _panel_instance;
 };
 
-LGFX & getdisplay();
+class LGFXCanvas : public lgfx::LGFX_Sprite {
+public:
+    explicit LGFXCanvas(lgfx::LGFX_Device* parent = nullptr) : lgfx::LGFX_Sprite(parent) {}
+
+    using lgfx::LGFX_Sprite::setFont;
+    void setFont(const GFXfont *font) {
+        if (font == nullptr) {
+            _currentAdfFont = nullptr;
+            lgfx::LGFX_Sprite::setFont(nullptr);
+            return;
+        }
+
+        if (font->glyph == nullptr || font->bitmap == nullptr || font->last < font->first) {
+            _currentAdfFont = nullptr;
+            lgfx::LGFX_Sprite::setFont(nullptr);
+            return;
+        }
+
+        const uint16_t glyphCount = static_cast<uint16_t>(font->last - font->first + 1);
+        if (glyphCount == 0) {
+            lgfx::LGFX_Sprite::setFont(nullptr);
+            return;
+        }
+
+        if (_adfGlyphCount != glyphCount || _adfGlyphBridge == nullptr) {
+            if (_adfGlyphBridge != nullptr) {
+                free(_adfGlyphBridge);
+                _adfGlyphBridge = nullptr;
+                _adfGlyphCount = 0;
+            }
+            _adfGlyphBridge = static_cast<lgfx::GFXglyph*>(malloc(sizeof(lgfx::GFXglyph) * glyphCount));
+            if (_adfGlyphBridge == nullptr) {
+                lgfx::LGFX_Sprite::setFont(nullptr);
+                return;
+            }
+            _adfGlyphCount = glyphCount;
+        }
+
+        for (uint16_t index = 0; index < glyphCount; ++index) {
+            _adfGlyphBridge[index].bitmapOffset = font->glyph[index].bitmapOffset;
+            _adfGlyphBridge[index].width = font->glyph[index].width;
+            _adfGlyphBridge[index].height = font->glyph[index].height;
+            _adfGlyphBridge[index].xAdvance = font->glyph[index].xAdvance;
+            _adfGlyphBridge[index].xOffset = font->glyph[index].xOffset;
+            _adfGlyphBridge[index].yOffset = font->glyph[index].yOffset;
+        }
+
+        _adfFontBridge = lgfx::GFXfont(
+            const_cast<uint8_t*>(font->bitmap),
+            _adfGlyphBridge,
+            font->first,
+            font->last,
+            font->yAdvance
+        );
+        _currentAdfFont = font;
+        lgfx::LGFX_Sprite::setFont(&_adfFontBridge);
+    }
+
+    void getTextBounds(const String &txt, int16_t x, int16_t y,
+                       int16_t *x0, int16_t *y0,
+                       uint16_t *w, uint16_t *h) {
+        if (w == nullptr || h == nullptr) {
+            return;
+        }
+        if (_currentAdfFont == nullptr || txt.length() == 0) {
+            *w = textWidth(txt);
+            *h = fontHeight();
+            if (x0) *x0 = x;
+            if (y0) *y0 = y - static_cast<int16_t>(*h);
+            return;
+        }
+
+        const float sx = getTextSizeX();
+        const float sy = getTextSizeY();
+
+        int32_t cursorX = x;
+        int32_t cursorY = y;
+        int32_t minX = 0;
+        int32_t minY = 0;
+        int32_t maxX = 0;
+        int32_t maxY = 0;
+        bool hasPixel = false;
+
+        for (size_t i = 0; i < txt.length(); ++i) {
+            char c = txt[i];
+            if (c == '\r') continue;
+            if (c == '\n') {
+                cursorX = x;
+                cursorY += static_cast<int32_t>(_currentAdfFont->yAdvance * sy);
+                continue;
+            }
+            if (c < _currentAdfFont->first || c > _currentAdfFont->last) {
+                continue;
+            }
+
+            const GFXglyph* glyph = &_currentAdfFont->glyph[static_cast<uint16_t>(c) - _currentAdfFont->first];
+            const int32_t gw = static_cast<int32_t>(glyph->width * sx);
+            const int32_t gh = static_cast<int32_t>(glyph->height * sy);
+            const int32_t gx1 = cursorX + static_cast<int32_t>(glyph->xOffset * sx);
+            const int32_t gy1 = cursorY + static_cast<int32_t>(glyph->yOffset * sy);
+
+            if (gw > 0 && gh > 0) {
+                const int32_t gx2 = gx1 + gw - 1;
+                const int32_t gy2 = gy1 + gh - 1;
+                if (!hasPixel) {
+                    minX = gx1; minY = gy1; maxX = gx2; maxY = gy2;
+                    hasPixel = true;
+                } else {
+                    if (gx1 < minX) minX = gx1;
+                    if (gy1 < minY) minY = gy1;
+                    if (gx2 > maxX) maxX = gx2;
+                    if (gy2 > maxY) maxY = gy2;
+                }
+            }
+            cursorX += static_cast<int32_t>(glyph->xAdvance * sx);
+        }
+
+        if (hasPixel) {
+            if (x0) *x0 = static_cast<int16_t>(minX);
+            if (y0) *y0 = static_cast<int16_t>(minY);
+            *w = static_cast<uint16_t>(maxX - minX + 1);
+            *h = static_cast<uint16_t>(maxY - minY + 1);
+        } else {
+            if (x0) *x0 = x;
+            if (y0) *y0 = y;
+            *w = 0;
+            *h = 0;
+        }
+    }
+
+    void setFullWindow() { /* no-op on TFT */ }
+
+private:
+    lgfx::GFXfont _adfFontBridge { nullptr, nullptr, 0, 0, 0 };
+    lgfx::GFXglyph* _adfGlyphBridge = nullptr;
+    uint16_t _adfGlyphCount = 0;
+    const GFXfont* _currentAdfFont = nullptr;
+};
+
+LGFXCanvas & getdisplay();
+LGFX & getpaneldisplay();
+bool initDisplayShadowBuffer();
 #endif
 
 // Page display return values
 #define PAGE_OK 0          // all ok, do nothing
 #define PAGE_UPDATE 1      // page wants display to update
 #define PAGE_HIBERNATE 2   // page wants displey to hibernate
+
+#ifdef DISPLAY_ST7796
+#ifndef OBP_TFT_ENABLE_SCALING
+#define OBP_TFT_ENABLE_SCALING 1
+#endif
+
+#ifndef OBP_TFT_SCALE_ANTIALIAS
+#define OBP_TFT_SCALE_ANTIALIAS 1
+#endif
+
+#if OBP_TFT_SCALE_ANTIALIAS
+inline uint16_t lerpRgb565(uint16_t c0, uint16_t c1, uint16_t w8) {
+    const uint16_t r0 = (c0 >> 11) & 0x1F;
+    const uint16_t g0 = (c0 >> 5)  & 0x3F;
+    const uint16_t b0 = c0 & 0x1F;
+
+    const uint16_t r1 = (c1 >> 11) & 0x1F;
+    const uint16_t g1 = (c1 >> 5)  & 0x3F;
+    const uint16_t b1 = c1 & 0x1F;
+
+    const uint16_t r = static_cast<uint16_t>(r0 + ((static_cast<int32_t>(r1) - r0) * w8 + 128) / 256);
+    const uint16_t g = static_cast<uint16_t>(g0 + ((static_cast<int32_t>(g1) - g0) * w8 + 128) / 256);
+    const uint16_t b = static_cast<uint16_t>(b0 + ((static_cast<int32_t>(b1) - b0) * w8 + 128) / 256);
+
+    return static_cast<uint16_t>((r << 11) | (g << 5) | b);
+}
+
+inline uint16_t sampleBilinearRgb565(LGFXCanvas& src, uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t wx, uint16_t wy) {
+    const uint16_t c00 = src.readPixel(x0, y0);
+    const uint16_t c10 = src.readPixel(x1, y0);
+    const uint16_t c01 = src.readPixel(x0, y1);
+    const uint16_t c11 = src.readPixel(x1, y1);
+
+    const uint16_t top = lerpRgb565(c00, c10, wx);
+    const uint16_t bot = lerpRgb565(c01, c11, wx);
+    return lerpRgb565(top, bot, wy);
+}
+#endif
+#endif
 
 // Draw monochrome bitmap on both E-Ink and TFT displays
 // supports various packing and bit orders; optional runtime conversion for TFT
@@ -316,6 +510,9 @@ inline void drawMonochromeBitmap(
                 getdisplay().drawPixel(x + xx, y + yy, color);
             }
         }
+        if ((yy & 0x0F) == 0) {
+            yield();
+        }
     }
     #else
     // E‑Paper: just hand over to driver (expects MSB‑first horizontal)
@@ -341,7 +538,7 @@ inline void displayDrawBitmap(int16_t x, int16_t y,
 
 inline void displayFirstPage() {
     #ifdef DISPLAY_ST7796
-    // TFT LCD doesn't need firstPage() 
+    initDisplayShadowBuffer();
     #else
     getdisplay().firstPage();
     #endif
@@ -349,7 +546,66 @@ inline void displayFirstPage() {
 
 inline void displayNextPage() {
     #ifdef DISPLAY_ST7796
-    // TFT LCD doesn't need nextPage() for refresh
+    if (initDisplayShadowBuffer()) {
+        LGFXCanvas &src = getdisplay();
+        LGFX &dst = getpaneldisplay();
+
+        const uint16_t srcW = GxEPD_WIDTH;
+        const uint16_t srcH = GxEPD_HEIGHT;
+        const uint16_t dstW = static_cast<uint16_t>(dst.width());
+        const uint16_t dstH = static_cast<uint16_t>(dst.height());
+
+        #if !OBP_TFT_ENABLE_SCALING
+        const uint16_t drawX = static_cast<uint16_t>((dstW > srcW) ? ((dstW - srcW) / 2U) : 0U);
+        const uint16_t drawY = static_cast<uint16_t>((dstH > srcH) ? ((dstH - srcH) / 2U) : 0U);
+        src.pushSprite(drawX, drawY);
+        #else
+
+        const uint16_t targetH = (dstH < 320U) ? dstH : 320U;
+        const uint32_t scaledW32 = (static_cast<uint32_t>(srcW) * targetH + (srcH / 2U)) / srcH;
+        const uint16_t targetW = static_cast<uint16_t>((scaledW32 < dstW) ? scaledW32 : dstW);
+
+        const uint16_t drawX = static_cast<uint16_t>((dstW - targetW) / 2U);
+        const uint16_t drawY = static_cast<uint16_t>((dstH - targetH) / 2U);
+
+        dst.startWrite();
+        const uint16_t borderColor = src.readPixel(0, 0);
+        if (drawX > 0) {
+            dst.fillRect(0, drawY, drawX, targetH, borderColor);
+            dst.fillRect(drawX + targetW, drawY, dstW - (drawX + targetW), targetH, borderColor);
+        }
+
+        for (uint16_t y = 0; y < targetH; ++y) {
+            const uint32_t syfp = (targetH > 1)
+                                    ? (static_cast<uint32_t>(y) * (srcH - 1) * 256U) / (targetH - 1)
+                                    : 0;
+            const uint16_t sy0 = static_cast<uint16_t>(syfp >> 8);
+            const uint16_t sy1 = (sy0 + 1 < srcH) ? static_cast<uint16_t>(sy0 + 1) : sy0;
+            const uint16_t wy  = static_cast<uint16_t>(syfp & 0xFFU);
+
+            for (uint16_t x = 0; x < targetW; ++x) {
+                const uint32_t sxfp = (targetW > 1)
+                                        ? (static_cast<uint32_t>(x) * (srcW - 1) * 256U) / (targetW - 1)
+                                        : 0;
+                const uint16_t sx0 = static_cast<uint16_t>(sxfp >> 8);
+                const uint16_t sx1 = (sx0 + 1 < srcW) ? static_cast<uint16_t>(sx0 + 1) : sx0;
+
+                #if OBP_TFT_SCALE_ANTIALIAS
+                const uint16_t wx = static_cast<uint16_t>(sxfp & 0xFFU);
+                const uint16_t color = sampleBilinearRgb565(src, sx0, sy0, sx1, sy1, wx, wy);
+                #else
+                const uint16_t color = src.readPixel(sx0, sy0);
+                #endif
+
+                dst.drawPixel(drawX + x, drawY + y, color);
+            }
+            if ((y & 0x0F) == 0) {
+                yield();
+            }
+        }
+        dst.endWrite();
+        #endif
+    }
     #else
     getdisplay().nextPage();
     #endif
