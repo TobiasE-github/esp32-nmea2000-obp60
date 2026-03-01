@@ -826,6 +826,7 @@ void OBP60Task(GwApi *api){
             if(millis() > starttime3 + pagetime){
                 LOG_DEBUG(GwLog::DEBUG,"Page with refreshtime=%d", pagetime);
                 starttime3 = millis();
+                bool pageChanged = (lastPage != pageNumber);
 
                 //refresh data from api
                 api->getBoatDataValues(boatValues.numValues,boatValues.allBoatValues);
@@ -871,7 +872,7 @@ void OBP60Task(GwApi *api){
                         displayNextPage(); // Partial update (fast)
                     }
                     else{
-                        if (lastPage != pageNumber){
+                        if (pageChanged){
 			    if (lastPage != -1){ // skip cleanup if we are during startup, and no page has been displayed yet. 
                                 pages[lastPage].page->leavePage(pages[lastPage].parameters); // call page cleanup code
                                 if (hasFRAM) fram.write(FRAM_PAGE_NO, pageNumber); // remember new page for device restart
