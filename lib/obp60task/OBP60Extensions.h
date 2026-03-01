@@ -431,6 +431,39 @@ bool initDisplayShadowBuffer();
 #define PAGE_UPDATE 1      // page wants display to update
 #define PAGE_HIBERNATE 2   // page wants displey to hibernate
 
+#ifdef DISPLAY_ST7796
+#ifndef OBP_TFT_SCALE_ANTIALIAS
+#define OBP_TFT_SCALE_ANTIALIAS 1
+#endif
+
+inline uint16_t lerpRgb565(uint16_t c0, uint16_t c1, uint16_t w8) {
+    const uint16_t r0 = (c0 >> 11) & 0x1F;
+    const uint16_t g0 = (c0 >> 5)  & 0x3F;
+    const uint16_t b0 = c0 & 0x1F;
+
+    const uint16_t r1 = (c1 >> 11) & 0x1F;
+    const uint16_t g1 = (c1 >> 5)  & 0x3F;
+    const uint16_t b1 = c1 & 0x1F;
+
+    const uint16_t r = static_cast<uint16_t>(r0 + ((static_cast<int32_t>(r1) - r0) * w8 + 128) / 256);
+    const uint16_t g = static_cast<uint16_t>(g0 + ((static_cast<int32_t>(g1) - g0) * w8 + 128) / 256);
+    const uint16_t b = static_cast<uint16_t>(b0 + ((static_cast<int32_t>(b1) - b0) * w8 + 128) / 256);
+
+    return static_cast<uint16_t>((r << 11) | (g << 5) | b);
+}
+
+inline uint16_t sampleBilinearRgb565(LGFXCanvas& src, uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t wx, uint16_t wy) {
+    const uint16_t c00 = src.readPixel(x0, y0);
+    const uint16_t c10 = src.readPixel(x1, y0);
+    const uint16_t c01 = src.readPixel(x0, y1);
+    const uint16_t c11 = src.readPixel(x1, y1);
+
+    const uint16_t top = lerpRgb565(c00, c10, wx);
+    const uint16_t bot = lerpRgb565(c01, c11, wx);
+    return lerpRgb565(top, bot, wy);
+}
+#endif
+
 // Draw monochrome bitmap on both E-Ink and TFT displays
 // supports various packing and bit orders; optional runtime conversion for TFT
 inline void drawMonochromeBitmap(
@@ -508,7 +541,57 @@ inline void displayFirstPage() {
 inline void displayNextPage() {
     #ifdef DISPLAY_ST7796
     if (initDisplayShadowBuffer()) {
-        getdisplay().pushSprite((480 - GxEPD_WIDTH) / 2, (320 - GxEPD_HEIGHT) / 2);
+        LGFXCanvas &src = getdisplay();
+        LGFX &dst = getpaneldisplay();
+
+        const uint16_t srcW = GxEPD_WIDTH;
+        const uint16_t srcH = GxEPD_HEIGHT;
+        const uint16_t dstW = static_cast<uint16_t>(dst.width());
+        const uint16_t dstH = static_cast<uint16_t>(dst.height());
+
+        const uint16_t targetH = (dstH < 320U) ? dstH : 320U;
+        const uint32_t scaledW32 = (static_cast<uint32_t>(srcW) * targetH + (srcH / 2U)) / srcH;
+        const uint16_t targetW = static_cast<uint16_t>((scaledW32 < dstW) ? scaledW32 : dstW);
+
+        const uint16_t drawX = static_cast<uint16_t>((dstW - targetW) / 2U);
+        const uint16_t drawY = static_cast<uint16_t>((dstH - targetH) / 2U);
+
+        dst.startWrite();
+        const uint16_t borderColor = src.readPixel(0, 0);
+        if (drawX > 0) {
+            dst.fillRect(0, drawY, drawX, targetH, borderColor);
+            dst.fillRect(drawX + targetW, drawY, dstW - (drawX + targetW), targetH, borderColor);
+        }
+
+        for (uint16_t y = 0; y < targetH; ++y) {
+            const uint32_t syfp = (targetH > 1)
+                                    ? (static_cast<uint32_t>(y) * (srcH - 1) * 256U) / (targetH - 1)
+                                    : 0;
+            const uint16_t sy0 = static_cast<uint16_t>(syfp >> 8);
+            const uint16_t sy1 = (sy0 + 1 < srcH) ? static_cast<uint16_t>(sy0 + 1) : sy0;
+            const uint16_t wy  = static_cast<uint16_t>(syfp & 0xFFU);
+
+            for (uint16_t x = 0; x < targetW; ++x) {
+                const uint32_t sxfp = (targetW > 1)
+                                        ? (static_cast<uint32_t>(x) * (srcW - 1) * 256U) / (targetW - 1)
+                                        : 0;
+                const uint16_t sx0 = static_cast<uint16_t>(sxfp >> 8);
+                const uint16_t sx1 = (sx0 + 1 < srcW) ? static_cast<uint16_t>(sx0 + 1) : sx0;
+
+                #if OBP_TFT_SCALE_ANTIALIAS
+                const uint16_t wx = static_cast<uint16_t>(sxfp & 0xFFU);
+                const uint16_t color = sampleBilinearRgb565(src, sx0, sy0, sx1, sy1, wx, wy);
+                #else
+                const uint16_t color = src.readPixel(sx0, sy0);
+                #endif
+
+                dst.drawPixel(drawX + x, drawY + y, color);
+            }
+            if ((y & 0x0F) == 0) {
+                yield();
+            }
+        }
+        dst.endWrite();
     }
     #else
     getdisplay().nextPage();
