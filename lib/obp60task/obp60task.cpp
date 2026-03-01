@@ -391,7 +391,7 @@ void OBP60Task(GwApi *api){
 
     #ifdef DISPLAY_ST7796
     getpaneldisplay().setRotation(0);            // Set display orientation (horizontal)
-    getpaneldisplay().fillRect(0, 0, 480, 320, GxEPD_BLACK); // Initialize full TFT screen to black
+    getpaneldisplay().fillScreen(0x0000);        // Initialize full TFT screen to black (native RGB565)
     #else
     getdisplay().setRotation(0);                 // Set display orientation (horizontal)
     #endif

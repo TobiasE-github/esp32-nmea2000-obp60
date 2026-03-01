@@ -494,7 +494,6 @@ inline void displayFirstPage() {
 inline void displayNextPage() {
     #ifdef DISPLAY_ST7796
     if (initDisplayShadowBuffer()) {
-        getpaneldisplay().fillRect(0, 0, 480, 320, GxEPD_BLACK);
         getdisplay().pushSprite(0, 0);
     }
     #else
