@@ -35,3 +35,8 @@ from base: :diffget BA
 
 git commit
 git push
+
+# undo last pshed commit
+git log
+git revert 8e651db034a7c431e2c39590fd350ca8f4877024 -m 1 
+
