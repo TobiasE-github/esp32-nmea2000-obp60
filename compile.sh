@@ -1,7 +1,7 @@
 #!/bin/bash
 #Update Libs 
 #~/.platformio/penv/bin/pio pkg update
-#clean all
+#clean all libs
 #~/.platformio/penv/bin/pio run -t fullclean
 
 ~/.platformio/penv/bin/pio run -e obp60_s3
