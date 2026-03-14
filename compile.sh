@@ -1,5 +1,5 @@
 #!/bin/bash
-#Update Libs 
+#Update libs 
 #~/.platformio/penv/bin/pio pkg update
 #clean all libs
 #~/.platformio/penv/bin/pio run -t fullclean
