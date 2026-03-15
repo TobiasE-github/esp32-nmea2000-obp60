@@ -519,7 +519,12 @@ public:
         commonData->keydata[2].label = "";
         commonData->keydata[3].label = "RST";
         commonData->keydata[4].label = "STBY";
-        commonData->keydata[5].label = "ILUM";
+	if ((commonData->backlight.mode == KEY) && !(commonData->powermode == "Min Power")) {
+            commonData->keydata[5].label = "ILUM";
+	 } else {
+            commonData->keydata[5].label = "";
+        }
+
     }
 
     int handleKey(int key) {
