@@ -9,8 +9,14 @@
 #include <Adafruit_FRAM_I2C.h>          // I2C FRAM
 #include <math.h>
 
-#ifdef DISPLAY_ST7796
-    #include <LovyanGFX.hpp>            // TFT LCD lib for ST7796 color displays
+#ifdef TFT_DISPLAY
+    #if !defined(TFT_320x480_ST7796) && !defined(TFT_320x480_ILI9488)
+        #error "TFT_DISPLAY requires one panel type: TFT_320x480_ST7796 or TFT_320x480_ILI9488"
+    #endif
+    #if defined(TFT_320x480_ST7796) && defined(TFT_320x480_ILI9488)
+        #error "Select exactly one TFT panel type: TFT_320x480_ST7796 or TFT_320x480_ILI9488"
+    #endif
+    #include <LovyanGFX.hpp>            // TFT LCD lib for 320x480 color displays
     #undef GxEPD_WHITE
     #define GxEPD_WHITE  TFT_WHITE      // Replacement color for white on TFT (OBPHardware.h)
     #undef GxEPD_BLACK
@@ -82,18 +88,19 @@ GxEPD2_BW<GxEPD2_420_GYE042A87, GxEPD2_420_GYE042A87::HEIGHT> & getdisplay();
 GxEPD2_BW<GxEPD2_420_SE0420NQ04, GxEPD2_420_SE0420NQ04::HEIGHT> & getdisplay();
 #endif
 
-#ifdef DISPLAY_ST7796
-// LovyanGFX based display wrapper for ST7796
+#ifdef TFT_DISPLAY
+// LovyanGFX based display wrapper for TFT panels
 class LGFX : public lgfx::LGFX_Device {
 public:
   lgfx::Bus_SPI _bus_instance;
 
+  #ifdef TFT_320x480_ST7796
   LGFX(void) {
     {
       auto cfg = _bus_instance.config();
       cfg.spi_host = SPI2_HOST;
       cfg.spi_mode = 0;
-      cfg.freq_write = 80000000;
+      cfg.freq_write = 80000000;    // High speed ST7796
       cfg.freq_read  = 16000000;
       cfg.pin_sclk = OBP_SPI_CLK;
       cfg.pin_mosi = OBP_SPI_DIN;
@@ -111,7 +118,7 @@ public:
       cfg.panel_height = 480;       // Native hight resolution
       cfg.offset_x     = 0;         // No panel offset: full framebuffer mapping
       cfg.offset_y     = 0;         // No panel offset: full framebuffer mapping
-      cfg.offset_rotation = 3;      // Rotate display content conter clock wise 90 deg
+      cfg.offset_rotation = 3;      // Rotate display content conter clock wise 90 deg ST7796
       cfg.dummy_read_pixel = 8;
       cfg.dummy_read_bits  = 1;
       cfg.memory_width     = 320;
@@ -129,6 +136,51 @@ public:
         // Match Adafruit GFX cursor semantics: y coordinate is text baseline.
         setTextDatum(textdatum_t::baseline_left);
   }
+  #endif
+
+  #ifdef TFT_320x480_ILI9488
+  LGFX(void) {
+    {
+      auto cfg = _bus_instance.config();
+      cfg.spi_host = SPI2_HOST;
+      cfg.spi_mode = 0;
+      cfg.freq_write = 40000000;    // Slow speed ILI9488
+      cfg.freq_read  = 16000000;
+      cfg.pin_sclk = OBP_SPI_CLK;
+      cfg.pin_mosi = OBP_SPI_DIN;
+      cfg.pin_miso = -1;
+      cfg.pin_dc   = OBP_SPI_DC;
+      _bus_instance.config(cfg);
+      _panel_instance.setBus(&_bus_instance);
+    }
+    {
+      auto cfg = _panel_instance.config();
+      cfg.pin_cs  = OBP_SPI_CS;
+      cfg.pin_rst = OBP_SPI_RST;
+      cfg.pin_busy = -1;
+      cfg.panel_width  = 320;       // Native width resolution
+      cfg.panel_height = 480;       // Native hight resolution
+      cfg.offset_x     = 0;         // No panel offset: full framebuffer mapping
+      cfg.offset_y     = 0;         // No panel offset: full framebuffer mapping
+      cfg.offset_rotation = 1;      // Rotate display content clock wise 90 deg ILI9488
+      cfg.dummy_read_pixel = 8;
+      cfg.dummy_read_bits  = 1;
+      cfg.memory_width     = 320;
+      cfg.memory_height    = 480;
+      // cfg.pwm_control not available in this LovyanGFX version
+      cfg.invert = false;
+      cfg.rgb_order = false;
+      cfg.dlen_16bit = false;
+      cfg.bus_shared = true;
+      _panel_instance.config(cfg);
+    }
+        // No dedicated TFT PWM backlight pin configured on this board.
+        // Keep backlight handling outside LovyanGFX to avoid LEDC init on invalid GPIO.
+    setPanel(&_panel_instance);
+        // Match Adafruit GFX cursor semantics: y coordinate is text baseline.
+        setTextDatum(textdatum_t::baseline_left);
+  }
+  #endif
 
   // compatibility helpers --------------------------------------------------
     using lgfx::LGFX_Device::setFont;
@@ -264,7 +316,7 @@ public:
   // E-Ink interface compatibility
   void setFullWindow() { /* no-op on TFT */ }
 
-    // Runtime panel offset control (ST7796)
+    // Runtime panel offset control for TFT panels
     void setPanelOffset(int16_t x, int16_t y) {
             auto cfg = _panel_instance.config();
             cfg.offset_x = x;
@@ -283,7 +335,11 @@ private:
     lgfx::GFXglyph* _adfGlyphBridge = nullptr;
     uint16_t _adfGlyphCount = 0;
     const GFXfont* _currentAdfFont = nullptr;
-  lgfx::Panel_ST7796 _panel_instance;
+    #if defined(TFT_320x480_ST7796)
+    lgfx::Panel_ST7796 _panel_instance;
+    #elif defined(TFT_320x480_ILI9488)
+    lgfx::Panel_ILI9488 _panel_instance;
+    #endif
 };
 
 class LGFXCanvas : public lgfx::LGFX_Sprite {
@@ -437,7 +493,7 @@ bool initDisplayScaleBuffer(uint16_t width, uint16_t height);
 #define PAGE_UPDATE 1      // page wants display to update
 #define PAGE_HIBERNATE 2   // page wants displey to hibernate
 
-#ifdef DISPLAY_ST7796
+#ifdef TFT_DISPLAY
 #ifndef OBP_TFT_ENABLE_SCALING
 #define OBP_TFT_ENABLE_SCALING 1
 #endif
@@ -487,7 +543,7 @@ inline void drawMonochromeBitmap(
     bool lsbFirst=false,    // true: least significant bit = left/top pixel
     bool mirrorX=false)      // true: bytes run right-to-left within each row
 {
-    #ifdef DISPLAY_ST7796
+    #ifdef TFT_DISPLAY
     // TFT converts per‑pixel
     int bytesPerRow = (w + 7) / 8;
     for (int yy = 0; yy < h; yy++) {
@@ -535,7 +591,7 @@ inline void displayDrawBitmap(int16_t x, int16_t y,
                               const uint8_t *bmp,
                               int16_t w, int16_t h,
                               uint16_t color) {
-    #ifdef DISPLAY_ST7796
+    #ifdef TFT_DISPLAY
     drawMonochromeBitmap(x, y, bmp, w, h, color);
     #else
     getdisplay().drawBitmap(x, y, bmp, w, h, color);
@@ -543,7 +599,7 @@ inline void displayDrawBitmap(int16_t x, int16_t y,
 }
 
 inline void displayFirstPage() {
-    #ifdef DISPLAY_ST7796
+    #ifdef TFT_DISPLAY
     initDisplayShadowBuffer();
     #else
     getdisplay().firstPage();
@@ -551,7 +607,7 @@ inline void displayFirstPage() {
 }
 
 inline void displayNextPage() {
-    #ifdef DISPLAY_ST7796
+    #ifdef TFT_DISPLAY
     if (initDisplayShadowBuffer()) {
         LGFXCanvas &src = getdisplay();
         LGFX &dst = getpaneldisplay();
@@ -620,7 +676,7 @@ inline void displayNextPage() {
 }
 
 inline void displaySetPartialWindow(uint16_t x, uint16_t y, uint16_t w, uint16_t h) {
-    #ifdef DISPLAY_ST7796
+    #ifdef TFT_DISPLAY
     // TFT LCD doesn't use partial windows
     (void)x; (void)y; (void)w; (void)h;
     #else
@@ -629,18 +685,18 @@ inline void displaySetPartialWindow(uint16_t x, uint16_t y, uint16_t w, uint16_t
 }
 
 inline void displaySetFullWindow() {
-    #ifdef DISPLAY_ST7796
+    #ifdef TFT_DISPLAY
     // TFT LCD doesn't need setFullWindow()
     #else
     getdisplay().setFullWindow();
     #endif
 }
 
-// replacement for getTextBounds that works with both EPD and ST7796
+// replacement for getTextBounds that works with both EPD and TFT
 inline void displayGetTextBounds(const String &txt, int16_t x, int16_t y,
                                  int16_t *x0, int16_t *y0,
                                  uint16_t *w, uint16_t *h) {
-#ifdef DISPLAY_ST7796
+#ifdef TFT_DISPLAY
     getdisplay().getTextBounds(txt, x, y, x0, y0, w, h);
 #else
     getdisplay().getTextBounds(txt, x, y, x0, y0, w, h);
