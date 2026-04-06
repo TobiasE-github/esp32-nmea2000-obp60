@@ -211,7 +211,7 @@ def generateCfg(inFile,outFile,impl):
     writeFileIfChanged(outFile,data)    
                     
 def labelFilter(label):
-    return re.sub(r"[^a-zA-Z0-9]","",re.sub(r"\([0-9]*\)","",label))    
+    return re.sub("[^a-zA-Z0-9]","",re.sub("\([0-9]*\)","",label))    
 def generateXdrMappings(fp,oh,inFile=''):
     jdoc=json.load(fp)
     oh.write("static GwXDRTypeMapping* typeMappings[]={\n")
