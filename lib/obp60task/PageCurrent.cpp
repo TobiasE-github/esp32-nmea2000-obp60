@@ -3,13 +3,24 @@
 #include "Pagedata.h"
 #include "OBP60Extensions.h"
 #include "OBPDataOperations.h"
-// #include <cmath>
+#include <unordered_map>
 
-// Screen coordinates
+// Screen coordinates for three boat values
 struct Points {
     int16_t x1, y1;
     int16_t x2, y2;
     int16_t x3, y3;
+};
+
+// leeway K coefficient selection options from OBP configuration page
+static const std::unordered_map<std::string, int> leeKMap = {
+    { "---", 0 },
+    { "Racer [2]", 2 },
+    { "Multihull Draggerboard [4]", 4 },
+    { "Performance Cruiser [6]", 6 },
+    { "Family Cruiser [9]", 9 },
+    { "Heavy Displacement [13]", 13 },
+    { "Multihull Fixed Keel [16]", 16 }
 };
 
 // Screen coordinates for boat data values (top-left, bottom-left, top-right, bottom-right corners)
@@ -61,7 +72,8 @@ private:
     bool holdValues;
     String flashLED;
     String backlightMode;
-    uint8_t leeK;
+    String leeKStd;
+    double leeK;
 
     static constexpr int NUMVALUES = 10; // no. of data values in this page
     static constexpr double DBL_MAX = std::numeric_limits<double>::max();
@@ -120,11 +132,11 @@ private:
 
         ctw = calcCTW(awa, hdt, lay);
 
-        // Ground velocity vector (East, North)
+        // Ground velocity vector (east, north)
         double vg_x = sog * std::sin(cog);
         double vg_y = sog * std::cos(cog);
 
-        // Water-relative velocity vector (East, North)
+        // Water-relative velocity vector (east, north)
         double vw_x = stw * std::sin(ctw);
         double vw_y = stw * std::cos(ctw);
 
@@ -137,8 +149,8 @@ private:
         crnt.set = std::atan2(vc_x, vc_y); // atan2(x, y) because 0° = North, clockwise positive
         crnt.set = WindUtils::to2PI(crnt.set); // internal respresentation of wind is [0..2PI]
 
-        LOG_DEBUG(GwLog::DEBUG, "PageCurrent-setDrift: sog: %.3f, ctw: %.3f, stw: %.3f, vc_x: %.3f, vc_y: %.3f, set: %.3f, drift: %.3f",
-            sog, ctw, stw, vc_x, vc_y, crnt.set, crnt.dft);
+        //LOG_DEBUG(GwLog::DEBUG, "PageCurrent-setDrift: sog: %.3f, ctw: %.3f, stw: %.3f, vc_x: %.3f, vc_y: %.3f, set: %.3f, drift: %.3f",
+        //    sog, ctw, stw, vc_x, vc_y, crnt.set, crnt.dft);
 
         return crnt;
     };
@@ -254,16 +266,6 @@ private:
         getdisplay().fillTriangle(rx[0], ry[0], rx[2], ry[2], rx[6], ry[6], commonData->bgcolor);
         getdisplay().fillTriangle(rx[5], ry[5], rx[4], ry[4], rx[3], ry[3], commonData->bgcolor);
 
-/*        // draw arrow frame (double for 2 px thickness)
-        for (int i = 0; i < 7; i++) {
-            int next = (i + 1) % 7;
-            // outer frame
-            getdisplay().drawLine(rx[i], ry[i], rx[next], ry[next], commonData->fgcolor);
-            // inner frame
-            getdisplay().drawLine(rxi[i], ryi[i], rxi[next], ryi[next], commonData->fgcolor);
-        }
-*/
-        // 5. Rahmen mit "Overdraw" für konstante Dicke
         // draw arrow frame with "overdraw" for constant thickness
         for (int i = 0; i < 7; i++) {
             int next = (i + 1) % 7;
@@ -297,8 +299,15 @@ public:
         holdValues = commonData->config->getBool(commonData->config->holdvalues);
         flashLED = commonData->config->getString(commonData->config->flashLED);
         backlightMode = commonData->config->getString(commonData->config->backlight);
-        // leeK = commonData->config->getInt(commonData->config->leeK);
-        leeK = 9;
+
+        leeKStd = commonData->config->getString(commonData->config->leeKStd);
+        auto it = leeKMap.find(leeKStd.c_str());
+        if (it != leeKMap.end()) {
+            leeK = it->second;
+        } else if (leeKStd == "Individual value") {
+            leeK = (commonData->config->getString(commonData->config->leeK)).toDouble();
+        }
+        LOG_DEBUG(GwLog::DEBUG, "PageCurrent: leeKStd: %s, leeK: %.3f", leeKStd.c_str(), leeK);
     }
 
     virtual int handleKey(int key)
@@ -347,43 +356,49 @@ public:
         // 0=AWA, 1=HDT, 2=SET, 3=DFT, 4=SOG, 5=COG, 6=STW, 7=HDM, 8=VAR, 9=ROLL
         std::vector<GwApi::BoatValue*> bValue(pageData.values.begin(), pageData.values.end());
 
-        LOG_DEBUG(GwLog::DEBUG, "PageCurrent: printing #1: %s, %.3f, #2: %s, %.3f, #3: %s, %.3f, #4: %s, %.3f",
-            bValue[AWA]->getName().c_str(), bValue[AWA]->value, bValue[HDT]->getName().c_str(), bValue[HDT]->value,
-            bValue[SET]->getName().c_str(), bValue[SET]->value, bValue[DFT]->getName().c_str(), bValue[DFT]->value);
-
-        double awa = bValue[AWA]->valid ? bValue[AWA]->value : DBL_MAX;
-        double hdt = bValue[HDT]->valid ? bValue[HDT]->value : DBL_MAX;
-        current.set = bValue[SET]->valid ? bValue[SET]->value : DBL_MAX;
-        current.dft = bValue[DFT]->valid ? bValue[DFT]->value : DBL_MAX;
-        double sog = bValue[SOG]->valid ? bValue[SOG]->value : DBL_MAX;
-        double cog = bValue[COG]->valid ? bValue[COG]->value : DBL_MAX;
-        double stw = bValue[STW]->valid ? bValue[STW]->value : DBL_MAX;
-        double hdm = bValue[HDM]->valid ? bValue[HDM]->value : DBL_MAX;
-        double var = bValue[VAR]->valid ? bValue[VAR]->value : DBL_MAX;
-        double roll = bValue[ROLL]->valid ? bValue[ROLL]->value : DBL_MAX;
+        LOG_DEBUG(GwLog::DEBUG, "PageCurrent: printing #1: %s, %.3f, valid: %d, #2: %s, %.3f, valid: %d, #3: %s, %.3f, valid: %d, #4: %s, %.3f, valid: %d",
+            bValue[AWA]->getName().c_str(), bValue[AWA]->value, bValue[AWA]->valid, bValue[HDT]->getName().c_str(), bValue[HDT]->value, bValue[HDT]->valid,
+            bValue[SET]->getName().c_str(), bValue[SET]->value, bValue[SET]->valid, bValue[DFT]->getName().c_str(), bValue[DFT]->value, bValue[DFT]->valid);
 
         // Calculate current data
         //***********************************************************
 
-        LOG_DEBUG(GwLog::DEBUG, "PageCurrent: hdt 2nd: %.3f", hdt);
-        if (current.set == DBL_MAX || current.dft == DBL_MAX) { // If SET or DRIFT not available, try to calculate them
+        if (!bValue[SET]->valid || !bValue[DFT]->valid) { // If SET or DRIFT not available, try to calculate them
+            if (bValue[SOG]->valid && bValue[COG]->valid && bValue[STW]->valid && bValue[AWA]->valid) { // calculate current only if all required values are available
 
-            if (hdt == DBL_MAX) { // HDT not available
-                if (hdm != DBL_MAX) {
-                    hdt = hdm + (var != DBL_MAX ? var : 0.0); // Use corrected HDM if HDT is not available; just use HDM if VAR is not available
-                    hdt = WindUtils::to2PI(hdt);
+                if (!bValue[HDT]->valid) { // HDT not available
+                    if (bValue[HDM]->valid) {
+                        if (bValue[VAR]->valid) {
+                            bValue[HDT]->value = bValue[HDM]->value + bValue[VAR]->value; // Use corrected HDM if HDT is not available
+                            bValue[HDT]->value = WindUtils::to2PI(bValue[HDT]->value);
+                            bValue[HDT]->valid = true;
+                        } else {
+                            // if HDT cannot be fully substituted by HDM+VAR, continue with HDM only
+                            bValue[HDT] = bValue[HDM];
+                        }
+                    }
+                }
+
+                if (!bValue[ROLL]->valid) {
+                    bValue[ROLL]->value = 0; // delete last value if roll value is not valid anymore; gateway keeps last value
+                }
+                lay = calcLeeway(leeK, bValue[ROLL]->value, bValue[STW]->value);
+
+                if (bValue[HDT]->valid) { // That's either HDT or HDM
+                    current = calcSetAndDrift(lay, bValue[SOG]->value, bValue[COG]->value, bValue[STW]->value, bValue[HDT]->value, bValue[AWA]->value);
+                    bValue[SET]->value = current.set;
+                    bValue[SET]->setFormat("formatCourse");
+                    bValue[SET]->valid = true;
+                    bValue[DFT]->value = current.dft;
+                    bValue[DFT]->setFormat("formatKnots");
+                    bValue[DFT]->valid = true;
                 }
             }
-            LOG_DEBUG(GwLog::DEBUG, "PageCurrent: hdt 3rd: %.3f", hdt);
-
-            leeK = 4;
-            roll = 10 * DEG_TO_RAD;
-            lay = calcLeeway(leeK, roll, stw);
-            current = calcSetAndDrift(lay, sog, cog, stw, hdt, awa);
         }
 
-        LOG_DEBUG(GwLog::DEBUG, "PageCurrent: leeK: %d, lay: %.3f, roll: %.3f, stw: %.3f, awa: %.3f, hdt: %.3f, cog: %.3f, sog: %.3f, set: %.3f, dft: %.3f",
-            leeK, lay, roll, stw, awa, hdt, cog, sog, current.set, current.dft);
+        LOG_DEBUG(GwLog::DEBUG, "PageCurrent: leeKStd: %s, leeK: %.3f, lay: %.3f, roll: %.3f, stw: %.3f, awa: %.3f, hdt: %.3f, cog: %.3f, sog: %.3f, set: %.3f, dft: %.3f",
+            leeKStd.c_str(), leeK, lay, bValue[ROLL]->value, bValue[STW]->value, bValue[AWA]->value, bValue[HDT]->value, bValue[COG]->value, bValue[SOG]->value,
+            bValue[SET]->value, bValue[DFT]->value);
 
         // Draw page
         //***********************************************************
@@ -394,36 +409,10 @@ public:
         for (int i = 0; i < 4; i++) { // Display first 4 values
             String name = xdrDelete(bValue[i]->getName()); // Value name
             name = name.substring(0, 6); // String length limit for value name
-            if (!bValue[i]->valid) {
-                switch (i) {
-                case AWA:
-                    break; // we don't change AWA any time, so there is no adjustment option
-                case HDT:
-                    bValue[i]->value = hdt;
-                    bValue[i]->setFormat("formatCourse");
-                    bValue[i]->valid = true; // Valid information
-                    break;
-                case SET:
-                    bValue[i]->value = current.set;
-                    bValue[i]->setFormat("formatCourse");
-                    bValue[i]->valid = true; // Valid information
-                    break;
-                case DFT:
-                    bValue[i]->value = current.dft;
-                    bValue[i]->setFormat("formatKnots");
-                    bValue[i]->valid = true; // Valid information
-                    break;
-                default:
-                    break;
-                }
-            }
             String sValue = formatValue(bValue[i], *commonData).svalue; // Formatted value as string including unit conversion and switching decimal places
             String unit = formatValue(bValue[i], *commonData).unit; // Unit of value
 
-            LOG_DEBUG(GwLog::DEBUG, "PageCurrent: name: %s, value: %s, format: %s, unit: %s",
-                name, sValue, bValue[i]->getFormat().c_str(), unit);
-
-            // Show bus data
+            // Show boat data value
             getdisplay().setFont(&DSEG7Classic_BoldItalic20pt7b);
             getdisplay().setCursor(POS[i].x1, POS[i].y1);
             if (!holdValues || useSimuData) {
@@ -458,9 +447,13 @@ public:
         // Horizontal separator right
         getdisplay().fillRect(339, 149, 60, 2, commonData->fgcolor);
 
-        drawCompassRose(hdt);
+        if (bValue[HDT]->valid) {
+            drawCompassRose(bValue[HDT]->value);
+        } else {
+            drawCompassRose(0.0);
+        };
         getdisplay().drawBitmap((width - WAVE_W) / 2, (height - WAVE_H) / 2, wave_bitmap, WAVE_W, WAVE_H, commonData->fgcolor);
-        drawRotatedArrow(current.dft, WindUtils::to2PI(current.set - hdt));
+        drawRotatedArrow(bValue[DFT]->value, WindUtils::to2PI(bValue[SET]->value - bValue[HDT]->value));
 
         return PAGE_UPDATE;
     };
@@ -482,7 +475,7 @@ PageDescription registerPageCurrent(
     "Current", // Page name
     createPage, // Action
     0, // Number of bus values depends on selection in Web configuration
-    { "AWA", "HDT", "SET", "DFT", "SOG", "COG", "STW", "HDM", "VAR", "ROLL" }, // Bus values we need in the page
+    { "AWA", "HDT", "SET", "DFT", "SOG", "COG", "STW", "HDM", "VAR", "xdrROLL" }, // Bus values we need in the page
     true // Show display header on/off
 );
 
