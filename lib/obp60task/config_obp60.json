@@ -1606,6 +1606,7 @@
         },
         "condition": {
             "page1type": [
+                "Current",
                 "Fluid",
                 "FourValues",
                 "FourValues2",
@@ -1907,6 +1908,7 @@
         },
         "condition": {
             "page2type": [
+                "Current",
                 "Fluid",
                 "FourValues",
                 "FourValues2",
@@ -2200,6 +2202,7 @@
         },
         "condition": {
             "page3type": [
+                "Current",
                 "Fluid",
                 "FourValues",
                 "FourValues2",
@@ -2485,6 +2488,7 @@
         },
         "condition": {
             "page4type": [
+                "Current",
                 "Fluid",
                 "FourValues",
                 "FourValues2",
@@ -2762,6 +2766,7 @@
         },
         "condition": {
             "page5type": [
+                "Current",
                 "Fluid",
                 "FourValues",
                 "FourValues2",
@@ -3031,6 +3036,7 @@
         },
         "condition": {
             "page6type": [
+                "Current",
                 "Fluid",
                 "FourValues",
                 "FourValues2",
@@ -3292,6 +3298,7 @@
         },
         "condition": {
             "page7type": [
+                "Current",
                 "Fluid",
                 "FourValues",
                 "FourValues2",
@@ -3545,6 +3552,7 @@
         },
         "condition": {
             "page8type": [
+                "Current",
                 "Fluid",
                 "FourValues",
                 "FourValues2",
@@ -3790,6 +3798,7 @@
         },
         "condition": {
             "page9type": [
+                "Current",
                 "Fluid",
                 "FourValues",
                 "FourValues2",
@@ -4027,6 +4036,7 @@
         },
         "condition": {
             "page10type": [
+                "Current",
                 "Fluid",
                 "FourValues",
                 "FourValues2",

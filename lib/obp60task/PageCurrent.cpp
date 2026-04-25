@@ -5,13 +5,6 @@
 #include "OBPDataOperations.h"
 #include <unordered_map>
 
-// Screen coordinates for three boat values
-struct Points {
-    int16_t x1, y1;
-    int16_t x2, y2;
-    int16_t x3, y3;
-};
-
 // leeway K coefficient selection options from OBP configuration page
 static const std::unordered_map<std::string, int> leeKMap = {
     { "---", 0 },
@@ -23,12 +16,35 @@ static const std::unordered_map<std::string, int> leeKMap = {
     { "Multihull Fixed Keel [16]", 16 }
 };
 
-// Screen coordinates for boat data values (top-left, bottom-left, top-right, bottom-right corners)
+enum bValIdx {
+    ROLL = 0,
+    SET,
+    DFT,
+    HDT,
+    STW,
+    COG,
+    SOG,
+    HDM,
+    VAR,
+    AWA,
+    NUM_VALS
+};
+
+// Screen coordinates for boat values
+struct Points {
+    int16_t x1, y1;
+    int16_t x2, y2;
+    int16_t x3, y3;
+};
+
+// Screen coordinates for four boat data values (top-left, bottom-left, top-right, bottom-right)
 static constexpr Points POS[] = {
-    { 10, 65, 10, 95, 10, 115 }, // Position left top for value, name, unit
-    { 10, 270, 10, 220, 10, 190 }, // Position left bottom
-    { 295, 65, 340, 95, 340, 115 }, // Position right top
-    { 295, 270, 340, 220, 340, 190 } // Position right bottom
+    { 10, 65, 10, 95, 10, 115 }, // Position top left for value, name, unit
+    { 10, 270, 10, 220, 10, 190 }, // Position bottom left
+    { 295, 65, 390, 95, 390, 115 }, // Position top right
+    { 295, 270, 390, 220, 390, 190 } // Position bottom right
+    //    { 295, 65, 340, 95, 340, 115 }, // Position top right
+    //    { 295, 270, 340, 220, 340, 190 } // Position bottom right
 };
 
 // Define wave visual (XBM Format)
@@ -75,12 +91,9 @@ private:
     String leeKStd;
     double leeK;
 
-    static constexpr int NUMVALUES = 10; // no. of data values in this page
-    static constexpr double DBL_MAX = std::numeric_limits<double>::max();
-
     // Old values for hold function
-    String sValueOld[NUMVALUES] = { "", "", "", "", "", "", "", "", "", "" };
-    String unitOld[NUMVALUES] = { "", "", "", "", "", "", "", "", "", "" };
+    String sValueOld[NUM_VALS] = { "", "", "", "", "", "", "", "", "", "" };
+    String unitOld[NUM_VALS] = { "", "", "", "", "", "", "", "", "", "" };
 
     struct Current {
         double set; // direction TO which current flows (0..2*PI, true dir)
@@ -93,7 +106,7 @@ private:
         double stw // speed through water (m/s)
     )
     {
-        if (leeK == DBL_MAX || roll == DBL_MAX || stw == DBL_MAX || stw == 0) {
+        if (stw == 0) {
             return 0;
         }
 
@@ -149,8 +162,8 @@ private:
         crnt.set = std::atan2(vc_x, vc_y); // atan2(x, y) because 0° = North, clockwise positive
         crnt.set = WindUtils::to2PI(crnt.set); // internal respresentation of wind is [0..2PI]
 
-        //LOG_DEBUG(GwLog::DEBUG, "PageCurrent-setDrift: sog: %.3f, ctw: %.3f, stw: %.3f, vc_x: %.3f, vc_y: %.3f, set: %.3f, drift: %.3f",
-        //    sog, ctw, stw, vc_x, vc_y, crnt.set, crnt.dft);
+        // LOG_DEBUG(GwLog::DEBUG, "PageCurrent-setDrift: sog: %.3f, ctw: %.3f, stw: %.3f, vc_x: %.3f, vc_y: %.3f, set: %.3f, drift: %.3f",
+        //     sog, ctw, stw, vc_x, vc_y, crnt.set, crnt.dft);
 
         return crnt;
     };
@@ -273,13 +286,13 @@ private:
             int16_t x1 = rx[next], y1 = ry[next];
 
             // original line
-            getdisplay().drawLine(x0, y0, x1, y1, GxEPD_BLACK);
+            getdisplay().drawLine(x0, y0, x1, y1, commonData->fgcolor);
 
             // offset by  1 pixel in x or y depending on delta
             if (abs(x1 - x0) > abs(y1 - y0)) {
-                getdisplay().drawLine(x0, y0 + 1, x1, y1 + 1, GxEPD_BLACK);
+                getdisplay().drawLine(x0, y0 + 1, x1, y1 + 1, commonData->fgcolor);
             } else {
-                getdisplay().drawLine(x0 + 1, y0, x1 + 1, y1, GxEPD_BLACK);
+                getdisplay().drawLine(x0 + 1, y0, x1 + 1, y1, commonData->fgcolor);
             }
         }
     }
@@ -333,32 +346,19 @@ public:
 
     int displayPage(PageData& pageData)
     {
-        enum DataIdx {
-            AWA = 0,
-            HDT,
-            SET,
-            DFT,
-            SOG,
-            COG,
-            STW,
-            HDM,
-            VAR,
-            ROLL,
-            NUM_VALS
-        };
-
         double lay;
         Current current;
 
         LOG_DEBUG(GwLog::LOG, "Display PageCurrent");
 
         // Get boat values for page
-        // 0=AWA, 1=HDT, 2=SET, 3=DFT, 4=SOG, 5=COG, 6=STW, 7=HDM, 8=VAR, 9=ROLL
+        // 0=ROLL, 1=SET, 2=DFT, 3=HDT, 4=STW, 5=COG, 6=SOG, 7=HDM, 8=VAR, 9=AWA
         std::vector<GwApi::BoatValue*> bValue(pageData.values.begin(), pageData.values.end());
 
-        LOG_DEBUG(GwLog::DEBUG, "PageCurrent: printing #1: %s, %.3f, valid: %d, #2: %s, %.3f, valid: %d, #3: %s, %.3f, valid: %d, #4: %s, %.3f, valid: %d",
-            bValue[AWA]->getName().c_str(), bValue[AWA]->value, bValue[AWA]->valid, bValue[HDT]->getName().c_str(), bValue[HDT]->value, bValue[HDT]->valid,
-            bValue[SET]->getName().c_str(), bValue[SET]->value, bValue[SET]->valid, bValue[DFT]->getName().c_str(), bValue[DFT]->value, bValue[DFT]->valid);
+        LOG_DEBUG(GwLog::DEBUG, "PageCurrent: printing #1: %s, %.3f, valid: %d, #2: %s, %.3f, valid: %d, #3: %s, %.3f, valid: %d, #4: %s, %.3f, valid: %d, #5: %s, %.3f, valid: %d",
+            bValue[ROLL]->getName().c_str(), bValue[ROLL]->value, bValue[ROLL]->valid, bValue[SET]->getName().c_str(), bValue[SET]->value, bValue[SET]->valid,
+            bValue[DFT]->getName().c_str(), bValue[DFT]->value, bValue[DFT]->valid, bValue[HDT]->getName().c_str(), bValue[HDT]->value, bValue[HDT]->valid,
+            bValue[STW]->getName().c_str(), bValue[STW]->value, bValue[STW]->valid);
 
         // Calculate current data
         //***********************************************************
@@ -379,9 +379,12 @@ public:
                     }
                 }
 
-                if (!bValue[ROLL]->valid) {
-                    bValue[ROLL]->value = 0; // delete last value if roll value is not valid anymore; gateway keeps last value
+                if (!bValue[ROLL]->valid || (bValue[ROLL]->getFormat() != "formatXdr:A:D" && bValue[ROLL]->getFormat() != "formatXdr:A:rd" && bValue[ROLL]->getFormat() != "formatCourse")) {
+                    bValue[ROLL]->value = 0; // delete last value if roll value is not valid anymore (gateway keeps last value) or wrong type selected by user
                 }
+                LOG_DEBUG(GwLog::DEBUG, "PageCurrent: Roll: %s, %.3f, valid: %d, format: %s",
+                    bValue[ROLL]->getName().c_str(), bValue[ROLL]->value, bValue[ROLL]->valid, bValue[ROLL]->getFormat().c_str());
+
                 lay = calcLeeway(leeK, bValue[ROLL]->value, bValue[STW]->value);
 
                 if (bValue[HDT]->valid) { // That's either HDT or HDM
@@ -406,11 +409,13 @@ public:
         displaySetPartialWindow(0, 0, width, height); // Set partial update
         getdisplay().setTextColor(commonData->fgcolor);
 
-        for (int i = 0; i < 4; i++) { // Display first 4 values
-            String name = xdrDelete(bValue[i]->getName()); // Value name
-            name = name.substring(0, 6); // String length limit for value name
-            String sValue = formatValue(bValue[i], *commonData).svalue; // Formatted value as string including unit conversion and switching decimal places
-            String unit = formatValue(bValue[i], *commonData).unit; // Unit of value
+        static const int bValType[] = { HDT, STW, SET, DFT }; // Sequence of boat data types to show on page
+        for (int i = 0; i < 4; i++) {
+            String name = xdrDelete(bValue[bValType[i]]->getName()); // Value name
+            name = name.substring(0, 4); // String length limit for value name
+            String sValue = formatValue(bValue[bValType[i]], *commonData).svalue; // Formatted value as string including unit conversion and switching decimal places
+            String unit = formatValue(bValue[bValType[i]], *commonData).unit; // Unit of value
+            unit = unit.substring(0, 6); // String length limit for value unit
 
             // Show boat data value
             getdisplay().setFont(&DSEG7Classic_BoldItalic20pt7b);
@@ -423,20 +428,29 @@ public:
 
             // Show name
             getdisplay().setFont(&Ubuntu_Bold12pt8b);
-            getdisplay().setCursor(POS[i].x2, POS[i].y2);
-            getdisplay().print(name);
-
-            // Show unit
-            getdisplay().setFont(&Ubuntu_Bold8pt8b);
-            getdisplay().setCursor(POS[i].x3, POS[i].y3);
-
-            if (holdValues) {
-                getdisplay().print(unitOld[i]);
-            } else {
-                getdisplay().print(unit);
+            if (i < 2) { // left side values
+                getdisplay().setCursor(POS[i].x2, POS[i].y2);
+                getdisplay().print(name);
+            } else { // right side values
+                drawTextRalign(POS[i].x2, POS[i].y2, name);
             }
 
-            if (bValue[i]->valid) {
+            String dUnit; // Unit to show
+            if (holdValues) {
+                dUnit = unitOld[i];
+            } else {
+                dUnit = unit;
+            }
+            // Show unit
+            getdisplay().setFont(&Ubuntu_Bold8pt8b);
+            if (i < 2) { // left side values
+                getdisplay().setCursor(POS[i].x3, POS[i].y3);
+                getdisplay().print(dUnit);
+            } else { // right side values
+                drawTextRalign(POS[i].x3, POS[i].y3, dUnit);
+            }
+
+            if (bValue[bValType[i]]->valid) {
                 sValueOld[i] = sValue; // Save the old value
                 unitOld[i] = unit; // Save the old unit
             }
@@ -453,7 +467,9 @@ public:
             drawCompassRose(0.0);
         };
         getdisplay().drawBitmap((width - WAVE_W) / 2, (height - WAVE_H) / 2, wave_bitmap, WAVE_W, WAVE_H, commonData->fgcolor);
-        drawRotatedArrow(bValue[DFT]->value, WindUtils::to2PI(bValue[SET]->value - bValue[HDT]->value));
+        if (bValue[SET]->valid && bValue[DFT]->valid) {
+            drawRotatedArrow(bValue[DFT]->value, WindUtils::to2PI(bValue[SET]->value - bValue[HDT]->value));
+        }
 
         return PAGE_UPDATE;
     };
@@ -474,8 +490,8 @@ static Page* createPage(CommonData& common)
 PageDescription registerPageCurrent(
     "Current", // Page name
     createPage, // Action
-    0, // Number of bus values depends on selection in Web configuration
-    { "AWA", "HDT", "SET", "DFT", "SOG", "COG", "STW", "HDM", "VAR", "xdrROLL" }, // Bus values we need in the page
+    1, // Number of bus values depends on selection in Web configuration -> boat value for ROLL
+    { "SET", "DFT", "HDT", "STW", "COG", "SOG", "HDM", "VAR", "AWA" }, // Bus values we need in the page
     true // Show display header on/off
 );
 
