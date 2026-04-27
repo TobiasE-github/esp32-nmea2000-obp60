@@ -43,8 +43,6 @@ static constexpr Points POS[] = {
     { 10, 270, 10, 220, 10, 190 }, // Position bottom left
     { 295, 65, 390, 95, 390, 115 }, // Position top right
     { 295, 270, 390, 220, 390, 190 } // Position bottom right
-    //    { 295, 65, 340, 95, 340, 115 }, // Position top right
-    //    { 295, 270, 340, 220, 340, 190 } // Position bottom right
 };
 
 // Define wave visual (XBM Format)
