@@ -1324,8 +1324,8 @@
         "default": "1",
         "check": "checkMinMax",
         "min": 1,
-        "max": 10,
-        "description": "E-Paper full refresh time all [1...10 min]",
+        "max": 1000,
+        "description": "E-Paper full refresh time all [1...1000 min]",
         "category": "OBP60 Display",
         "capabilities": {
             "obp60":"true"
