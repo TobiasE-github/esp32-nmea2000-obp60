@@ -16,7 +16,7 @@ static const std::unordered_map<std::string, int> leeKMap = {
     { "Multihull Fixed Keel [16]", 16 }
 };
 
-enum bValIdx {
+enum bValueIdx {
     ROLL = 0,
     SET,
     DFT,
@@ -30,7 +30,7 @@ enum bValIdx {
     NUM_VALS
 };
 
-// Screen coordinates for boat values
+// Screen coordinates for boat value, name, unit
 struct Points {
     int16_t x1, y1;
     int16_t x2, y2;
@@ -88,6 +88,8 @@ private:
     String backlightMode;
     String leeKStd;
     double leeK;
+    movingAvgAngle<double> SetAvg {8}; // Store average of the last 8 values of SET angle values
+    movingAvg<double> DftAvg {8}; // Store average of the last 8 values of DFT speed value
 
     // Old values for hold function
     String sValueOld[NUM_VALS] = { "", "", "", "", "", "", "", "", "", "" };
@@ -104,12 +106,15 @@ private:
         double stw // speed through water (m/s)
     )
     {
-        if (stw == 0) {
-            return 0;
+        static constexpr double MINSTW = 0.5; // minimum speed (m/s) for leeway calculation to prevent math explosion
+        static constexpr double MAXLAY = 30.0 * DEG_TO_RAD; // cap leeway at this level of degree; 
+
+        if (stw < MINSTW) {
+            return 0; 
         }
 
         double lay = leeK * roll / (stw * stw);
-        return lay;
+        return std::min(lay, MAXLAY);
     }
 
     double calcCTW(
@@ -121,9 +126,9 @@ private:
         double ctw; // course through water (rad true)
 
         if (awa >= M_PI) { // apparent wind > 180° -> comes from port
-            ctw = hdt + lay;
+            ctw = WindUtils::to2PI(hdt + lay);
         } else { // wind comes from starboard
-            ctw = hdt - lay;
+            ctw = WindUtils::to2PI(hdt - lay);
         }
 
         return ctw;
@@ -226,7 +231,9 @@ private:
         float direction // angle the arrow is pointing to [0..2PI]
     )
     {
-        if (size < 0.05) { // no arrow for current set below 0.05 m/s
+        static constexpr double MINSIZE = 0.05; // minimum current set (size) (m/s) for arrow size
+
+        if (size < MINSIZE) { // no arrow for current set below 0.05 m/s
             return;
         }
 
@@ -319,6 +326,10 @@ public:
             leeK = (commonData->config->getString(commonData->config->leeK)).toDouble();
         }
         LOG_DEBUG(GwLog::DEBUG, "PageCurrent: leeKStd: %s, leeK: %.3f", leeKStd.c_str(), leeK);
+		
+		// Initialize average buffer for SET and DFT
+        SetAvg.begin();
+        DftAvg.begin();
     }
 
     virtual int handleKey(int key)
@@ -358,22 +369,23 @@ public:
             bValue[DFT]->getName().c_str(), bValue[DFT]->value, bValue[DFT]->valid, bValue[HDT]->getName().c_str(), bValue[HDT]->value, bValue[HDT]->valid,
             bValue[STW]->getName().c_str(), bValue[STW]->value, bValue[STW]->valid);
 
-        // Calculate current data
+        // Calculate current
         //***********************************************************
 
         if (!bValue[SET]->valid || !bValue[DFT]->valid) { // If SET or DRIFT not available, try to calculate them
-            if (bValue[SOG]->valid && bValue[COG]->valid && bValue[STW]->valid && bValue[AWA]->valid) { // calculate current only if all required values are available
+            if (bValue[SOG]->valid && bValue[COG]->valid && bValue[STW]->valid) {
+                // calculate current only if all required values are available; we accept missing AWA, because this is only required for leeway adjustment
 
                 if (!bValue[HDT]->valid) { // HDT not available
                     if (bValue[HDM]->valid) {
                         if (bValue[VAR]->valid) {
                             bValue[HDT]->value = bValue[HDM]->value + bValue[VAR]->value; // Use corrected HDM if HDT is not available
                             bValue[HDT]->value = WindUtils::to2PI(bValue[HDT]->value);
-                            bValue[HDT]->valid = true;
                         } else {
                             // if HDT cannot be fully substituted by HDM+VAR, continue with HDM only
                             bValue[HDT] = bValue[HDM];
                         }
+                        bValue[HDT]->valid = true;
                     }
                 }
 
@@ -386,7 +398,8 @@ public:
                 lay = calcLeeway(leeK, bValue[ROLL]->value, bValue[STW]->value);
 
                 if (bValue[HDT]->valid) { // That's either HDT or HDM
-                    current = calcSetAndDrift(lay, bValue[SOG]->value, bValue[COG]->value, bValue[STW]->value, bValue[HDT]->value, bValue[AWA]->value);
+                    double awaVal = (bValue[AWA]->valid ? bValue[AWA]->value : 0.0); // catch potentially missing AWA
+                    current = calcSetAndDrift(lay, bValue[SOG]->value, bValue[COG]->value, bValue[STW]->value, bValue[HDT]->value, awaVal);
                     bValue[SET]->value = current.set;
                     bValue[SET]->setFormat("formatCourse");
                     bValue[SET]->valid = true;
@@ -396,6 +409,12 @@ public:
                 }
             }
         }
+
+		// averaging current for smoother output
+        if (bValue[SET]->valid && bValue[DFT]->valid) { // Are SET and DRIFT now available?
+			bValue[SET]->value = SetAvg.reading(bValue[SET]->value);
+			bValue[DFT]->value = DftAvg.reading(bValue[DFT]->value);
+		}
 
         LOG_DEBUG(GwLog::DEBUG, "PageCurrent: leeKStd: %s, leeK: %.3f, lay: %.3f, roll: %.3f, stw: %.3f, awa: %.3f, hdt: %.3f, cog: %.3f, sog: %.3f, set: %.3f, dft: %.3f",
             leeKStd.c_str(), leeK, lay, bValue[ROLL]->value, bValue[STW]->value, bValue[AWA]->value, bValue[HDT]->value, bValue[COG]->value, bValue[SOG]->value,
